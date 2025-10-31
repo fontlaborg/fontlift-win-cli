@@ -23,7 +23,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Create output directory
-if not exist build mkdir build
+if not exist "build" mkdir "build"
 
 REM Generate version resource file
 echo Generating version resource...
