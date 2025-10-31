@@ -60,6 +60,26 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Added OS files (.DS_Store, Thumbs.db)
 - Verified this_file tracking in all source files and scripts
 
+### Quality Improvements Iteration 2 (2025-10-31)
+- Created DEPENDENCIES.md (139 lines)
+  - Documented all 4 Windows SDK libraries (Advapi32, Shlwapi, User32, Gdi32)
+  - Explained purpose and specific functions used from each library
+  - Documented decision not to use external libraries (FreeType, etc.)
+  - Added dependency verification instructions with dumpbin
+- Enhanced README.md (249 lines, 7x larger)
+  - Added installation instructions for binary and source builds
+  - Added comprehensive usage examples for all commands
+  - Added exit code documentation (0=success, 1=error, 2=permission)
+  - Added command reference table and options
+  - Added practical examples (batch install, export list, conditional)
+  - Added troubleshooting section with solutions
+  - Added technical details and development section
+- Created templates/ directory
+  - Added source.cpp template with copyright/license header
+  - Added header.h template with header guards
+  - Added templates/README.md with usage instructions and examples
+  - Ensures consistency across all future source files
+
 ## [0.1.0] - Planned
 Initial release with core functionality:
 - List installed fonts (paths, names, or both)

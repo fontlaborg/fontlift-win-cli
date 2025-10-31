@@ -82,6 +82,11 @@
 - [x] Add .gitignore to exclude build artifacts and IDE files
 - [x] Add this_file tracking to build.cmd and publish.cmd (already present)
 
+## Quality Improvements (Iteration 2)
+- [x] Create DEPENDENCIES.md documenting Windows SDK libraries
+- [x] Enhance README.md with installation, usage examples, and exit codes
+- [x] Add C++ source template with license header for future files
+
 ## Phase 7: Polish & Testing
 - [ ] Add comprehensive error messages
 - [ ] Implement exit codes (0=success, 1=error, 2=permission)
