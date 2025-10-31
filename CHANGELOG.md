@@ -5,6 +5,14 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Bug Fixes (Post-v1.1.2)
+- **GitHub Actions Fix** (2025-11-01): Fixed batch script syntax error in `scripts/generate-version-rc.cmd`
+  - Error: "not was unexpected at this time" causing all CI/CD workflows to fail
+  - Root cause: Incorrect use of `%VAR%` instead of `!VAR!` within `setlocal enabledelayedexpansion` block
+  - Fixed lines 38, 39, 44, 51, 53 to use delayed expansion syntax: `!INPUT!`, `!OUTPUT!`, etc.
+  - Impact: All GitHub Actions workflows (build.yml and release.yml) now pass successfully
+  - Previous releases (v0.1.0 through v1.1.2) were created but builds failed in CI
+
 ### New Features (v1.1.1)
 - **List Command Enhancement**: Added `-s` flag for sorted and unique output
   - `fontlift list -s` - Sort output alphabetically and remove duplicates

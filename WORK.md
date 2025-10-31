@@ -1,6 +1,47 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## Phase 0 Bug Fix - GitHub Actions Batch Script Error
+
+**Date:** 2025-11-01
+
+### Issue Discovered
+All GitHub Actions workflows (both build.yml and release.yml) were failing with error:
+```
+not was unexpected at this time.
+##[error]Process completed with exit code 255.
+```
+
+### Root Cause Analysis
+- Error occurred in `scripts/generate-version-rc.cmd` during `build.cmd` execution
+- Script uses `setlocal enabledelayedexpansion` for variable manipulation
+- Within delayed expansion blocks, variables must be accessed with `!VAR!` not `%VAR%`
+- Lines 38, 39, 44, 51, 53 were using incorrect `%INPUT%` and `%OUTPUT%` syntax
+
+### Solution Implemented
+Changed all variable references in `scripts/generate-version-rc.cmd` to use delayed expansion syntax:
+- Line 38: `if not exist "%INPUT%"` → `if not exist "!INPUT!"`
+- Line 39: `echo Error: Template file not found: %INPUT%` → `!INPUT!`
+- Line 44: `for /f "usebackq delims=" %%i in ("%INPUT%")` → `"!INPUT!"`
+- Line 51: `))>"%OUTPUT%"` → `))>"!OUTPUT!"`
+- Line 53: `echo Generated %OUTPUT%...` → `echo Generated !OUTPUT!...`
+
+### Testing Plan
+1. Commit the fix to main branch
+2. Monitor GitHub Actions build.yml workflow
+3. If successful, create new tag v1.1.3 to test release.yml workflow
+4. Verify release artifacts are created correctly
+5. Download and test release binary
+
+### Status
+- ✅ Bug identified and root cause understood
+- ✅ Fix implemented in scripts/generate-version-rc.cmd
+- ✅ Documentation updated (PLAN.md, TODO.md, CHANGELOG.md, WORK.md)
+- ⏳ Pending: Commit and push fix
+- ⏳ Pending: Monitor CI/CD workflows
+
+---
+
 ## Current Iteration
 
 **Date:** 2025-10-31

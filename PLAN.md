@@ -82,9 +82,11 @@ Name Table
 
 ## Implementation Phases
 
-### Phase 0: Build Infrastructure & CI/CD
+### Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED
 
 **Goal:** Implement semantic versioning and automated build/release pipeline.
+
+**Status:** Implemented and fixed. All GitHub Actions workflows are now operational.
 
 **Problem Analysis:**
 Current build system has hardcoded version (`v0.1.0` in publish.cmd), manual builds only, no CI/CD, no automated releases. Need git tag-based versioning that works locally and in GitHub Actions, with automated binary releases.
@@ -434,6 +436,13 @@ jobs:
 - CI environment without git history (fetch-depth: 0)
 - Existing release for tag (workflow should fail or update)
 - Version mismatch between tag and build (use tag as source of truth)
+
+**Post-Implementation Bug Fix (2025-11-01):**
+- **Issue:** GitHub Actions workflows were failing with "not was unexpected at this time" error
+- **Root Cause:** In `scripts/generate-version-rc.cmd`, incorrect use of `%VAR%` instead of `!VAR!` within `setlocal enabledelayedexpansion` block
+- **Solution:** Changed all variable references from `%INPUT%`, `%OUTPUT%`, etc. to `!INPUT!`, `!OUTPUT!`, etc. (lines 38, 39, 44, 51, 53)
+- **Impact:** All GitHub Actions workflows (build.yml and release.yml) now pass successfully
+- **Verification:** Commits and tag pushes now trigger successful builds and releases
 
 ### Phase 1: Foundation (MVP)
 

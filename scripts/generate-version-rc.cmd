@@ -35,19 +35,19 @@ set INPUT=templates\version.rc.template
 set OUTPUT=src\version.rc
 
 REM Check if template exists
-if not exist "%INPUT%" (
-    echo Error: Template file not found: %INPUT%
+if not exist "!INPUT!" (
+    echo Error: Template file not found: !INPUT!
     exit /b 1
 )
 
 REM Generate version.rc by substituting placeholders
-(for /f "usebackq delims=" %%i in ("%INPUT%") do (
+(for /f "usebackq delims=" %%i in ("!INPUT!") do (
     set LINE=%%i
     set LINE=!LINE:@VERSION_MAJOR@=%MAJOR%!
     set LINE=!LINE:@VERSION_MINOR@=%MINOR%!
     set LINE=!LINE:@VERSION_PATCH@=%PATCH%!
     set LINE=!LINE:@VERSION_STRING@=%VERSION_STRING%!
     echo !LINE!
-))>"%OUTPUT%"
+))>"!OUTPUT!"
 
-echo Generated %OUTPUT% with version %VERSION_STRING% (MAJOR=%MAJOR%, MINOR=%MINOR%, PATCH=%PATCH%)
+echo Generated !OUTPUT! with version !VERSION_STRING! (MAJOR=!MAJOR!, MINOR=!MINOR!, PATCH=!PATCH!)
