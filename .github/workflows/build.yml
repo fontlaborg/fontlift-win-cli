@@ -24,12 +24,11 @@ jobs:
 
     - name: Get version
       id: version
-      shell: cmd
+      shell: pwsh
       run: |
-        setlocal enabledelayedexpansion
-        for /f %%i in ('scripts\get-version.cmd') do set VER=%%i
-        for /f "tokens=* delims= " %%a in ("!VER!") do echo VERSION=%%a >> %GITHUB_ENV%
-        endlocal
+        $version = & scripts\get-version.cmd
+        $version = $version.Trim()
+        echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
     - name: Display version
       shell: cmd
