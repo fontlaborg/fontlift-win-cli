@@ -8,8 +8,10 @@ REM   version: Optional version string (e.g., "0.1.0"). If not provided, extract
 REM Get version from parameter or git tags
 set BUILD_VERSION=%~1
 if "%BUILD_VERSION%"=="" (
-    for /f %%i in ('scripts\get-version.cmd') do set BUILD_VERSION=%%i
+    for /f "delims=" %%i in ('scripts\get-version.cmd') do set "BUILD_VERSION=%%i"
 )
+REM Trim trailing spaces
+for /f "tokens=* delims= " %%a in ("%BUILD_VERSION%") do set "BUILD_VERSION=%%a"
 
 echo Building fontlift v%BUILD_VERSION%...
 
