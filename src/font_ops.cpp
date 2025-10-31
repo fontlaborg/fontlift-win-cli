@@ -28,35 +28,32 @@ static struct {
     std::set<std::string>* outputSet;  // For sorted/unique output
 } g_listContext;
 
-static void ListCallback(const char* name, const char* file) {
-    std::string fullPath;
-
-    // Resolve full path - check if absolute (starts with \ or has drive letter)
+static std::string ResolveFullPath(const char* file) {
     size_t fileLen = strlen(file);
-    bool isAbsolute = (fileLen > 0 && file[0] == '\\') ||
-                      (fileLen > 1 && file[1] == ':');
+    bool isAbsolute = (fileLen > 0 && file[0] == '\\') || (fileLen > 1 && file[1] == ':');
+    return isAbsolute ? file : g_listContext.fontsDir + "\\" + file;
+}
 
-    if (isAbsolute) {
-        fullPath = file;
-    } else {
-        fullPath = g_listContext.fontsDir + "\\" + file;
-    }
+static std::string FormatOutput(const std::string& path, const char* name) {
+    if (g_listContext.showPaths && g_listContext.showNames) return path + ";" + name;
+    if (g_listContext.showNames) return name;
+    return path;
+}
 
-    std::string output;
-    if (g_listContext.showPaths && g_listContext.showNames) {
-        output = fullPath + ";" + name;
-    } else if (g_listContext.showNames) {
-        output = name;
-    } else {
-        output = fullPath;
-    }
+static void ListCallback(const char* name, const char* file) {
+    std::string fullPath = ResolveFullPath(file);
+    std::string output = FormatOutput(fullPath, name);
 
     if (g_listContext.sorted) {
-        // Collect in set for sorting and deduplication
         g_listContext.outputSet->insert(output);
     } else {
-        // Direct output
         std::cout << output << "\n";
+    }
+}
+
+static void OutputSorted(const std::set<std::string>& outputSet) {
+    for (const auto& line : outputSet) {
+        std::cout << line << "\n";
     }
 }
 
@@ -65,31 +62,17 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
     g_listContext.showNames = showNames;
     g_listContext.sorted = sorted;
     g_listContext.fontsDir = SysUtils::GetFontsDirectory();
-
     if (g_listContext.fontsDir.empty()) {
         std::cerr << "Error: Cannot determine fonts directory\n";
         return EXIT_ERROR;
     }
-
     std::set<std::string> outputSet;
-    if (sorted) {
-        g_listContext.outputSet = &outputSet;
-    }
-
-    bool success = SysUtils::RegEnumerateFonts(ListCallback);
-
-    if (!success) {
+    if (sorted) g_listContext.outputSet = &outputSet;
+    if (!SysUtils::RegEnumerateFonts(ListCallback)) {
         std::cerr << "Error: Failed to enumerate fonts\n";
         return EXIT_ERROR;
     }
-
-    // Output sorted and unique results
-    if (sorted) {
-        for (const auto& line : outputSet) {
-            std::cout << line << "\n";
-        }
-    }
-
+    if (sorted) OutputSorted(outputSet);
     return EXIT_SUCCESS_CODE;
 }
 
