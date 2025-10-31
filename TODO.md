@@ -1,6 +1,96 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## Phase 0: Build Infrastructure & CI/CD
+### Version Infrastructure
+- [ ] Create `scripts/` directory
+- [ ] Create `scripts/get-version.cmd` - extract version from git tags
+- [ ] Create `scripts/generate-version-rc.cmd` - generate version.rc from template
+- [ ] Create `templates/version.rc.template` - Windows version resource template
+- [ ] Test version extraction locally (no git tags - should return v0.0.0-dev)
+- [ ] Create initial git tag: `v0.1.0`
+- [ ] Test version extraction with git tag (should return 0.1.0)
+
+### Build Script Enhancement
+- [ ] Backup current build.cmd
+- [ ] Update build.cmd to accept optional version parameter
+- [ ] Integrate get-version.cmd call in build.cmd
+- [ ] Integrate generate-version-rc.cmd call in build.cmd
+- [ ] Add version.rc to MSVC compilation command
+- [ ] Add version.rc to linker inputs
+- [ ] Test local build with explicit version: `build.cmd 0.1.0`
+- [ ] Test local build without version (should use git tag)
+- [ ] Verify version appears in executable properties (Windows: right-click > Properties > Details)
+- [ ] Verify build/ directory structure unchanged
+
+### Publish Script Enhancement
+- [ ] Backup current publish.cmd
+- [ ] Update publish.cmd to accept optional version parameter
+- [ ] Integrate get-version.cmd call in publish.cmd
+- [ ] Replace hardcoded "0.1.0" with version variable
+- [ ] Update zip filename to use version: `fontlift-v%VERSION_TAG%.zip`
+- [ ] Update README.txt generation to use version
+- [ ] Test local publish with explicit version: `publish.cmd 0.1.0`
+- [ ] Test local publish without version (should use git tag)
+- [ ] Verify zip file has correct name
+- [ ] Verify README.txt has correct version
+
+### GitHub Actions Workflows
+- [ ] Create `.github/workflows/` directory
+- [ ] Create `.github/workflows/build.yml` - CI build workflow
+  - [ ] Add triggers: push to main, pull requests
+  - [ ] Configure windows-latest runner
+  - [ ] Add checkout step with fetch-depth: 0
+  - [ ] Add MSVC setup step (ilammy/msvc-dev-cmd@v1)
+  - [ ] Add version extraction step
+  - [ ] Add build step
+  - [ ] Add test step (executable exists)
+  - [ ] Add smoke test (executable runs)
+  - [ ] Add artifact upload step
+- [ ] Create `.github/workflows/release.yml` - release workflow
+  - [ ] Add trigger: push tags matching v*.*.*
+  - [ ] Configure windows-latest runner with write permissions
+  - [ ] Add checkout step with fetch-depth: 0
+  - [ ] Add MSVC setup step
+  - [ ] Add version extraction from tag
+  - [ ] Add build step with version
+  - [ ] Add publish step with version
+  - [ ] Add checksum generation step
+  - [ ] Add GitHub Release creation step
+  - [ ] Add asset upload step
+
+### CI/CD Testing
+- [ ] Commit version infrastructure files
+- [ ] Push to main branch
+- [ ] Verify CI build workflow triggers
+- [ ] Verify CI build workflow passes
+- [ ] Verify artifact uploaded
+- [ ] Download CI artifact and test locally
+- [ ] Create and push git tag: `v0.1.0`
+- [ ] Verify release workflow triggers
+- [ ] Verify release workflow passes
+- [ ] Verify GitHub Release created
+- [ ] Verify release assets uploaded (zip + checksums)
+- [ ] Download release zip and verify contents
+- [ ] Verify executable has correct version in properties
+- [ ] Test release executable runs correctly
+
+### Documentation Updates
+- [ ] Update README.md - add "Building from Source" section
+- [ ] Update README.md - add "Release Process" section
+- [ ] Update README.md - document version tagging process
+- [ ] Update CONTRIBUTING.md - add CI/CD information
+- [ ] Update CONTRIBUTING.md - document how to test workflows locally
+- [ ] Update CHANGELOG.md - add v0.1.0 release notes for CI/CD
+- [ ] Create `.github/workflows/README.md` - explain workflows
+
+### Cleanup & Validation
+- [ ] Add `src/version.rc` to .gitignore (generated file)
+- [ ] Verify `scripts/` directory has proper `this_file` tracking
+- [ ] Run full end-to-end test: tag -> build -> publish -> release
+- [ ] Document any issues or edge cases discovered
+- [ ] Update WORK.md with Phase 0 completion status
+
 ## Phase 1: Foundation
 - [x] Create src/ directory structure
 - [x] Create src/main.cpp with command-line argument parsing
@@ -91,6 +181,11 @@
 - [x] Add .editorconfig for code style consistency across editors
 - [x] Create CONTRIBUTING.md with guidelines for contributors
 - [x] Add GitHub issue templates for bug reports and feature requests
+
+## Quality Improvements (Iteration 4)
+- [ ] Add GitHub pull request template for quality PRs
+- [ ] Add CODE_OF_CONDUCT.md for open source community standards
+- [ ] Document test font requirements and sources
 
 ## Phase 7: Polish & Testing
 - [ ] Add comprehensive error messages

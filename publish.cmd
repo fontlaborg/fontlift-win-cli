@@ -1,8 +1,19 @@
 @echo off
 REM this_file: publish.cmd
 REM Package fontlift for distribution
+REM Usage: publish.cmd [version]
+REM   version: Optional version string (e.g., "0.1.0"). If not provided, extracted from git tags.
 
-echo Creating distribution package...
+REM Get version from parameter or git tags
+set PUBLISH_VERSION=%~1
+if "%PUBLISH_VERSION%"=="" (
+    for /f %%i in ('scripts\get-version.cmd') do set PUBLISH_VERSION=%%i
+)
+
+REM Set version with 'v' prefix for filenames
+set VERSION_TAG=v%PUBLISH_VERSION%
+
+echo Creating distribution package for version %VERSION_TAG%...
 
 REM Check if build exists
 if not exist build\fontlift.exe (
@@ -23,7 +34,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 REM Create distribution README
-echo fontlift-win-cli v0.1.0 > dist\README.txt
+echo fontlift-win-cli %VERSION_TAG% > dist\README.txt
 echo. >> dist\README.txt
 echo Windows CLI tool for font installation/uninstallation >> dist\README.txt
 echo. >> dist\README.txt
@@ -39,8 +50,7 @@ REM Copy license
 if exist LICENSE copy LICENSE dist\ >nul
 
 REM Create zip archive (requires PowerShell)
-set VERSION=0.1.0
-set ZIPFILE=fontlift-v%VERSION%.zip
+set ZIPFILE=fontlift-%VERSION_TAG%.zip
 
 echo Compressing to %ZIPFILE%...
 powershell -Command "Compress-Archive -Path dist\* -DestinationPath dist\%ZIPFILE% -Force"

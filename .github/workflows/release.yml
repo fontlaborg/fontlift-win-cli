@@ -1,0 +1,78 @@
+# this_file: .github/workflows/release.yml
+# Release Workflow - creates GitHub releases when tags are pushed
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Extract version from tag
+      id: version
+      shell: bash
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "VERSION_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+        echo "Building version: $VERSION"
+
+    - name: Build release
+      shell: cmd
+      run: build.cmd %VERSION%
+
+    - name: Package release
+      shell: cmd
+      run: publish.cmd %VERSION%
+
+    - name: Generate checksums
+      shell: cmd
+      run: |
+        cd dist
+        certutil -hashfile fontlift-%VERSION_TAG%.zip SHA256 > checksums.txt
+        type checksums.txt
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/fontlift-${{ env.VERSION_TAG }}.zip
+          dist/checksums.txt
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+        body: |
+          ## fontlift-win-cli ${{ env.VERSION_TAG }}
+
+          Windows CLI tool for font installation and management.
+
+          ### Installation
+          1. Download `fontlift-${{ env.VERSION_TAG }}.zip`
+          2. Verify checksum (see `checksums.txt`)
+          3. Extract `fontlift.exe` to a directory in your PATH
+          4. Run `fontlift.exe` from an elevated command prompt
+
+          ### Usage
+          ```
+          fontlift list              List installed fonts
+          fontlift install font.ttf  Install a font
+          fontlift uninstall -n Arial  Uninstall a font
+          fontlift remove -p font.ttf  Remove font and delete file
+          ```
+
+          See [README.md](https://github.com/fontlaborg/fontlift-win-cli/blob/main/README.md) for full documentation.

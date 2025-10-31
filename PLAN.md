@@ -82,6 +82,359 @@ Name Table
 
 ## Implementation Phases
 
+### Phase 0: Build Infrastructure & CI/CD
+
+**Goal:** Implement semantic versioning and automated build/release pipeline.
+
+**Problem Analysis:**
+Current build system has hardcoded version (`v0.1.0` in publish.cmd), manual builds only, no CI/CD, no automated releases. Need git tag-based versioning that works locally and in GitHub Actions, with automated binary releases.
+
+**Solution Architecture:**
+
+1. **Semantic Versioning Infrastructure**
+   - Version source of truth: Git tags (format: `vX.Y.Z`, e.g., `v0.1.0`, `v1.2.3`)
+   - Version extraction: Batch script that runs `git describe --tags --abbrev=0`
+   - Version embedding: Windows resource file (.rc) with VERSIONINFO structure
+   - Dynamic generation: Create version.rc during build from git tag
+
+2. **Build Script Enhancement (build.cmd)**
+   - Accept optional version parameter: `build.cmd [version]`
+   - If version not provided, extract from git tag
+   - Generate `src/version.rc` with version metadata
+   - Compile version.rc into executable
+   - Link resource file to embed version in fontlift.exe
+   - Work in both local Windows environment and GitHub Actions
+
+3. **Publish Script Enhancement (publish.cmd)**
+   - Accept optional version parameter: `publish.cmd [version]`
+   - If version not provided, extract from git tag
+   - Use version in zip filename: `fontlift-vX.Y.Z.zip`
+   - Include version in dist/README.txt
+   - Generate SHA256 checksum file for release artifacts
+
+4. **GitHub Actions Workflows**
+
+   **CI Build Workflow** (`.github/workflows/build.yml`):
+   - Trigger: Push to main, pull requests
+   - Runner: `windows-latest`
+   - Steps:
+     1. Checkout code
+     2. Setup MSVC (ilammy/msvc-dev-cmd@v1)
+     3. Extract version from git tag or use dev version
+     4. Run build.cmd
+     5. Upload build artifacts (fontlift.exe)
+     6. Run basic smoke tests (executable runs, shows help)
+
+   **Release Workflow** (`.github/workflows/release.yml`):
+   - Trigger: Push tags matching `v*.*.*`
+   - Runner: `windows-latest`
+   - Steps:
+     1. Checkout code
+     2. Setup MSVC
+     3. Extract version from tag: `${{ github.ref_name }}`
+     4. Run build.cmd with version
+     5. Run publish.cmd with version
+     6. Generate SHA256 checksums
+     7. Create GitHub Release (softprops/action-gh-release@v1)
+     8. Upload assets: fontlift-vX.Y.Z.zip, checksums.txt
+     9. Auto-generate release notes from commits
+
+**Technical Implementation Details:**
+
+**Version Resource File Template** (`templates/version.rc.template`):
+```rc
+#include <winver.h>
+
+#define VER_MAJOR @VERSION_MAJOR@
+#define VER_MINOR @VERSION_MINOR@
+#define VER_PATCH @VERSION_PATCH@
+#define VER_BUILD 0
+
+#define VER_FILEVERSION VER_MAJOR,VER_MINOR,VER_PATCH,VER_BUILD
+#define VER_PRODUCTVERSION VER_MAJOR,VER_MINOR,VER_PATCH,VER_BUILD
+
+#define VER_FILEVERSION_STR "@VERSION_STRING@\0"
+#define VER_PRODUCTVERSION_STR "@VERSION_STRING@\0"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
+FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+FILEFLAGS 0x0L
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "fontlaborg"
+            VALUE "FileDescription", "Windows CLI tool for font installation"
+            VALUE "FileVersion", VER_FILEVERSION_STR
+            VALUE "InternalName", "fontlift"
+            VALUE "LegalCopyright", "Copyright (c) 2025 fontlaborg"
+            VALUE "OriginalFilename", "fontlift.exe"
+            VALUE "ProductName", "fontlift-win-cli"
+            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+```
+
+**Version Extraction Script** (`scripts/get-version.cmd`):
+```batch
+@echo off
+REM Extract version from git tags or use provided parameter
+if "%~1"=="" (
+    REM No parameter - get from git tag
+    for /f "tokens=*" %%i in ('git describe --tags --abbrev^=0 2^>nul') do set VERSION=%%i
+    if "%VERSION%"=="" (
+        REM No tags exist - use default development version
+        set VERSION=v0.0.0-dev
+    )
+) else (
+    REM Use provided parameter
+    set VERSION=%~1
+)
+REM Strip leading 'v' if present
+if "%VERSION:~0,1%"=="v" set VERSION=%VERSION:~1%
+echo %VERSION%
+```
+
+**Version Resource Generator** (`scripts/generate-version-rc.cmd`):
+```batch
+@echo off
+setlocal enabledelayedexpansion
+
+REM Parse version string (e.g., "1.2.3" -> MAJOR=1, MINOR=2, PATCH=3)
+set VERSION_STRING=%~1
+for /f "tokens=1-3 delims=." %%a in ("%VERSION_STRING%") do (
+    set MAJOR=%%a
+    set MINOR=%%b
+    set PATCH=%%c
+)
+
+REM Handle dev versions (e.g., "0.0.0-dev")
+if "!PATCH!"=="" set PATCH=0
+for /f "tokens=1 delims=-" %%a in ("!PATCH!") do set PATCH=%%a
+
+REM Read template and substitute variables
+set INPUT=templates\version.rc.template
+set OUTPUT=src\version.rc
+
+(for /f "delims=" %%i in (!INPUT!) do (
+    set LINE=%%i
+    set LINE=!LINE:@VERSION_MAJOR@=%MAJOR%!
+    set LINE=!LINE:@VERSION_MINOR@=%MINOR%!
+    set LINE=!LINE:@VERSION_PATCH@=%PATCH%!
+    set LINE=!LINE:@VERSION_STRING@=%VERSION_STRING%!
+    echo !LINE!
+))>!OUTPUT!
+
+echo Generated version.rc with version %VERSION_STRING%
+```
+
+**Updated build.cmd workflow:**
+```batch
+@echo off
+REM Accept optional version parameter
+set BUILD_VERSION=%~1
+
+REM Get version
+if "%BUILD_VERSION%"=="" (
+    for /f %%i in ('scripts\get-version.cmd') do set BUILD_VERSION=%%i
+)
+
+echo Building fontlift v%BUILD_VERSION%...
+
+REM Generate version.rc
+call scripts\generate-version-rc.cmd %BUILD_VERSION%
+
+REM Compile (add version.rc to compilation)
+cl.exe /std:c++17 /EHsc /W4 /O2 /Fobuild\ src\main.cpp src\version.rc /link /OUT:build\fontlift.exe Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
+```
+
+**GitHub Actions CI Build** (`.github/workflows/build.yml`):
+```yaml
+name: CI Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for git describe
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Get version
+      id: version
+      shell: cmd
+      run: |
+        for /f %%i in ('scripts\get-version.cmd') do echo VERSION=%%i >> %GITHUB_ENV%
+
+    - name: Build
+      shell: cmd
+      run: build.cmd %VERSION%
+
+    - name: Test executable exists
+      shell: cmd
+      run: |
+        if not exist build\fontlift.exe exit 1
+        echo Build successful!
+
+    - name: Test executable runs
+      shell: cmd
+      run: build\fontlift.exe
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fontlift-${{ env.VERSION }}
+        path: build/fontlift.exe
+        retention-days: 7
+```
+
+**GitHub Actions Release** (`.github/workflows/release.yml`):
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Extract version from tag
+      id: version
+      shell: bash
+      run: |
+        VERSION=${GITHUB_REF_NAME#v}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "VERSION_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+
+    - name: Build release
+      shell: cmd
+      run: build.cmd %VERSION%
+
+    - name: Package release
+      shell: cmd
+      run: publish.cmd %VERSION%
+
+    - name: Generate checksums
+      shell: cmd
+      run: |
+        cd dist
+        certutil -hashfile fontlift-%VERSION_TAG%.zip SHA256 > checksums.txt
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/fontlift-${{ env.VERSION_TAG }}.zip
+          dist/checksums.txt
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+```
+
+**Tasks:**
+
+1. **Create version infrastructure**
+   - [ ] Create `scripts/get-version.cmd` - extract version from git tags
+   - [ ] Create `scripts/generate-version-rc.cmd` - generate version.rc from template
+   - [ ] Create `templates/version.rc.template` - Windows version resource template
+   - [ ] Test version extraction locally with git tag
+
+2. **Update build.cmd**
+   - [ ] Add version parameter support
+   - [ ] Integrate get-version.cmd call
+   - [ ] Integrate generate-version-rc.cmd call
+   - [ ] Add version.rc to compilation
+   - [ ] Test local build with explicit version
+   - [ ] Test local build with git tag version
+   - [ ] Verify version appears in executable properties
+
+3. **Update publish.cmd**
+   - [ ] Add version parameter support
+   - [ ] Replace hardcoded v0.1.0 with dynamic version
+   - [ ] Update zip filename to use version variable
+   - [ ] Update README.txt to use version variable
+   - [ ] Test local publish with version
+
+4. **Create GitHub Actions workflows**
+   - [ ] Create `.github/workflows/` directory
+   - [ ] Create `build.yml` - CI build workflow
+   - [ ] Create `release.yml` - release workflow
+   - [ ] Test CI build workflow (push to main)
+   - [ ] Create initial git tag: `v0.1.0`
+   - [ ] Test release workflow (push tag)
+   - [ ] Verify GitHub Release created
+   - [ ] Verify artifacts uploaded correctly
+
+5. **Testing & validation**
+   - [ ] Test version resource in executable (right-click > Properties)
+   - [ ] Test `fontlift.exe` shows version (future: add --version flag)
+   - [ ] Test CI build on pull request
+   - [ ] Test CI build on push to main
+   - [ ] Test release creation with tag `v0.1.0`
+   - [ ] Download release artifact and verify
+   - [ ] Test version extraction in CI environment
+   - [ ] Test version extraction in local environment
+
+6. **Documentation**
+   - [ ] Update README.md with build instructions
+   - [ ] Document version tagging process
+   - [ ] Document release process
+   - [ ] Update CONTRIBUTING.md with CI/CD info
+   - [ ] Update CHANGELOG.md with v0.1.0 release
+
+**Success Criteria:**
+- Git tag `v0.1.0` created
+- `build.cmd` extracts version from git tags
+- `publish.cmd` creates correctly-named zip file
+- Windows executable has embedded version resource
+- GitHub Actions CI runs on every push/PR
+- GitHub Actions creates release on tag push
+- Release includes `fontlift-v0.1.0.zip` and checksums
+- Build scripts work identically locally and in CI
+
+**Edge Cases:**
+- No git tags exist (use v0.0.0-dev)
+- Invalid version format (validate and error)
+- CI environment without git history (fetch-depth: 0)
+- Existing release for tag (workflow should fail or update)
+- Version mismatch between tag and build (use tag as source of truth)
+
 ### Phase 1: Foundation (MVP)
 
 **Goal:** Basic project structure and build system.

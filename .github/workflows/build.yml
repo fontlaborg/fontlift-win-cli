@@ -1,0 +1,62 @@
+# this_file: .github/workflows/build.yml
+# CI Build Workflow - builds and tests on every push and PR
+
+name: CI Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for git describe
+
+    - name: Setup MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Get version
+      id: version
+      shell: cmd
+      run: |
+        for /f %%i in ('scripts\get-version.cmd') do echo VERSION=%%i >> %GITHUB_ENV%
+
+    - name: Display version
+      shell: cmd
+      run: echo Building version %VERSION%
+
+    - name: Build
+      shell: cmd
+      run: build.cmd %VERSION%
+
+    - name: Test executable exists
+      shell: cmd
+      run: |
+        if not exist build\fontlift.exe (
+          echo ERROR: fontlift.exe was not created
+          exit 1
+        )
+        echo Build successful - fontlift.exe created
+
+    - name: Test executable runs
+      shell: cmd
+      run: |
+        build\fontlift.exe
+        if %ERRORLEVEL% NEQ 0 (
+          echo ERROR: fontlift.exe failed to run
+          exit 1
+        )
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fontlift-${{ env.VERSION }}
+        path: build/fontlift.exe
+        retention-days: 7

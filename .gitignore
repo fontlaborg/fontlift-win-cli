@@ -44,6 +44,9 @@
 build/
 dist/
 
+# Generated files
+src/version.rc
+
 # MSVC files
 *.suo
 *.user
