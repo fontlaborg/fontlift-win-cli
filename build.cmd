@@ -36,7 +36,7 @@ if %ERRORLEVEL% NEQ 0 (
 REM Compile with C++17, warnings, optimizations, including version resource
 cl.exe /std:c++17 /EHsc /W4 /O2 ^
     /Fobuild\ ^
-    src\main.cpp src\version.rc ^
+    src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp src\version.rc ^
     /link /OUT:build\fontlift.exe Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
 
 if %ERRORLEVEL% EQU 0 (

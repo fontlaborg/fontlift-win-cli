@@ -2,6 +2,7 @@
 // fontlift-win-cli - Windows font management CLI tool
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
 
+#include "font_ops.h"
 #include <iostream>
 #include <cstring>
 
@@ -52,10 +53,7 @@ int main(int argc, char* argv[]) {
         bool showPaths = hasPathFlag || !hasNameFlag;  // default to paths
         bool showNames = hasNameFlag;
 
-        std::cout << "List fonts: paths=" << showPaths
-                  << " names=" << showNames << "\n";
-        std::cout << "[NOT IMPLEMENTED YET]\n";
-        return EXIT_SUCCESS_CODE;
+        return FontOps::ListFonts(showPaths, showNames);
     }
 
     // Install command
@@ -79,9 +77,7 @@ int main(int argc, char* argv[]) {
             return EXIT_ERROR;
         }
 
-        std::cout << "Install font: " << filepath << "\n";
-        std::cout << "[NOT IMPLEMENTED YET]\n";
-        return EXIT_SUCCESS_CODE;
+        return FontOps::InstallFont(filepath);
     }
 
     // Uninstall command
@@ -104,12 +100,10 @@ int main(int argc, char* argv[]) {
         }
 
         if (filepath) {
-            std::cout << "Uninstall font by path: " << filepath << "\n";
+            return FontOps::UninstallFontByPath(filepath);
         } else {
-            std::cout << "Uninstall font by name: " << fontname << "\n";
+            return FontOps::UninstallFontByName(fontname);
         }
-        std::cout << "[NOT IMPLEMENTED YET]\n";
-        return EXIT_SUCCESS_CODE;
     }
 
     // Remove command
@@ -132,12 +126,10 @@ int main(int argc, char* argv[]) {
         }
 
         if (filepath) {
-            std::cout << "Remove font by path: " << filepath << "\n";
+            return FontOps::RemoveFontByPath(filepath);
         } else {
-            std::cout << "Remove font by name: " << fontname << "\n";
+            return FontOps::RemoveFontByName(fontname);
         }
-        std::cout << "[NOT IMPLEMENTED YET]\n";
-        return EXIT_SUCCESS_CODE;
     }
 
     // Unknown command
