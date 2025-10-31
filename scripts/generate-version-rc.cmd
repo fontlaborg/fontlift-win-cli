@@ -1,5 +1,4 @@
 @echo off
-setlocal enabledelayedexpansion
 REM this_file: scripts/generate-version-rc.cmd
 REM Generate version.rc from template by substituting version placeholders
 
@@ -7,18 +6,21 @@ REM Parse version string (e.g., "1.2.3" -> MAJOR=1, MINOR=2, PATCH=3)
 set "VERSION_STRING=%~1"
 
 REM Handle empty version
-if "!VERSION_STRING!"=="" (
+if "%VERSION_STRING%"=="" (
     echo Error: Version string is required
     echo Usage: generate-version-rc.cmd VERSION_STRING
     exit /b 1
 )
 
-REM Parse version components
-for /f "tokens=1-3 delims=." %%a in ("!VERSION_STRING!") do (
+REM Parse version components (without delayed expansion initially)
+for /f "tokens=1-3 delims=." %%a in ("%VERSION_STRING%") do (
     set "MAJOR=%%a"
     set "MINOR=%%b"
     set "PATCH=%%c"
 )
+
+REM Now enable delayed expansion for the rest
+setlocal enabledelayedexpansion
 
 REM Handle dev versions (e.g., "0.0.0-dev" -> extract just "0" from "0-dev")
 if "!PATCH!"=="" set "PATCH=0"
