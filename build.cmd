@@ -29,7 +29,7 @@ if not exist "build" mkdir "build"
 
 REM Generate version resource file
 echo Generating version resource...
-call scripts\generate-version-rc.cmd %BUILD_VERSION%
+call scripts\generate-version-rc.cmd "%BUILD_VERSION%"
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Failed to generate version resource
     exit /b 1
