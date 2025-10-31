@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/fontlaborg/fontlift-win-cli/blob/main/README.md
+    about: Check the README for usage examples and troubleshooting
+  - name: Contributing Guidelines
+    url: https://github.com/fontlaborg/fontlift-win-cli/blob/main/CONTRIBUTING.md
+    about: Learn how to contribute to fontlift-win-cli

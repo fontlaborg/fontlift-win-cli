@@ -80,6 +80,23 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Added templates/README.md with usage instructions and examples
   - Ensures consistency across all future source files
 
+### Quality Improvements Iteration 3 (2025-10-31)
+- Added .editorconfig (47 lines)
+  - Consistent code style across all editors
+  - Language-specific indentation rules (C++: 4 spaces, MD: 2 spaces)
+  - Line ending standards (LF for most, CRLF for batch files)
+  - Max line length for C++ (100 characters)
+- Created CONTRIBUTING.md (267 lines)
+  - Complete contribution guidelines for future contributors
+  - Coding standards and naming conventions
+  - Development setup and testing requirements
+  - PR process and review guidelines
+  - Clear anti-patterns (external deps, config files, logging frameworks)
+- Added GitHub issue templates (.github/ISSUE_TEMPLATE/)
+  - Structured bug report template with environment details
+  - Feature request template with scope alignment check
+  - config.yml with links to documentation and guidelines
+
 ## [0.1.0] - Planned
 Initial release with core functionality:
 - List installed fonts (paths, names, or both)
