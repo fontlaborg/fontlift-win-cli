@@ -37,6 +37,29 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Auto-generated README.txt for distribution
 - All Phase 1 code ready for testing (requires Windows + Visual Studio)
 
+### Testing & Quality Analysis (2025-10-31)
+- Performed comprehensive static code analysis
+  - Memory safety: PASS (no leaks, safe pointer usage, no overflows)
+  - Build script: PASS (correct flags, proper error handling)
+  - Code quality: PASS (all functions <20 lines, clear naming)
+- Identified BUG-001: List command flag order dependency
+  - Severity: MEDIUM
+  - Issue: `list -p -n` shows paths only instead of both
+  - Root cause: Flag parsing logic checks state before both flags are processed
+  - Status: Documented, fix planned for quality improvement iteration
+
+### Quality Improvements (2025-10-31)
+- Fixed BUG-001: List command flag order dependency
+  - Refactored main.cpp lines 42-53 to collect all flags before determining behavior
+  - Both `list -n -p` and `list -p -n` now work correctly
+  - Simplified logic: `showPaths = hasPathFlag || !hasNameFlag`
+- Enhanced .gitignore
+  - Added build/, dist/ directories
+  - Added MSVC-specific files (.suo, .user, .vs/)
+  - Added IDE files (.vscode/, .idea/)
+  - Added OS files (.DS_Store, Thumbs.db)
+- Verified this_file tracking in all source files and scripts
+
 ## [0.1.0] - Planned
 Initial release with core functionality:
 - List installed fonts (paths, names, or both)

@@ -77,6 +77,11 @@
 - [ ] Test remove of font in use (should error)
 - [ ] Verify file is deleted
 
+## Quality Improvements (Pre-Phase 2)
+- [x] Fix BUG-001: List command flag order dependency (main.cpp:45-53)
+- [x] Add .gitignore to exclude build artifacts and IDE files
+- [x] Add this_file tracking to build.cmd and publish.cmd (already present)
+
 ## Phase 7: Polish & Testing
 - [ ] Add comprehensive error messages
 - [ ] Implement exit codes (0=success, 1=error, 2=permission)

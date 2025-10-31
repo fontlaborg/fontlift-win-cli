@@ -39,18 +39,18 @@ int main(int argc, char* argv[]) {
 
     // List command
     if (strcmp(command, "list") == 0 || strcmp(command, "l") == 0) {
-        bool showPaths = true;  // default
-        bool showNames = false;
+        bool hasPathFlag = false;
+        bool hasNameFlag = false;
 
+        // Collect all flags first
         for (int i = 2; i < argc; i++) {
-            if (strcmp(argv[i], "-n") == 0) {
-                showNames = true;
-                showPaths = false;  // -n alone means names only
-            }
-            if (strcmp(argv[i], "-p") == 0 && showNames) {
-                showPaths = true;  // -n -p means both
-            }
+            if (strcmp(argv[i], "-p") == 0) hasPathFlag = true;
+            if (strcmp(argv[i], "-n") == 0) hasNameFlag = true;
         }
+
+        // Determine behavior: both flags → both, -n only → names, default/path-only → paths
+        bool showPaths = hasPathFlag || !hasNameFlag;  // default to paths
+        bool showNames = hasNameFlag;
 
         std::cout << "List fonts: paths=" << showPaths
                   << " names=" << showNames << "\n";
