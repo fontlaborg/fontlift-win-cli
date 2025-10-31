@@ -213,3 +213,200 @@
 
 **Compilation Test:** PENDING - requires Windows + MSVC
 **Integration Test:** PENDING - requires working executable
+
+---
+
+## Phase 0: Build Infrastructure & CI/CD Implementation
+
+**Date:** 2025-10-31
+
+### Objective
+Implement semantic versioning based on git tags and create GitHub Actions CI/CD pipeline for automated builds and releases.
+
+### Completed Tasks
+
+**1. Version Infrastructure Created**
+- [x] Created `scripts/get-version.cmd` (23 lines)
+  - Extracts version from git tags via `git describe --tags --abbrev=0`
+  - Falls back to `v0.0.0-dev` when no tags exist
+  - Accepts optional version parameter
+  - Strips leading 'v' from version strings
+- [x] Created `scripts/generate-version-rc.cmd` (48 lines)
+  - Parses version string into MAJOR.MINOR.PATCH components
+  - Handles dev versions (e.g., "0.0.0-dev")
+  - Substitutes placeholders in template file
+  - Generates `src/version.rc` for MSVC compilation
+- [x] Created `templates/version.rc.template` (46 lines)
+  - Windows VERSIONINFO resource structure
+  - Embeds version in executable metadata
+  - Includes company name, product name, copyright
+  - Visible in Windows file properties (Details tab)
+
+**2. Build Script Enhanced (build.cmd)**
+- [x] Added version parameter support: `build.cmd [version]`
+- [x] Integrated get-version.cmd for automatic version extraction
+- [x] Added generate-version-rc.cmd call before compilation
+- [x] Added src/version.rc to compilation inputs
+- [x] Updated success message to display version
+- Changes: 57 lines → 56 lines (more functionality, cleaner code)
+
+**3. Publish Script Enhanced (publish.cmd)**
+- [x] Added version parameter support: `publish.cmd [version]`
+- [x] Integrated get-version.cmd for automatic version extraction
+- [x] Removed hardcoded version "0.1.0"
+- [x] Dynamic zip filename: `fontlift-v{VERSION}.zip`
+- [x] Dynamic README.txt version
+- Changes: 60 lines → 62 lines
+
+**4. GitHub Actions Workflows Created**
+- [x] Created `.github/workflows/build.yml` (64 lines)
+  - Triggers: Push to main, pull requests
+  - Runner: windows-latest
+  - Steps: Checkout, setup MSVC, version extraction, build, test, upload artifact
+  - Artifacts: fontlift-{version} (7-day retention)
+- [x] Created `.github/workflows/release.yml` (72 lines)
+  - Trigger: Push tags matching `v*.*.*`
+  - Steps: Build, package, checksum generation, GitHub Release creation
+  - Assets: fontlift-vX.Y.Z.zip + checksums.txt
+  - Auto-generated release notes
+- [x] Created `.github/workflows/README.md` (125 lines)
+  - Workflow documentation
+  - Release process guide
+  - Troubleshooting tips
+
+**5. Repository Configuration**
+- [x] Updated `.gitignore` to exclude `src/version.rc` (generated file)
+- [x] All new files have `this_file` tracking
+
+### Technical Implementation Details
+
+**Version Workflow:**
+```
+Git Tag (v1.2.3)
+  ↓
+get-version.cmd → extracts "1.2.3"
+  ↓
+generate-version-rc.cmd → creates src/version.rc with MAJOR=1, MINOR=2, PATCH=3
+  ↓
+MSVC cl.exe → compiles src/version.rc into fontlift.exe
+  ↓
+Windows Explorer → shows version in file properties
+```
+
+**CI/CD Pipeline:**
+```
+Push to main → build.yml → Compile & test → Upload artifact
+Push tag v1.2.3 → release.yml → Build → Package → Create Release → Upload assets
+```
+
+### Files Created/Modified
+
+**Created (8 files):**
+1. `scripts/get-version.cmd` - Version extraction
+2. `scripts/generate-version-rc.cmd` - Version resource generator
+3. `templates/version.rc.template` - Windows version resource template
+4. `.github/workflows/build.yml` - CI build workflow
+5. `.github/workflows/release.yml` - Release workflow
+6. `.github/workflows/README.md` - Workflow documentation
+
+**Modified (3 files):**
+1. `build.cmd` - Added version support and resource compilation
+2. `publish.cmd` - Added version support and dynamic naming
+3. `.gitignore` - Excluded generated src/version.rc
+
+### Code Quality Metrics
+
+**Total Lines Added:**
+- Scripts: 71 lines (2 files)
+- Templates: 46 lines (1 file)
+- Workflows: 136 lines (2 files)
+- Documentation: 125 lines (1 file)
+- Total: 378 new lines
+
+**Complexity:**
+- Max function complexity: Low (simple batch scripts)
+- Max file length: 125 lines ✓ (target: <200)
+- Script quality: Clean, well-commented, error-checked
+
+### Testing Status
+
+**Local Testing:** NOT POSSIBLE
+- Development environment: macOS
+- Scripts require: Windows + Git + MSVC
+- Cannot test batch scripts on macOS
+
+**CI/CD Testing Plan:**
+1. Commit all Phase 0 files
+2. Push to main branch → Triggers build.yml
+3. Verify CI build passes
+4. Create git tag v0.1.0 → Triggers release.yml
+5. Verify GitHub Release created
+6. Download and test release artifacts
+
+### Risk Assessment
+
+**Uncertainty Level: MEDIUM**
+
+**High Confidence (90%+):**
+- ✓ Batch script syntax is correct
+- ✓ GitHub Actions workflow syntax is valid
+- ✓ Version resource template structure is correct
+- ✓ Git tag extraction logic is sound
+
+**Medium Confidence (70-90%):**
+- ⚠ MSVC compilation of .rc files (standard practice, should work)
+- ⚠ Version resource embedding in executable (Windows standard, should work)
+- ⚠ Batch script error handling edge cases
+- ⚠ GitHub Actions environment variables in Windows runner
+
+**Requires Testing:**
+- ? Version appears in Windows file properties
+- ? CI build workflow executes successfully
+- ? Release workflow creates proper artifacts
+- ? Checksums generated correctly
+- ? No permission issues in GitHub Actions
+
+**Known Limitations:**
+- Cannot test locally (macOS environment)
+- First test will be in GitHub Actions (live environment)
+- May require iteration if Windows-specific issues arise
+
+### Next Steps
+
+1. **Commit Phase 0 Implementation**
+   - Commit message: "Implement Phase 0: Semantic versioning and CI/CD"
+   - Include all 8 new files + 3 modified files
+
+2. **Test CI Build**
+   - Push to main branch
+   - Monitor GitHub Actions build.yml execution
+   - Fix any issues that arise
+
+3. **Create Initial Release**
+   - Create git tag: `git tag -a v0.1.0 -m "Release v0.1.0 - Basic CLI"`
+   - Push tag: `git push origin v0.1.0`
+   - Monitor release.yml execution
+
+4. **Validate Release**
+   - Download fontlift-v0.1.0.zip from GitHub Release
+   - Verify checksum
+   - Test executable on Windows machine
+   - Verify version in file properties
+
+5. **Document Results**
+   - Update CHANGELOG.md with v0.1.0 release notes
+   - Update WORK.md with test results
+   - Fix any issues discovered
+
+### Success Criteria (Phase 0)
+
+- [x] Version infrastructure scripts created
+- [x] Build/publish scripts support semantic versioning
+- [x] GitHub Actions workflows created
+- [ ] CI build workflow passes on push to main
+- [ ] Release workflow creates GitHub Release on tag push
+- [ ] Release artifacts include correct version in filename
+- [ ] Windows executable has embedded version resource
+- [ ] Build works both locally (Windows) and in CI
+
+**Status:** Implementation Complete, Testing Pending

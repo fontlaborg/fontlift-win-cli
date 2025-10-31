@@ -97,6 +97,72 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Feature request template with scope alignment check
   - config.yml with links to documentation and guidelines
 
+### Phase 0: Build Infrastructure & CI/CD (2025-10-31)
+
+**Semantic Versioning Infrastructure**
+- Created `scripts/get-version.cmd` (23 lines)
+  - Extracts version from git tags via `git describe --tags --abbrev=0`
+  - Falls back to `v0.0.0-dev` when no tags exist
+  - Accepts optional version parameter for manual builds
+  - Strips leading 'v' from version strings
+- Created `scripts/generate-version-rc.cmd` (48 lines)
+  - Parses version string into MAJOR.MINOR.PATCH components
+  - Handles dev versions (e.g., "0.0.0-dev")
+  - Generates `src/version.rc` from template with variable substitution
+  - Error checking for missing template or invalid version
+- Created `templates/version.rc.template` (46 lines)
+  - Windows VERSIONINFO resource structure
+  - Embeds version in executable metadata (visible in file properties)
+  - Includes company name, product name, copyright, file description
+
+**Enhanced Build Scripts**
+- Updated `build.cmd` (40 → 56 lines)
+  - Added version parameter support: `build.cmd [version]`
+  - Integrated automatic version extraction from git tags
+  - Generates version.rc before compilation
+  - Compiles version resource into executable
+  - Displays version in build success message
+- Updated `publish.cmd` (60 → 62 lines)
+  - Added version parameter support: `publish.cmd [version]`
+  - Removed hardcoded version "0.1.0"
+  - Dynamic zip filename: `fontlift-v{VERSION}.zip`
+  - Dynamic version in distribution README.txt
+
+**GitHub Actions CI/CD**
+- Created `.github/workflows/build.yml` (64 lines)
+  - Triggers on push to main and pull requests
+  - Windows runner with MSVC setup
+  - Automatic version extraction
+  - Build and smoke tests (executable exists and runs)
+  - Upload build artifacts (7-day retention)
+- Created `.github/workflows/release.yml` (72 lines)
+  - Triggers on git tags matching `v*.*.*` (semantic versioning)
+  - Builds release with version from tag
+  - Packages distribution zip
+  - Generates SHA256 checksums
+  - Creates GitHub Release with auto-generated notes
+  - Uploads release assets (zip + checksums)
+- Created `.github/workflows/README.md` (125 lines)
+  - Workflow documentation and usage guide
+  - Release process instructions
+  - Troubleshooting tips
+
+**Repository Configuration**
+- Updated `.gitignore`
+  - Excluded `src/version.rc` (generated file)
+- All new files include `this_file` tracking
+
+**Code Metrics**
+- New code: 378 lines across 8 files
+- Modified code: 3 files enhanced
+- Complexity: Low (simple, focused scripts)
+- Quality: All files <200 lines, well-commented, error-checked
+
+**Testing Status**
+- Local testing: Not possible (macOS environment, Windows scripts)
+- CI/CD testing: Pending GitHub Actions execution
+- Risk level: Medium (standard practices, but untested in live environment)
+
 ## [0.1.0] - Planned
 Initial release with core functionality:
 - List installed fonts (paths, names, or both)
