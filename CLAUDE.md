@@ -270,7 +270,7 @@ Before you generate any response, assume your first instinct is wrong. Apply cha
 - Smoke test: One test that runs the whole program.
 - Test naming: `test_function_name_when_condition_then_result`.
 - Assert messages: Always include helpful messages in assertions.
-- Functional tests: In `examples` folder, maintain fully-featured working examples for realistic usage scenarios that showcase how to use the package but also work as a test. 
+- Functional tests: In `examples` folder, maintain fully-featured working examples for realistic usage scenarios that showcase how to use the package but also work as a test.
 - Add `./test.sh` script to run all test including the functional tests.
 
 ## Tool usage
@@ -414,18 +414,18 @@ fd -e py -x uvx autoflake -i {}; fd -e py -x uvx pyupgrade --py312-plus {}; fd -
 
 and document all results in `./WORK.md`.
 
-If the codebase is in a different language, you run the appropriate unit tests. 
+If the codebase is in a different language, you run the appropriate unit tests.
 
-Then, for every type of language, you must perform step-by-step sanity checks and logics verification for every file in the codebase, especially the ones we’ve recently developed. And think hard and analyze the risk assessment of your uncertainty for each and every step. 
+Then, for every type of language, you must perform step-by-step sanity checks and logics verification for every file in the codebase, especially the ones we’ve recently developed. And think hard and analyze the risk assessment of your uncertainty for each and every step.
 
-Then into `./WORK.md` report your findings, your analysis.  
+Then into `./WORK.md` report your findings, your analysis.
 
 #### `/work` command
 
 1. Read `./TODO.md` and `./PLAN.md` files, think hard and reflect.
 2. Write down the immediate items in this iteration into `./WORK.md`.
 3. Write tests for the items first.
-4. Work on these items. 
+4. Work on these items.
 5. Think, contemplate, research, reflect, refine, revise.
 6. Be careful, curious, vigilant, energetic.
 7. Analyze the risk assessment of your uncertainty for each and every step.
@@ -439,7 +439,7 @@ Then into `./WORK.md` report your findings, your analysis.
 
 ## Anti-enterprise bloat guidelines
 
-CRITICAL: The fundamental mistake is treating simple utilities as enterprise systems. 
+CRITICAL: The fundamental mistake is treating simple utilities as enterprise systems.
 
 - Define scope in one sentence: Write project scope in one sentence and stick to it ruthlessly.
 - Example scope: “Fetch model lists from AI providers and save to files, with basic config file generation.”
@@ -473,7 +473,7 @@ CRITICAL: The fundamental mistake is treating simple utilities as enterprise sys
 
 ## Prose
 
-When you write prose (like documentation or marketing or even your own commentary): 
+When you write prose (like documentation or marketing or even your own commentary):
 
 - The first line sells the second line: Your opening must earn attention for what follows. This applies to scripts, novels, and headlines. No throat-clearing allowed.
 - Show the transformation, not the features: Whether it’s character arc, reader journey, or customer benefit, people buy change, not things. Make them see their better self.
@@ -483,11 +483,12 @@ When you write prose (like documentation or marketing or even your own commentar
 - Kill your darlings ruthlessly: That clever line, that beautiful scene, that witty tagline, if it doesn’t serve the story, message, customer — it dies. Your audience’s time is sacred!
 - Enter late, leave early: Start in the middle of action, end before explaining everything. Works for scenes, chapters, and sales copy. Trust your audience to fill gaps.
 - Remove fluff, bloat and corpo jargon.
-- Avoid hype words like “revolutionary”. 
+- Avoid hype words like “revolutionary”.
 - Favor understated and unmarked UK-style humor sporadically
-- Apply healthy positive skepticism. 
-- Make every word count. 
+- Apply healthy positive skepticism.
+- Make every word count.
 
 ---
 
 
+Now @./issues/999.md

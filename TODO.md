@@ -1,9 +1,11 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## IMPORTANT:
+## IMPORTANT
 
-Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
+- [ ] @issues/101.md
+- [ ] @issues/103.md
+- [ ] Note: `fontlift list` must not print any "prolog" like "Listing font paths..." or any "epilog" like "Total fonts: 5393" —— we want the pure list of outputs
 
 ## Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED
 ### Version Infrastructure
@@ -212,3 +214,4 @@ Note: `fontlift list` must not print any "prolog" like "Listing font paths..." o
 - [ ] Verify final executable size <200 KB
 - [ ] Verify total code <1000 lines
 - [ ] Final integration test: install, reboot, verify, uninstall
+

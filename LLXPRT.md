@@ -1,3 +1,141 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project scope
+
+Windows CLI tool for font installation/uninstallation. Install fonts to the system, uninstall by path or name, list installed fonts. Nothing more.
+
+## Project structure (when implemented)
+
+This is a C++ Windows application that will:
+- Use Windows GDI/GDI+ APIs for font operations (AddFontResource, RemoveFontResource)
+- Interact with Windows Registry for persistent font registration
+- Parse font files (.ttf, .otf, .ttc, .otc) to extract internal font names
+- Provide a simple CLI interface with minimal dependencies
+
+Expected structure:
+- Single or minimal number of C++ source files
+- Windows-specific API calls for font management
+- Registry manipulation for HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts
+
+## CLI interface requirements
+
+Commands (with synonyms):
+- `list` (`l`): List installed fonts
+  - `-p`: Show paths (default)
+  - `-n`: Show internal font names
+  - `-n -p`: Show both path and name (semicolon-separated)
+- `install` (`i`): Install font(s) from filepath
+  - `-p FILEPATH`: Install font file
+- `uninstall` (`u`): Uninstall font(s), keep files
+  - `-p FILEPATH`: Uninstall by path
+  - `-n FONTNAME`: Uninstall by internal name
+- `remove` (`rm`): Uninstall font(s), delete files
+  - `-p FILEPATH`: Remove by path
+  - `-n FONTNAME`: Remove by internal name
+
+## Development requirements
+
+### C++ standards
+- Modern C++ (C++17 or later)
+- Minimize dependencies: prefer Windows API over third-party libraries
+- Functions under 20 lines
+- Files under 200 lines
+- No more than 3 levels of indentation
+
+### Windows API focus
+- Use `AddFontResourceEx` / `RemoveFontResourceEx` for temporary installation
+- Use Registry API (`RegCreateKeyEx`, `RegSetValueEx`, etc.) for persistent installation
+- Use `SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0)` to notify system
+- Handle both user and system font directories appropriately
+- Check for administrator privileges where required
+
+### Font file parsing
+- For .ttf/.otf: Parse name table to extract font family name
+- For .ttc/.otc: Handle font collections (multiple fonts per file)
+- Use existing libraries only if well-maintained (e.g., FreeType)
+- Otherwise, implement minimal name table parsing
+
+### Error handling
+- Check file existence and permissions before operations
+- Validate font files before attempting installation
+- Provide clear error messages for:
+  - File not found
+  - Invalid font file
+  - Permission denied (needs admin)
+  - Font already installed
+  - Font not found (for uninstall)
+- Return appropriate exit codes
+
+### Testing strategy
+- Manual testing on Windows (test script with sample fonts)
+- Test with different font formats (.ttf, .otf, .ttc, .otc)
+- Test permission scenarios (user vs system install)
+- Test edge cases: spaces in filenames, Unicode paths, invalid files
+- Test that fonts persist after reboot
+
+## Build system
+
+Keep it simple:
+- CMake for cross-version Visual Studio compatibility, or
+- Single `build.bat` script calling cl.exe directly, or
+- Visual Studio solution with minimal configuration
+
+Output: Single executable `fontlift.exe` with no runtime dependencies beyond system DLLs.
+
+## Documentation to maintain
+
+- `README.md`: Usage examples and command reference (keep current)
+- `CHANGELOG.md`: Version history and changes
+- `PLAN.md`: Detailed implementation plan
+- `TODO.md`: Flat task list
+- `WORK.md`: Current work and test results
+
+## File path tracking
+
+Add `// this_file: path/to/file.cpp` near the top of each source file.
+
+## Anti-bloat
+
+This is a simple utility, not an enterprise system:
+- No configuration files unless truly needed
+- No logging framework (stderr is enough)
+- No performance monitoring
+- No analytics
+- No auto-update mechanisms
+- Basic error handling only
+
+Focus: Make font operations work reliably. That's it.
+
+# PRINCIPLES.md
+<!-- this_file: PRINCIPLES.md -->
+
+## General principles behind fontlift-win-cli
+
+1. **Single purpose**: Install, uninstall, and list fonts. Nothing else.
+
+2. **Windows-native**: Use Windows APIs directly (GDI, Registry). No cross-platform abstractions.
+
+3. **Minimal dependencies**: Prefer Windows SDK over third-party libraries. Single executable with no runtime dependencies beyond system DLLs.
+
+4. **Simple build process**:
+   - Must have `./build.cmd` - builds the project
+   - Must have `./publish.cmd` - creates distributable package
+
+5. **Small and fast**: Keep code under 200 lines per file, functions under 20 lines. No bloat.
+
+6. **Clear error messages**: Users should know exactly what went wrong and how to fix it.
+
+7. **Administrator-aware**: Detect when admin rights are needed, guide user accordingly.
+
+8. **Test with real fonts**: Validate with .ttf, .otf, .ttc, .otc files in actual Windows environments.
+
+9. **No configuration files**: Command-line arguments only. No INI, no JSON, no TOML.
+
+10. **Reliable persistence**: Fonts must survive reboots. Registry entries must be correct.
+
+
 # Development guidelines
 
 ## Foundation: Challenge your first instinct with chain-of-thought
@@ -132,7 +270,7 @@ Before you generate any response, assume your first instinct is wrong. Apply cha
 - Smoke test: One test that runs the whole program.
 - Test naming: `test_function_name_when_condition_then_result`.
 - Assert messages: Always include helpful messages in assertions.
-- Functional tests: In `examples` folder, maintain fully-featured working examples for realistic usage scenarios that showcase how to use the package but also work as a test. 
+- Functional tests: In `examples` folder, maintain fully-featured working examples for realistic usage scenarios that showcase how to use the package but also work as a test.
 - Add `./test.sh` script to run all test including the functional tests.
 
 ## Tool usage
@@ -276,18 +414,18 @@ fd -e py -x uvx autoflake -i {}; fd -e py -x uvx pyupgrade --py312-plus {}; fd -
 
 and document all results in `./WORK.md`.
 
-If the codebase is in a different language, you run the appropriate unit tests. 
+If the codebase is in a different language, you run the appropriate unit tests.
 
-Then, for every type of language, you must perform step-by-step sanity checks and logics verification for every file in the codebase, especially the ones we’ve recently developed. And think hard and analyze the risk assessment of your uncertainty for each and every step. 
+Then, for every type of language, you must perform step-by-step sanity checks and logics verification for every file in the codebase, especially the ones we’ve recently developed. And think hard and analyze the risk assessment of your uncertainty for each and every step.
 
-Then into `./WORK.md` report your findings, your analysis.  
+Then into `./WORK.md` report your findings, your analysis.
 
 #### `/work` command
 
 1. Read `./TODO.md` and `./PLAN.md` files, think hard and reflect.
 2. Write down the immediate items in this iteration into `./WORK.md`.
 3. Write tests for the items first.
-4. Work on these items. 
+4. Work on these items.
 5. Think, contemplate, research, reflect, refine, revise.
 6. Be careful, curious, vigilant, energetic.
 7. Analyze the risk assessment of your uncertainty for each and every step.
@@ -301,7 +439,7 @@ Then into `./WORK.md` report your findings, your analysis.
 
 ## Anti-enterprise bloat guidelines
 
-CRITICAL: The fundamental mistake is treating simple utilities as enterprise systems. 
+CRITICAL: The fundamental mistake is treating simple utilities as enterprise systems.
 
 - Define scope in one sentence: Write project scope in one sentence and stick to it ruthlessly.
 - Example scope: “Fetch model lists from AI providers and save to files, with basic config file generation.”
@@ -335,7 +473,7 @@ CRITICAL: The fundamental mistake is treating simple utilities as enterprise sys
 
 ## Prose
 
-When you write prose (like documentation or marketing or even your own commentary): 
+When you write prose (like documentation or marketing or even your own commentary):
 
 - The first line sells the second line: Your opening must earn attention for what follows. This applies to scripts, novels, and headlines. No throat-clearing allowed.
 - Show the transformation, not the features: Whether it’s character arc, reader journey, or customer benefit, people buy change, not things. Make them see their better self.
@@ -345,10 +483,12 @@ When you write prose (like documentation or marketing or even your own commentar
 - Kill your darlings ruthlessly: That clever line, that beautiful scene, that witty tagline, if it doesn’t serve the story, message, customer — it dies. Your audience’s time is sacred!
 - Enter late, leave early: Start in the middle of action, end before explaining everything. Works for scenes, chapters, and sales copy. Trust your audience to fill gaps.
 - Remove fluff, bloat and corpo jargon.
-- Avoid hype words like “revolutionary”. 
+- Avoid hype words like “revolutionary”.
 - Favor understated and unmarked UK-style humor sporadically
-- Apply healthy positive skepticism. 
-- Make every word count. 
+- Apply healthy positive skepticism.
+- Make every word count.
 
 ---
 
+
+Now @./issues/999.md
