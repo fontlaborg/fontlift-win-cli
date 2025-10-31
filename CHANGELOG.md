@@ -5,6 +5,20 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### New Features (v1.1.1)
+- **List Command Enhancement**: Added `-s` flag for sorted and unique output
+  - `fontlift list -s` - Sort output alphabetically and remove duplicates
+  - Works with all combinations: `-s`, `-p -s`, `-n -s`, `-n -p -s`
+  - Uses std::set for automatic sorting and deduplication
+  - Clean pipe-friendly output (no prolog/epilog)
+
+**Implementation Details:**
+- Added `<set>` and `<algorithm>` includes to font_ops.cpp
+- Modified `ListFonts()` signature to accept `sorted` parameter
+- Collect output in `std::set<std::string>` when sorted flag is true
+- Output sorted results after enumeration completes
+- 15 lines of code added, all functions remain <20 lines
+
 ## [1.1.0] - 2025-11-01
 
 ### Core Font Management Implementation

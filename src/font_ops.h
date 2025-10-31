@@ -9,7 +9,8 @@ namespace FontOps {
     // List installed fonts
     // showPaths: display file paths
     // showNames: display font names
-    int ListFonts(bool showPaths, bool showNames);
+    // sorted: sort output and remove duplicates
+    int ListFonts(bool showPaths, bool showNames, bool sorted);
 
     // Install font from file path
     // Returns: 0=success, 1=error, 2=permission denied

@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <set>
+#include <algorithm>
 
 namespace FontOps {
 
@@ -21,7 +23,9 @@ constexpr int EXIT_PERMISSION_DENIED = 2;
 static struct {
     bool showPaths;
     bool showNames;
+    bool sorted;
     std::string fontsDir;
+    std::set<std::string>* outputSet;  // For sorted/unique output
 } g_listContext;
 
 static void ListCallback(const char* name, const char* file) {
@@ -38,18 +42,28 @@ static void ListCallback(const char* name, const char* file) {
         fullPath = g_listContext.fontsDir + "\\" + file;
     }
 
+    std::string output;
     if (g_listContext.showPaths && g_listContext.showNames) {
-        std::cout << fullPath << ";" << name << "\n";
+        output = fullPath + ";" + name;
     } else if (g_listContext.showNames) {
-        std::cout << name << "\n";
+        output = name;
     } else {
-        std::cout << fullPath << "\n";
+        output = fullPath;
+    }
+
+    if (g_listContext.sorted) {
+        // Collect in set for sorting and deduplication
+        g_listContext.outputSet->insert(output);
+    } else {
+        // Direct output
+        std::cout << output << "\n";
     }
 }
 
-int ListFonts(bool showPaths, bool showNames) {
+int ListFonts(bool showPaths, bool showNames, bool sorted) {
     g_listContext.showPaths = showPaths;
     g_listContext.showNames = showNames;
+    g_listContext.sorted = sorted;
     g_listContext.fontsDir = SysUtils::GetFontsDirectory();
 
     if (g_listContext.fontsDir.empty()) {
@@ -57,11 +71,23 @@ int ListFonts(bool showPaths, bool showNames) {
         return EXIT_ERROR;
     }
 
+    std::set<std::string> outputSet;
+    if (sorted) {
+        g_listContext.outputSet = &outputSet;
+    }
+
     bool success = SysUtils::RegEnumerateFonts(ListCallback);
 
     if (!success) {
         std::cerr << "Error: Failed to enumerate fonts\n";
         return EXIT_ERROR;
+    }
+
+    // Output sorted and unique results
+    if (sorted) {
+        for (const auto& line : outputSet) {
+            std::cout << line << "\n";
+        }
     }
 
     return EXIT_SUCCESS_CODE;

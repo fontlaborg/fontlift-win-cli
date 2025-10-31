@@ -19,7 +19,8 @@ void ShowUsage(const char* programName) {
     std::cout << "  list, l              List installed fonts\n";
     std::cout << "    -p                 Show paths (default)\n";
     std::cout << "    -n                 Show internal font names\n";
-    std::cout << "    -n -p              Show both (path;name format)\n\n";
+    std::cout << "    -n -p              Show both (path;name format)\n";
+    std::cout << "    -s                 Sort output and remove duplicates\n\n";
     std::cout << "  install, i <path>    Install font from filepath\n";
     std::cout << "    -p <filepath>      Specify font file path\n\n";
     std::cout << "  uninstall, u         Uninstall font (keep file)\n";
@@ -42,18 +43,20 @@ int main(int argc, char* argv[]) {
     if (strcmp(command, "list") == 0 || strcmp(command, "l") == 0) {
         bool hasPathFlag = false;
         bool hasNameFlag = false;
+        bool hasSortFlag = false;
 
         // Collect all flags first
         for (int i = 2; i < argc; i++) {
             if (strcmp(argv[i], "-p") == 0) hasPathFlag = true;
             if (strcmp(argv[i], "-n") == 0) hasNameFlag = true;
+            if (strcmp(argv[i], "-s") == 0) hasSortFlag = true;
         }
 
         // Determine behavior: both flags → both, -n only → names, default/path-only → paths
         bool showPaths = hasPathFlag || !hasNameFlag;  // default to paths
         bool showNames = hasNameFlag;
 
-        return FontOps::ListFonts(showPaths, showNames);
+        return FontOps::ListFonts(showPaths, showNames, hasSortFlag);
     }
 
     // Install command
