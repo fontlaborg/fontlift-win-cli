@@ -1,7 +1,69 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
-## Phase 0 Bug Fix - GitHub Actions Batch Script Error
+## Bug Fix #2: PowerShell Compatibility Issue in get-version.cmd
+
+**Date:** 2025-11-01
+
+### Issue Discovered
+All GitHub Actions workflows continued to fail after initial delayed expansion fix in `generate-version-rc.cmd`. The "Get version" step exits with code 1 in both build.yml and release.yml workflows.
+
+### Root Cause Analysis
+- `scripts/get-version.cmd` line 21 used `echo|set /p="%VERSION%"` technique
+- This batch script trick outputs text without a trailing newline
+- When called from PowerShell via `& scripts\get-version.cmd` in GitHub Actions, this causes the command to fail
+- PowerShell cannot properly capture output from this pipe-based echo command
+- Local Windows cmd.exe works fine, but CI environment uses PowerShell
+
+### Solution Implemented
+Changed `scripts/get-version.cmd` line 21:
+```batch
+# OLD (line 21):
+echo|set /p="%VERSION%"
+
+# NEW (line 21):
+echo %VERSION%
+```
+
+**Rationale:**
+- Regular `echo` works reliably in both cmd.exe and PowerShell
+- The PowerShell script in build.yml already trims output with `$version.Trim()`
+- Trailing newline is irrelevant since PowerShell handles it
+- Simpler is better - no clever tricks needed
+
+### Verification Plan
+1. Commit fix to main branch
+2. Monitor GitHub Actions build.yml execution
+3. If successful, verify artifact upload
+4. Create new tag v1.1.4 to test release.yml
+5. Verify GitHub Release created with assets
+6. Download and test release binary on Windows
+
+### List Command Output Purity - Verified ✓
+
+**Requirement:** `fontlift list` must not print any prolog/epilog messages.
+
+**Verification Results:**
+- Checked `src/font_ops.cpp` lines 60-77 (ListFonts function)
+- **NO prolog messages** (no "Listing fonts...", etc.)
+- **NO epilog messages** (no "Total: X fonts", etc.)
+- Only outputs:
+  - Font data to stdout (pure list)
+  - Error messages to stderr (on failure only)
+- Implementation is **fully pipe-friendly** ✓
+
+**Example output:**
+```
+# fontlift list
+C:\Windows\Fonts\arial.ttf
+C:\Windows\Fonts\times.ttf
+```
+
+No extraneous text - perfect for piping to other commands.
+
+---
+
+## Phase 0 Bug Fix #1 - GitHub Actions Batch Script Error
 
 **Date:** 2025-11-01
 

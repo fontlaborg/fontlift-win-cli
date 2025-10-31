@@ -5,13 +5,30 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Bug Fixes (Post-v1.1.2)
-- **GitHub Actions Fix** (2025-11-01): Fixed batch script syntax error in `scripts/generate-version-rc.cmd`
+### Planned for v1.1.4
+- **CI/CD Fix #2** (2025-11-01): Fix PowerShell compatibility in `scripts/get-version.cmd`
+  - Change line 21 from `echo|set /p="%VERSION%"` to `echo %VERSION%`
+  - Fixes GitHub Actions workflow failures in version extraction step
+  - Enables successful builds and automated releases
+
+## [1.1.3] - 2025-11-01 (Release Failed - No Assets)
+
+### Known Issues
+- **CI/CD Failure**: Release workflow failed during build step
+  - Root cause: `echo|set /p` in get-version.cmd incompatible with PowerShell
+  - Impact: No binary assets published for this release
+  - Fix: Planned for v1.1.4
+
+### Bug Fixes Attempted
+- **GitHub Actions Fix #1** (2025-11-01): Fixed batch script syntax error in `scripts/generate-version-rc.cmd`
   - Error: "not was unexpected at this time" causing all CI/CD workflows to fail
   - Root cause: Incorrect use of `%VAR%` instead of `!VAR!` within `setlocal enabledelayedexpansion` block
   - Fixed lines 38, 39, 44, 51, 53 to use delayed expansion syntax: `!INPUT!`, `!OUTPUT!`, etc.
-  - Impact: All GitHub Actions workflows (build.yml and release.yml) now pass successfully
-  - Previous releases (v0.1.0 through v1.1.2) were created but builds failed in CI
+  - Result: Partial success - generate-version-rc.cmd now works, but get-version.cmd still fails
+- Multiple iterations attempting to fix version extraction workflow
+  - Switched from cmd to PowerShell for version extraction
+  - Added version trimming logic
+  - Issue persisted due to `echo|set /p` technique
 
 ### New Features (v1.1.1)
 - **List Command Enhancement**: Added `-s` flag for sorted and unique output

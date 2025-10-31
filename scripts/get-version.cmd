@@ -17,5 +17,5 @@ if "%~1"=="" (
 REM Strip leading 'v' if present
 if "%VERSION:~0,1%"=="v" set VERSION=%VERSION:~1%
 
-REM Output the version (without trailing newline to avoid issues in pipes)
-echo|set /p="%VERSION%"
+REM Output the version
+echo %VERSION%
