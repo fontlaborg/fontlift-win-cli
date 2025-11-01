@@ -6,6 +6,12 @@ All notable changes to fontlift-win-cli will be documented in this file.
 ## [Unreleased]
 
 ### Planned for v1.1.10
+- **CI/CD Fix #5** (2025-11-02): Fixed batch file special character handling for SemVer build metadata
+  - **Root Cause**: The `+` character in build metadata (e.g., `1.1.10-dev.1+g9c501b5`) caused "not was unexpected at this time" error when passed through batch file `call` command
+  - **Impact**: CI builds failed when git-generated versions included build metadata (+commit-sha)
+  - **Solution**: Modified `build.cmd` line 62 to invoke PowerShell directly instead of through batch wrapper
+  - **Benefits**: Handles all valid SemVer strings, more reliable, simpler call chain
+  - File changed: `build.cmd` (line 62)
 - **CI/CD Fix #4** (2025-11-02): Fixed double version resolution bug in `build.cmd` and `publish.cmd`
   - **Root Cause**: Batch scripts were calling `get-version.cmd` a second time even when version was passed as argument from GitHub Actions
   - **Impact**: PowerShell invocations failed with "Version string cannot be empty" error

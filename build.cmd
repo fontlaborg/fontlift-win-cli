@@ -59,7 +59,7 @@ if %ERRORLEVEL% NEQ 0 (
 if not exist "build" mkdir "build"
 
 echo Generating version resource...
-call scripts\generate-version-rc.cmd "%BUILD_SEMVER%" >nul
+powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\generate-version-rc.ps1" -TargetVersion "%BUILD_SEMVER%" >nul
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Failed to generate version resource
     set "EXIT_CODE=1"

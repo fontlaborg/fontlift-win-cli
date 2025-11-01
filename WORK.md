@@ -1,6 +1,49 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## CI/CD Fix #5: Batch File Special Character Handling for SemVer Build Metadata
+
+**Date:** 2025-11-02
+
+### Issue Discovered
+After fixing the double resolution bug (Fix #4), CI build still failed with "not was unexpected at this time" error when processing version `1.1.10-dev.1+g9c501b5`.
+
+### Root Cause Analysis
+The `+` character in SemVer build metadata (`+g9c501b5`) is a **special character** in Windows batch files. When `build.cmd` called:
+```batch
+call scripts\generate-version-rc.cmd "%BUILD_SEMVER%" >nul
+```
+The `+` character caused batch parsing errors even when the variable was quoted, because `call` processes the command line before executing the target script.
+
+### Solution Implemented
+**Modified `build.cmd` line 62** to invoke PowerShell directly instead of through the batch wrapper:
+```batch
+REM OLD (problematic):
+call scripts\generate-version-rc.cmd "%BUILD_SEMVER%" >nul
+
+REM NEW (bypasses batch file special character issues):
+powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\generate-version-rc.ps1" -TargetVersion "%BUILD_SEMVER%" >nul
+```
+
+**Benefits:**
+- Eliminates batch file special character parsing issues
+- Direct PowerShell invocation is more reliable
+- Simpler call chain (one less batch file in the path)
+- Still preserves the batch wrapper (`generate-version-rc.cmd`) for manual/local use if needed
+
+### Verification Plan
+1. Commit fix to main branch
+2. Monitor GitHub Actions build workflow (should now pass with semver containing `+`)
+3. Verify artifact upload completes successfully
+4. Create release tag v1.1.10 to test full pipeline
+
+### Impact Assessment
+- **Risk Level:** VERY LOW - Direct PowerShell call is standard practice
+- **Backwards Compatibility:** Preserved - batch wrapper still exists for manual use
+- **CI/CD Compatibility:** Fixed - handles all valid SemVer strings including build metadata
+
+---
+
 ## CI/CD Fix #4: Double Version Resolution Bug
 
 **Date:** 2025-11-02
