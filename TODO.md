@@ -85,6 +85,25 @@ Additional quality improvements implemented (2025-11-02):
   - Proceeds with overwrite (avoids accidental duplicates)
   - +6 lines in font_ops.cpp InstallFont()
 
+## Immediate: Code Quality Improvements (Round 5)
+
+Additional refactoring needed (2025-11-02):
+
+- [ ] **Refactor main() to reduce complexity**
+  - Currently 136 lines (way over 20 line limit)
+  - Extract command handlers into separate functions
+  - Target: main() should be <30 lines, handlers <20 lines each
+
+- [ ] **Refactor GetFontName() in font_parser.cpp**
+  - Currently 33 lines (exceeds limit)
+  - Extract fallback filename logic into helper
+  - Target: <20 lines
+
+- [ ] **Refactor IsValidFontPath() in sys_utils.cpp**
+  - Currently 30 lines (exceeds limit)
+  - Extract path traversal check and directory validation
+  - Target: <20 lines
+
 ## Week 1: Documentation Cleanup
 
 - [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)

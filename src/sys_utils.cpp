@@ -79,35 +79,29 @@ std::string GetFileName(const char* path) {
     return filename ? std::string(filename) : "";
 }
 
+static bool HasPathTraversal(const std::string& path) {
+    return path.find("..\\") != std::string::npos || path.find("../") != std::string::npos;
+}
+
+static bool IsAbsolutePathInFontsDir(const std::string& pathStr) {
+    if (pathStr.length() <= 1 || pathStr[1] != ':') return true;
+
+    std::string fontsDir = GetFontsDirectory();
+    if (fontsDir.empty()) return false;
+
+    std::string lowerPath = pathStr;
+    std::string lowerFonts = fontsDir;
+    for (auto& c : lowerPath) c = tolower(c);
+    for (auto& c : lowerFonts) c = tolower(c);
+
+    return lowerPath.find(lowerFonts) == 0;
+}
+
 bool IsValidFontPath(const char* path) {
     if (!path || strlen(path) == 0) return false;
-
-    // Check for path traversal attempts
     std::string pathStr(path);
-    if (pathStr.find("..\\") != std::string::npos ||
-        pathStr.find("../") != std::string::npos) {
-        return false;
-    }
-
-    // Reject absolute paths outside fonts directory
-    if (pathStr.length() > 1 && pathStr[1] == ':') {
-        // Absolute path - ensure it's in fonts directory
-        std::string fontsDir = GetFontsDirectory();
-        if (fontsDir.empty()) return false;
-
-        // Convert to lowercase for comparison
-        std::string lowerPath = pathStr;
-        std::string lowerFonts = fontsDir;
-        for (auto& c : lowerPath) c = tolower(c);
-        for (auto& c : lowerFonts) c = tolower(c);
-
-        // Path must start with fonts directory
-        if (lowerPath.find(lowerFonts) != 0) {
-            return false;
-        }
-    }
-
-    return true;
+    if (HasPathTraversal(pathStr)) return false;
+    return IsAbsolutePathInFontsDir(pathStr);
 }
 
 bool RegReadFontEntry(const char* valueName, std::string& fontFile) {

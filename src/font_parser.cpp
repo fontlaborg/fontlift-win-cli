@@ -115,6 +115,21 @@ bool IsCollection(const char* fontPath) {
     return tag == 0x74746366; // 'ttcf'
 }
 
+static std::string ExtractFilenameWithoutExtension(const char* fontPath) {
+    std::string path(fontPath);
+    size_t lastSlash = path.find_last_of("\\/");
+    size_t lastDot = path.find_last_of('.');
+
+    if (lastSlash == std::string::npos) lastSlash = 0;
+    else lastSlash++;
+
+    if (lastDot > lastSlash) {
+        return path.substr(lastSlash, lastDot - lastSlash);
+    } else {
+        return path.substr(lastSlash);
+    }
+}
+
 std::string GetFontName(const char* fontPath) {
     std::ifstream file(fontPath, std::ios::binary);
     if (!file) return "";
@@ -129,21 +144,8 @@ std::string GetFontName(const char* fontPath) {
     }
 
     std::string name = ParseFontAtOffset(file, 0);
-
-    // If parsing failed, use filename without extension as fallback
     if (name.empty()) {
-        std::string path(fontPath);
-        size_t lastSlash = path.find_last_of("\\/");
-        size_t lastDot = path.find_last_of('.');
-
-        if (lastSlash == std::string::npos) lastSlash = 0;
-        else lastSlash++;
-
-        if (lastDot > lastSlash) {
-            name = path.substr(lastSlash, lastDot - lastSlash);
-        } else {
-            name = path.substr(lastSlash);
-        }
+        name = ExtractFilenameWithoutExtension(fontPath);
     }
 
     return name;
