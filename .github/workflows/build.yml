@@ -63,20 +63,14 @@ jobs:
     - name: Test executable exists
       shell: cmd
       run: |
-        if not exist build\fontlift.exe (
-          echo ERROR: fontlift.exe was not created
-          exit 1
-        )
+        if not exist build\fontlift.exe exit /b 1
         echo Build successful - fontlift.exe created
 
     - name: Test executable runs
       shell: cmd
       run: |
         build\fontlift.exe
-        if %ERRORLEVEL% NEQ 0 (
-          echo ERROR: fontlift.exe failed to run
-          exit 1
-        )
+        if %ERRORLEVEL% NEQ 0 exit /b 1
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4

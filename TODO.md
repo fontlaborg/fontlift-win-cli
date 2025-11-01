@@ -1,6 +1,10 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
+## ALWAYS
+
+test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate, keep updating @WORK.md @TODO.md @PLAN.md @CHANGELOG.md
+
 ## CRITICAL - Current Blockers
 
 - [x] Analyze GitHub Actions failure logs (issue/logs/) to identify root cause of CI failures

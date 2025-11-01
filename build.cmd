@@ -71,9 +71,9 @@ echo Building fontlift !BUILD_SEMVER!...
 
 where cl.exe >nul 2>&1
 if !ERRORLEVEL! NEQ 0 (
-    echo ERROR: MSVC compiler (cl.exe) not found
+    echo ERROR: MSVC compiler ^(cl.exe^) not found
     echo Please run this from a Visual Studio Developer Command Prompt
-    echo Or run: "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+    echo Or run: C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
     set "EXIT_CODE=1"
     goto :cleanup
 )
