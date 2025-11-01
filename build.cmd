@@ -108,6 +108,23 @@ if !ERRORLEVEL! EQU 0 (
     echo Build successful!
     echo Version: !BUILD_SEMVER!
     echo Output: build\fontlift.exe
+
+    REM Validate build output
+    if not exist build\fontlift.exe (
+        echo ERROR: fontlift.exe not found!
+        set "EXIT_CODE=1"
+        goto cleanup
+    )
+
+    REM Check file size (should be >50KB and <500KB)
+    for %%F in (build\fontlift.exe) do set "SIZE=%%~zF"
+    if !SIZE! LSS 51200 (
+        echo WARNING: Executable suspiciously small ^(!SIZE! bytes^)
+    )
+    if !SIZE! GTR 512000 (
+        echo WARNING: Executable suspiciously large ^(!SIZE! bytes^)
+    )
+    echo File size: !SIZE! bytes
     echo ===================================
 ) else (
     echo.

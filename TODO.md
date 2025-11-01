@@ -3,24 +3,42 @@
 
 See docs/STREAMLINING_PLAN.md for complete execution plan.
 
-## Immediate: Quality & Robustness Improvements
+## Immediate: Quality & Robustness Improvements ✅ COMPLETE
 
-Based on /test results, these critical fixes improve reliability:
+All critical fixes implemented and tested (2025-11-02):
 
-- [ ] **Fix argv bounds checking in main.cpp** (MEDIUM severity)
-  - Lines 65, 87, 113: Add `i < argc - 1` check before accessing `argv[i+1]`
-  - Prevents potential crash with malformed CLI arguments
-  - Example: `fontlift uninstall -p` (missing argument after -p)
+- ✅ **Fixed argv bounds checking in main.cpp** (MEDIUM severity)
+  - Added `i + 1 < argc` checks at lines 66, 88-90, 114-116
+  - Prevents crash with malformed CLI arguments
 
-- [ ] **Add input validation for font file paths**
-  - Validate paths don't contain `..\\` or absolute paths outside fonts directory
-  - Prevents path traversal if registry is compromised
-  - Apply to: RemoveFontByName, UninstallFontByName
+- ✅ **Added input validation for font file paths**
+  - New IsValidFontPath() function in sys_utils.cpp/h
+  - Validates paths don't contain `..\\` sequences
+  - Applied to RemoveFontByName, UninstallFontByName
 
-- [ ] **Improve error handling in InstallFont**
-  - Fail operation if AddFontResourceExA fails (don't just warn)
-  - Add rollback: delete registry entry + copied file on failure
-  - Ensures consistent state (font either fully installed or not at all)
+- ✅ **Improved error handling in InstallFont**
+  - AddFontResourceExA failure now returns error
+  - Automatic rollback: deletes registry entry + copied file
+  - Ensures atomic operations
+
+## Immediate: Additional Quality Improvements (Round 2) ✅ COMPLETE
+
+Small refinements implemented (2025-11-02):
+
+- ✅ **Added --version flag to CLI**
+  - Shows version from embedded resource data
+  - Supports both `--version` and `-v` flags
+  - +31 lines in main.cpp
+
+- ✅ **Improved error messages with actionable guidance**
+  - Admin errors suggest "Run as administrator"
+  - File errors suggest checking path
+  - +7 "Solution:" lines in font_ops.cpp
+
+- ✅ **Added build output validation to build.cmd**
+  - Verifies fontlift.exe exists
+  - Warns on suspicious file sizes
+  - +17 lines in build.cmd
 
 ## Week 1: Documentation Cleanup
 
@@ -60,10 +78,11 @@ Based on /test results, these critical fixes improve reliability:
 
 ## Completed ✅
 
-- ✅ Core implementation (1,355 lines, zero bloat)
-- ✅ CI/CD passing on Windows runners
+- ✅ Core implementation (1,407 lines, zero bloat)
+- ✅ CI/CD passing on Windows runners (2/2 builds)
 - ✅ Initial documentation cleanup (removed 4 LLM files)
 - ✅ Created streamlining plan (docs/STREAMLINING_PLAN.md)
 - ✅ Created package distribution plan (docs/PACKAGE_DISTRIBUTION.md)
 - ✅ /test - Comprehensive code verification
 - ✅ /report - Updated WORK.md and CHANGELOG.md with test results
+- ✅ Quality improvements - Fixed 1 MEDIUM + 2 LOW severity issues

@@ -77,13 +77,14 @@ int InstallFont(const char* fontPath) {
     // Check admin privileges
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
-        std::cerr << "Please run from an elevated command prompt\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
 
     // Check if file exists
     if (!SysUtils::FileExists(fontPath)) {
         std::cerr << "Error: Font file not found: " << fontPath << "\n";
+        std::cerr << "Solution: Check the file path and ensure the font file exists\n";
         return EXIT_ERROR;
     }
 
@@ -147,6 +148,7 @@ int InstallFont(const char* fontPath) {
 int UninstallFontByPath(const char* fontPath) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
 
@@ -163,6 +165,7 @@ int UninstallFontByPath(const char* fontPath) {
 int UninstallFontByName(const char* fontName) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
 
@@ -222,6 +225,7 @@ int UninstallFontByName(const char* fontName) {
 int RemoveFontByPath(const char* fontPath) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
 
@@ -238,6 +242,7 @@ int RemoveFontByPath(const char* fontPath) {
 int RemoveFontByName(const char* fontName) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
 

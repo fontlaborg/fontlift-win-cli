@@ -5,6 +5,24 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### UX & Build Improvements (2025-11-02)
+- **Added --version flag to CLI**
+  - Shows version from embedded resource data
+  - Supports both `--version` and `-v` flags
+  - Graceful fallback if version unavailable
+  - Added 31 lines to main.cpp, includes version.lib
+- **Improved error messages with actionable guidance**
+  - Admin errors now suggest "Right-click and Run as administrator"
+  - File not found suggests checking path
+  - Applied to all 4 operations (install, uninstall, remove by path/name)
+  - Added 7 "Solution:" lines across font_ops.cpp
+- **Added build output validation to build.cmd**
+  - Verifies fontlift.exe exists after successful compile
+  - Warns if file size suspiciously small (<50KB) or large (>500KB)
+  - Reports actual file size
+  - Added 17 lines to build.cmd
+- **Code size:** 1,407 → 1,443 lines (+36 lines, +2.6%)
+
 ### Quality Improvements (2025-11-02)
 - **Fixed argv bounds checking bug** (MEDIUM severity)
   - Added `i + 1 < argc` check before accessing `argv[i+1]`

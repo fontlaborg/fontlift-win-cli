@@ -6,6 +6,10 @@
 #include "font_ops.h"
 #include <iostream>
 #include <cstring>
+#include <windows.h>
+#include <vector>
+
+#pragma comment(lib, "version.lib")
 
 void ShowUsage(const char* programName) {
     std::cout << "fontlift - Windows Font Management CLI\n\n";
@@ -34,6 +38,33 @@ int main(int argc, char* argv[]) {
     }
 
     const char* command = argv[1];
+
+    // Version command
+    if (strcmp(command, "--version") == 0 || strcmp(command, "-v") == 0) {
+        // Get version from embedded resource
+        char filename[MAX_PATH];
+        if (GetModuleFileNameA(NULL, filename, MAX_PATH) > 0) {
+            DWORD handle;
+            DWORD size = GetFileVersionInfoSizeA(filename, &handle);
+            if (size > 0) {
+                std::vector<BYTE> buffer(size);
+                if (GetFileVersionInfoA(filename, 0, size, buffer.data())) {
+                    VS_FIXEDFILEINFO* fileInfo;
+                    UINT len;
+                    if (VerQueryValueA(buffer.data(), "\\", (LPVOID*)&fileInfo, &len)) {
+                        WORD major = HIWORD(fileInfo->dwFileVersionMS);
+                        WORD minor = LOWORD(fileInfo->dwFileVersionMS);
+                        WORD patch = HIWORD(fileInfo->dwFileVersionLS);
+                        std::cout << "fontlift version " << major << "." << minor << "." << patch << "\n";
+                        return EXIT_SUCCESS_CODE;
+                    }
+                }
+            }
+        }
+        // Fallback if version info unavailable
+        std::cout << "fontlift version unknown\n";
+        return EXIT_SUCCESS_CODE;
+    }
 
     // List command
     if (strcmp(command, "list") == 0 || strcmp(command, "l") == 0) {
