@@ -16,33 +16,38 @@ if %ERRORLEVEL% NEQ 0 (
 
 set "REQUESTED_VERSION=%~1"
 
-REM If version provided as argument, use it directly
-REM Otherwise, resolve from git
+REM Multi-level fallback version resolution strategy
+REM Level 1: Use provided argument
+REM Level 2: Resolve from git via get-version.cmd
+REM Level 3: Use hardcoded fallback
 if not "%REQUESTED_VERSION%"=="" (
+    REM Level 1: Version provided as argument
     set "PUBLISH_SEMVER=%REQUESTED_VERSION%"
     REM Extract base version (before any - or +)
     for /f "tokens=1 delims=-+" %%V in ("%REQUESTED_VERSION%") do set "PUBLISH_VERSION=%%V"
     set "VERSION_TAG=v%REQUESTED_VERSION%"
+    echo Using provided version: %PUBLISH_SEMVER%
 ) else (
-    REM No argument provided - resolve from git
+    REM Level 2: Try to resolve from git
     call scripts\get-version.cmd
-    if %ERRORLEVEL% NEQ 0 (
-        set "EXIT_CODE=%ERRORLEVEL%"
-        goto :cleanup
+    if %ERRORLEVEL% EQU 0 (
+        set "PUBLISH_VERSION=%VERSION_BASE%"
+        set "PUBLISH_SEMVER=%VERSION_SEMVER%"
+        set "VERSION_TAG=%VERSION_TAG%"
+        echo Resolved version from git: %PUBLISH_SEMVER%
+    ) else (
+        REM Level 3: Fallback to hardcoded version
+        echo WARNING: Version resolution failed, using fallback version
+        set "PUBLISH_VERSION=0.0.0"
+        set "PUBLISH_SEMVER=0.0.0-fallback"
+        set "VERSION_TAG=v0.0.0-fallback"
     )
-    set "PUBLISH_VERSION=%VERSION_BASE%"
-    set "PUBLISH_SEMVER=%VERSION_SEMVER%"
-    set "VERSION_TAG=%VERSION_TAG%"
 )
 
-if "%PUBLISH_VERSION%"=="" (
-    echo ERROR: Version resolution returned empty base value.
-    set "EXIT_CODE=1"
-    goto :cleanup
-)
-
-if "%PUBLISH_SEMVER%"=="" set "PUBLISH_SEMVER=%PUBLISH_VERSION%"
-if "%VERSION_TAG%"=="" set "VERSION_TAG=v%PUBLISH_SEMVER%"
+REM Final safety check - ensure variables are set
+if "%PUBLISH_VERSION%"=="" set "PUBLISH_VERSION=0.0.0"
+if "%PUBLISH_SEMVER%"=="" set "PUBLISH_SEMVER=0.0.0-fallback"
+if "%VERSION_TAG%"=="" set "VERSION_TAG=v0.0.0-fallback"
 
 echo Creating distribution package for version %VERSION_TAG%...
 

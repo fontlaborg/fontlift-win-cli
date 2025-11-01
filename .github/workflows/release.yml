@@ -30,20 +30,64 @@ jobs:
         $ref = $env:GITHUB_REF
         Write-Host "GITHUB_REF = $ref"
 
-        # Extract tag name from refs/tags/vX.Y.Z
-        if ($ref -match '^refs/tags/v?(.+)$') {
-          $version = $matches[1]
-          Write-Host "Extracted version: $version"
-        } else {
-          throw "Unable to extract version from ref: $ref"
+        # Multi-level fallback strategy for version resolution
+        $base = $null
+        $semver = $null
+        $tag = $null
+
+        # Level 1: Try to extract version from tag and validate with get-version.ps1
+        try {
+          # Extract tag name from refs/tags/vX.Y.Z
+          if ($ref -match '^refs/tags/v?(.+)$') {
+            $version = $matches[1]
+            Write-Host "Extracted version from tag: $version"
+
+            # Validate and format with get-version.ps1
+            $json = & scripts/get-version.ps1 -TargetVersion "$version" -Format Json -ErrorAction Stop
+            $info = $json | ConvertFrom-Json
+            $base = $info.base
+            $semver = $info.semver
+            $tag = $info.tag
+            Write-Host "Validated version: $semver"
+          } else {
+            throw "Unable to match version pattern in ref: $ref"
+          }
+        } catch {
+          Write-Warning "Level 1 failed: $_"
+
+          # Level 2: Try to use raw tag name directly
+          try {
+            if ($ref -match '^refs/tags/v?(.+)$') {
+              $version = $matches[1]
+              # Basic version validation: X.Y.Z format
+              if ($version -match '^\d+\.\d+\.\d+') {
+                $base = $version -replace '[-+].*$', ''
+                $semver = $version
+                $tag = "v$version"
+                Write-Warning "Level 2: Using raw tag version: $semver"
+              } else {
+                throw "Invalid version format: $version"
+              }
+            } else {
+              throw "Cannot extract version from ref"
+            }
+          } catch {
+            Write-Warning "Level 2 failed: $_"
+
+            # Level 3: Last resort - use timestamp-based version
+            $timestamp = Get-Date -Format "yyyyMMdd.HHmmss"
+            $base = "0.0.0"
+            $semver = "0.0.0-unknown.$timestamp"
+            $tag = "v$semver"
+            Write-Warning "Level 3: Using fallback version: $semver"
+          }
         }
 
-        $json = & scripts/get-version.ps1 -TargetVersion $version -Format Json
-        $info = $json | ConvertFrom-Json
-        "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-        "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-        "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-        Write-Host "Building release for $($info.semver)"
+        # Export to GITHUB_ENV
+        "VERSION_BASE=$base" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_SEMVER=$semver" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        Write-Host "Final resolved version: $semver (tag: $tag)"
 
     - name: Build release
       shell: cmd

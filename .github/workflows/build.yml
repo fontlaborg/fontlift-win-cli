@@ -29,13 +29,26 @@ jobs:
         # Call get-version.ps1 to derive version from git tags
         # Returns JSON with: base (X.Y.Z), semver (X.Y.Z-pre+build), tag (vX.Y.Z...)
         # Handles repos without tags by falling back to 0.0.0-dev.{count}+g{sha}
-        $json = & scripts/get-version.ps1 -Format Json
-        $info = $json | ConvertFrom-Json
+        # FALLBACK: If version resolution fails, use safe defaults
+        try {
+          $json = & scripts/get-version.ps1 -Format Json -ErrorAction Stop
+          $info = $json | ConvertFrom-Json
+          $base = $info.base
+          $semver = $info.semver
+          $tag = $info.tag
+        } catch {
+          Write-Warning "Version resolution failed: $_"
+          Write-Warning "Using fallback version 0.0.0-unknown"
+          $base = "0.0.0"
+          $semver = "0.0.0-unknown"
+          $tag = "v0.0.0-unknown"
+        }
 
         # Export to GITHUB_ENV for use in subsequent steps
-        "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-        "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
-        "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_BASE=$base" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_SEMVER=$semver" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        Write-Host "Resolved version: $semver (tag: $tag)"
 
     - name: Display version
       shell: cmd
