@@ -153,31 +153,9 @@ echo Font installed successfully
 | `-p <path>` | Specify font file path |
 | `-n <name>` | Specify font by internal name |
 
-## Examples
+## Test Fonts
 
-### Batch Font Installation
-
-```cmd
-@echo off
-for %%f in (C:\MyFonts\*.ttf) do (
-    fontlift install "%%f"
-)
-```
-
-### Export Font List
-
-```cmd
-fontlift list -n -p > installed_fonts.txt
-```
-
-### Conditional Installation
-
-```cmd
-fontlift list -n | find "Arial" >nul
-if %ERRORLEVEL% NEQ 0 (
-    fontlift install arial.ttf
-)
-```
+See [docs/test-fonts.md](docs/test-fonts.md) for the authoritative list of freely redistributable fonts used in regression tests and manual verification. The document covers download locations, storage layout, and licensing reminders.
 
 ## Troubleshooting
 

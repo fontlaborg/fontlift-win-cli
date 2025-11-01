@@ -15,6 +15,12 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ### Maintenance
 - 2025-11-01: Ran `/report` workflow; local tests blocked because `build.cmd` requires Windows tooling (non-Windows environment).
+- 2025-11-02: `/test` workflow failed — `uvx hatch test` reports `file or directory not found: tests`; no automated test suite exists yet.
+
+### Documentation
+- 2025-11-02: Refreshed `.github/PULL_REQUEST_TEMPLATE.md` with `this_file` metadata and streamlined review checklist.
+- 2025-11-02: Added `CODE_OF_CONDUCT.md` derived from Contributor Covenant v2.1 with project-specific enforcement notes.
+- 2025-11-02: Created `docs/test-fonts.md` and linked from README, documenting recommended OFL-licensed fonts for regression tests.
 
 ## [1.1.3] - 2025-11-01 (Release Failed - No Assets)
 
