@@ -1,0 +1,254 @@
+﻿2025-11-01T00:45:24.2429987Z Current runner version: '2.329.0'
+2025-11-01T00:45:24.2455372Z ##[group]Runner Image Provisioner
+2025-11-01T00:45:24.2456180Z Hosted Compute Agent
+2025-11-01T00:45:24.2456805Z Version: 20251016.436
+2025-11-01T00:45:24.2457547Z Commit: 8ab8ac8bfd662a3739dab9fe09456aba92132568
+2025-11-01T00:45:24.2458329Z Build Date: 2025-10-15T20:44:12Z
+2025-11-01T00:45:24.2458956Z ##[endgroup]
+2025-11-01T00:45:24.2459412Z ##[group]Operating System
+2025-11-01T00:45:24.2459965Z Microsoft Windows Server 2025
+2025-11-01T00:45:24.2460481Z 10.0.26100
+2025-11-01T00:45:24.2460886Z Datacenter
+2025-11-01T00:45:24.2461323Z ##[endgroup]
+2025-11-01T00:45:24.2461724Z ##[group]Runner Image
+2025-11-01T00:45:24.2462197Z Image: windows-2025
+2025-11-01T00:45:24.2462630Z Version: 20251021.67.1
+2025-11-01T00:45:24.2463567Z Included Software: https://github.com/actions/runner-images/blob/win25/20251021.67/images/windows/Windows2025-Readme.md
+2025-11-01T00:45:24.2465162Z Image Release: https://github.com/actions/runner-images/releases/tag/win25%2F20251021.67
+2025-11-01T00:45:24.2466047Z ##[endgroup]
+2025-11-01T00:45:24.2467072Z ##[group]GITHUB_TOKEN Permissions
+2025-11-01T00:45:24.2469034Z Contents: write
+2025-11-01T00:45:24.2470063Z Metadata: read
+2025-11-01T00:45:24.2470835Z ##[endgroup]
+2025-11-01T00:45:24.2474731Z Secret source: Actions
+2025-11-01T00:45:24.2476079Z Prepare workflow directory
+2025-11-01T00:45:24.2829151Z Prepare all required actions
+2025-11-01T00:45:24.2868271Z Getting action download info
+2025-11-01T00:45:24.5125834Z Download action repository 'actions/checkout@v4' (SHA:08eba0b27e820071cde6df949e0beb9ba4906955)
+2025-11-01T00:45:24.8602906Z Download action repository 'ilammy/msvc-dev-cmd@v1' (SHA:0b201ec74fa43914dc39ae48a89fd1d8cb592756)
+2025-11-01T00:45:25.1450697Z Download action repository 'softprops/action-gh-release@v1' (SHA:de2c0eb89ae2a093876385947365aca7b0e5f844)
+2025-11-01T00:45:26.1421600Z Complete job name: release
+2025-11-01T00:45:27.2816379Z ##[group]Run actions/checkout@v4
+2025-11-01T00:45:27.2817121Z with:
+2025-11-01T00:45:27.2817287Z   fetch-depth: 0
+2025-11-01T00:45:27.2817481Z   repository: fontlaborg/fontlift-win-cli
+2025-11-01T00:45:27.2817901Z   token: ***
+2025-11-01T00:45:27.2818064Z   ssh-strict: true
+2025-11-01T00:45:27.2818231Z   ssh-user: git
+2025-11-01T00:45:27.2818403Z   persist-credentials: true
+2025-11-01T00:45:27.2818597Z   clean: true
+2025-11-01T00:45:27.2818776Z   sparse-checkout-cone-mode: true
+2025-11-01T00:45:27.2819367Z   fetch-tags: false
+2025-11-01T00:45:27.2819592Z   show-progress: true
+2025-11-01T00:45:27.2819780Z   lfs: false
+2025-11-01T00:45:27.2819932Z   submodules: false
+2025-11-01T00:45:27.2820110Z   set-safe-directory: true
+2025-11-01T00:45:27.2820621Z ##[endgroup]
+2025-11-01T00:45:27.5757380Z Syncing repository: fontlaborg/fontlift-win-cli
+2025-11-01T00:45:27.5759856Z ##[group]Getting Git version info
+2025-11-01T00:45:27.5761351Z Working directory is 'D:\a\fontlift-win-cli\fontlift-win-cli'
+2025-11-01T00:45:27.6948058Z [command]"C:\Program Files\Git\bin\git.exe" version
+2025-11-01T00:45:27.8644230Z git version 2.51.1.windows.1
+2025-11-01T00:45:27.8711370Z ##[endgroup]
+2025-11-01T00:45:27.8738268Z Temporarily overriding HOME='D:\a\_temp\66140a6f-1e9b-4c2e-85cd-f9a564d70975' before making global git config changes
+2025-11-01T00:45:27.8739531Z Adding repository directory to the temporary git global config as a safe directory
+2025-11-01T00:45:27.8752174Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\fontlift-win-cli\fontlift-win-cli
+2025-11-01T00:45:27.9069967Z Deleting the contents of 'D:\a\fontlift-win-cli\fontlift-win-cli'
+2025-11-01T00:45:27.9076711Z ##[group]Initializing the repository
+2025-11-01T00:45:27.9087296Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\fontlift-win-cli\fontlift-win-cli
+2025-11-01T00:45:28.1587386Z Initialized empty Git repository in D:/a/fontlift-win-cli/fontlift-win-cli/.git/
+2025-11-01T00:45:28.1637861Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/fontlaborg/fontlift-win-cli
+2025-11-01T00:45:28.1978005Z ##[endgroup]
+2025-11-01T00:45:28.1978907Z ##[group]Disabling automatic garbage collection
+2025-11-01T00:45:28.1994814Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2025-11-01T00:45:28.2318911Z ##[endgroup]
+2025-11-01T00:45:28.2319677Z ##[group]Setting up auth
+2025-11-01T00:45:28.2342421Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2025-11-01T00:45:28.2676840Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2025-11-01T00:45:33.0192509Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-11-01T00:45:33.0540931Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2025-11-01T00:45:33.6604319Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2025-11-01T00:45:33.6925868Z ##[endgroup]
+2025-11-01T00:45:33.6926938Z ##[group]Fetching the repository
+2025-11-01T00:45:33.6941809Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-11-01T00:45:34.3683948Z From https://github.com/fontlaborg/fontlift-win-cli
+2025-11-01T00:45:34.3684707Z  * [new branch]      main       -> origin/main
+2025-11-01T00:45:34.3685086Z  * [new tag]         v0.1.0     -> v0.1.0
+2025-11-01T00:45:34.3685452Z  * [new tag]         v1.0.0     -> v1.0.0
+2025-11-01T00:45:34.3689781Z  * [new tag]         v1.1.0     -> v1.1.0
+2025-11-01T00:45:34.3690314Z  * [new tag]         v1.1.1     -> v1.1.1
+2025-11-01T00:45:34.3690706Z  * [new tag]         v1.1.2     -> v1.1.2
+2025-11-01T00:45:34.3691104Z  * [new tag]         v1.1.3     -> v1.1.3
+2025-11-01T00:45:34.3691487Z  * [new tag]         v1.1.4     -> v1.1.4
+2025-11-01T00:45:34.3691883Z  * [new tag]         v1.1.5     -> v1.1.5
+2025-11-01T00:45:34.3692278Z  * [new tag]         v1.1.6     -> v1.1.6
+2025-11-01T00:45:34.3692671Z  * [new tag]         v1.1.7     -> v1.1.7
+2025-11-01T00:45:34.3693056Z  * [new tag]         v1.1.8     -> v1.1.8
+2025-11-01T00:45:34.3693429Z  * [new tag]         v1.1.9     -> v1.1.9
+2025-11-01T00:45:34.3904515Z [command]"C:\Program Files\Git\bin\git.exe" tag --list v1.1.9
+2025-11-01T00:45:34.4203703Z v1.1.9
+2025-11-01T00:45:34.4255081Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse refs/tags/v1.1.9
+2025-11-01T00:45:34.4525755Z b53e0b9be95379af8dd39ddd01f8a588c88182e2
+2025-11-01T00:45:34.4562910Z ##[endgroup]
+2025-11-01T00:45:34.4563445Z ##[group]Determining the checkout info
+2025-11-01T00:45:34.4565600Z ##[endgroup]
+2025-11-01T00:45:34.4581454Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2025-11-01T00:45:34.4925553Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2025-11-01T00:45:34.5221902Z ##[group]Checking out the ref
+2025-11-01T00:45:34.5235079Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/tags/v1.1.9
+2025-11-01T00:45:34.5767210Z Note: switching to 'refs/tags/v1.1.9'.
+2025-11-01T00:45:34.5767648Z 
+2025-11-01T00:45:34.5767956Z You are in 'detached HEAD' state. You can look around, make experimental
+2025-11-01T00:45:34.5768698Z changes and commit them, and you can discard any commits you make in this
+2025-11-01T00:45:34.5769430Z state without impacting any branches by switching back to a branch.
+2025-11-01T00:45:34.5769886Z 
+2025-11-01T00:45:34.5770189Z If you want to create a new branch to retain commits you create, you may
+2025-11-01T00:45:34.5770855Z do so (now or later) by using -c with the switch command. Example:
+2025-11-01T00:45:34.5772735Z 
+2025-11-01T00:45:34.5772900Z   git switch -c <new-branch-name>
+2025-11-01T00:45:34.5773168Z 
+2025-11-01T00:45:34.5773303Z Or undo this operation with:
+2025-11-01T00:45:34.5773532Z 
+2025-11-01T00:45:34.5773631Z   git switch -
+2025-11-01T00:45:34.5773795Z 
+2025-11-01T00:45:34.5774103Z Turn off this advice by setting config variable advice.detachedHead to false
+2025-11-01T00:45:34.5774566Z 
+2025-11-01T00:45:34.5774686Z HEAD is now at b53e0b9 v1.1.9
+2025-11-01T00:45:34.5806358Z ##[endgroup]
+2025-11-01T00:45:34.6133875Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2025-11-01T00:45:34.6438484Z b53e0b9be95379af8dd39ddd01f8a588c88182e2
+2025-11-01T00:45:34.6813574Z ##[group]Run ilammy/msvc-dev-cmd@v1
+2025-11-01T00:45:34.6813876Z with:
+2025-11-01T00:45:34.6814018Z   arch: x64
+2025-11-01T00:45:34.6814169Z ##[endgroup]
+2025-11-01T00:45:35.2233754Z Found with vswhere: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat
+2025-11-01T00:45:44.4284544Z ##[group]Environment variables
+2025-11-01T00:45:44.4285229Z Setting CommandPromptType
+2025-11-01T00:45:44.4298186Z Setting DevEnvDir
+2025-11-01T00:45:44.4303178Z Setting ExtensionSdkDir
+2025-11-01T00:45:44.4306810Z Setting EXTERNAL_INCLUDE
+2025-11-01T00:45:44.4312811Z Setting Framework40Version
+2025-11-01T00:45:44.4315733Z Setting FrameworkDir
+2025-11-01T00:45:44.4318619Z Setting FrameworkDir64
+2025-11-01T00:45:44.4322589Z Setting FrameworkVersion
+2025-11-01T00:45:44.4326094Z Setting FrameworkVersion64
+2025-11-01T00:45:44.4329848Z Setting FSHARPINSTALLDIR
+2025-11-01T00:45:44.4333546Z Setting HTMLHelpDir
+2025-11-01T00:45:44.4337064Z Setting IFCPATH
+2025-11-01T00:45:44.4340706Z Setting INCLUDE
+2025-11-01T00:45:44.4346036Z Setting is_x64_arch
+2025-11-01T00:45:44.4348901Z Setting LIB
+2025-11-01T00:45:44.4351799Z Setting LIBPATH
+2025-11-01T00:45:44.4355330Z Setting NETFXSDKDir
+2025-11-01T00:45:44.4359316Z Setting Path
+2025-11-01T00:45:44.4369819Z Setting Platform
+2025-11-01T00:45:44.4372777Z Setting UCRTVersion
+2025-11-01T00:45:44.4375394Z Setting UniversalCRTSdkDir
+2025-11-01T00:45:44.4378054Z Setting VCIDEInstallDir
+2025-11-01T00:45:44.4381567Z Setting VCINSTALLDIR
+2025-11-01T00:45:44.4384509Z Setting VCPKG_ROOT
+2025-11-01T00:45:44.4386978Z Setting VCToolsInstallDir
+2025-11-01T00:45:44.4389861Z Setting VCToolsRedistDir
+2025-11-01T00:45:44.4392287Z Setting VCToolsVersion
+2025-11-01T00:45:44.4394811Z Setting VisualStudioVersion
+2025-11-01T00:45:44.4397211Z Setting VS170COMNTOOLS
+2025-11-01T00:45:44.4399740Z Setting VSCMD_ARG_app_plat
+2025-11-01T00:45:44.4402508Z Setting VSCMD_ARG_HOST_ARCH
+2025-11-01T00:45:44.4405158Z Setting VSCMD_ARG_TGT_ARCH
+2025-11-01T00:45:44.4407293Z Setting VSCMD_VER
+2025-11-01T00:45:44.4409773Z Setting VSINSTALLDIR
+2025-11-01T00:45:44.4412026Z Setting VSSDK150INSTALL
+2025-11-01T00:45:44.4414391Z Setting VSSDKINSTALL
+2025-11-01T00:45:44.4416525Z Setting WindowsLibPath
+2025-11-01T00:45:44.4418909Z Setting WindowsSdkBinPath
+2025-11-01T00:45:44.4422720Z Setting WindowsSdkDir
+2025-11-01T00:45:44.4424739Z Setting WindowsSDKLibVersion
+2025-11-01T00:45:44.4427657Z Setting WindowsSdkVerBinPath
+2025-11-01T00:45:44.4429867Z Setting WindowsSDKVersion
+2025-11-01T00:45:44.4432147Z Setting WindowsSDK_ExecutablePath_x64
+2025-11-01T00:45:44.4434437Z Setting WindowsSDK_ExecutablePath_x86
+2025-11-01T00:45:44.4436571Z Setting __DOTNET_ADD_64BIT
+2025-11-01T00:45:44.4438953Z Setting __DOTNET_PREFERRED_BITNESS
+2025-11-01T00:45:44.4441330Z Setting __VSCMD_PREINIT_PATH
+2025-11-01T00:45:44.4445302Z ##[endgroup]
+2025-11-01T00:45:44.4445669Z Configured Developer Command Prompt
+2025-11-01T00:45:44.4681530Z ##[group]Run $ref = $env:GITHUB_REF_NAME
+2025-11-01T00:45:44.4681903Z [36;1m$ref = $env:GITHUB_REF_NAME[0m
+2025-11-01T00:45:44.4682148Z [36;1mif ($ref.StartsWith('v')) {[0m
+2025-11-01T00:45:44.4682370Z [36;1m  $ref = $ref.Substring(1)[0m
+2025-11-01T00:45:44.4682565Z [36;1m}[0m
+2025-11-01T00:45:44.4683067Z [36;1m$json = & scripts/get-version.ps1 -TargetVersion $ref -Format Json[0m
+2025-11-01T00:45:44.4683405Z [36;1m$info = $json | ConvertFrom-Json[0m
+2025-11-01T00:45:44.4683796Z [36;1m"VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8[0m
+2025-11-01T00:45:44.4684312Z [36;1m"VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8[0m
+2025-11-01T00:45:44.4684819Z [36;1m"VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8[0m
+2025-11-01T00:45:44.4685224Z [36;1mWrite-Host "Building release for $($info.semver)"[0m
+2025-11-01T00:45:44.4752538Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2025-11-01T00:45:44.4752857Z env:
+2025-11-01T00:45:44.4753021Z   CommandPromptType: Native
+2025-11-01T00:45:44.4753358Z   DevEnvDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\
+2025-11-01T00:45:44.4753838Z   ExtensionSdkDir: C:\Program Files (x86)\Microsoft SDKs\Windows Kits\10\ExtensionSDKs
+2025-11-01T00:45:44.4755878Z   EXTERNAL_INCLUDE: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\VS\include;C:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
+2025-11-01T00:45:44.4758239Z   Framework40Version: v4.0
+2025-11-01T00:45:44.4758477Z   FrameworkDir: C:\Windows\Microsoft.NET\Framework64\
+2025-11-01T00:45:44.4758788Z   FrameworkDir64: C:\Windows\Microsoft.NET\Framework64\
+2025-11-01T00:45:44.4759084Z   FrameworkVersion: v4.0.30319
+2025-11-01T00:45:44.4759287Z   FrameworkVersion64: v4.0.30319
+2025-11-01T00:45:44.4759766Z   FSHARPINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\FSharp\Tools
+2025-11-01T00:45:44.4760303Z   HTMLHelpDir: C:\Program Files (x86)\HTML Help Workshop
+2025-11-01T00:45:44.4760722Z   IFCPATH: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ifc\x64
+2025-11-01T00:45:44.4762747Z   INCLUDE: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\include;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\VS\include;C:\Program Files (x86)\Windows Kits\10\include\10.0.26100.0\ucrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\um;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\shared;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\winrt;C:\Program Files (x86)\Windows Kits\10\\include\10.0.26100.0\\cppwinrt;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um
+2025-11-01T00:45:44.4764596Z   is_x64_arch: true
+2025-11-01T00:45:44.4765622Z   LIB: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x64;C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\lib\um\x64;C:\Program Files (x86)\Windows Kits\10\lib\10.0.26100.0\ucrt\x64;C:\Program Files (x86)\Windows Kits\10\\lib\10.0.26100.0\\um\x64
+2025-11-01T00:45:44.4769859Z   LIBPATH: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\ATLMFC\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\lib\x86\store\references;C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.26100.0;C:\Program Files (x86)\Windows Kits\10\References\10.0.26100.0;C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+2025-11-01T00:45:44.4771570Z   NETFXSDKDir: C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\
+2025-11-01T00:45:44.4785237Z   Path: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\VCPackages;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TestWindow;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\bin\Roslyn;C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\;C:\Program Files (x86)\HTML Help Workshop;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\FSharp\Tools;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Team Tools\DiagnosticsHub\Collector;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\Extensions\Microsoft\CodeCoverage.Console;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm\x64\bin;C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\\x64;C:\Program Files (x86)\Windows Kits\10\bin\\x64;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\\MSBuild\Current\Bin\amd64;C:\Windows\Microsoft.NET\Framework64\v4.0.30319;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\;C:\Program Files\MongoDB\Server\7.0\bin;C:\vcpkg;C:\tools\zstd;C:\hostedtoolcache\windows\stack\3.7.1\x64;C:\cabal\bin;C:\\ghcup\bin;C:\mingw64\bin;C:\Program Files\dotnet;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\R\R-4.5.1\bin\x64;C:\SeleniumWebDrivers\GeckoDriver;C:\SeleniumWebDrivers\EdgeDriver\;C:\SeleniumWebDrivers\ChromeDriver;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\GitHub CLI;C:\Program Files\Git\bin;C:\Program Files (x86)\pipx_bin;C:\npm\prefix;C:\hostedtoolcache\windows\go\1.24.9\x64\bin;C:\hostedtoolcache\windows\Python\3.9.13\x64\Scripts;C:\hostedtoolcache\windows\Python\3.9.13\x64;C:\hostedtoolcache\windows\Ruby\3.3.9\x64\bin;C:\Program Files\OpenSSL\bin;C:\tools\kotlinc\bin;C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\17.0.16-8\x64\bin;C:\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\ProgramData\kind;C:\ProgramData\Chocolatey\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\PowerShell\7\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\WiX Toolset v3.14\bin;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\Microsoft SQL Server\170\DTS\Binn\;C:\ProgramData\chocolatey\lib\pulumi\tools\Pulumi\bin;C:\Program Files\CMake\bin;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.11\bin;C:\Program Files\Microsoft Service Fabric\bin\Fabric\Fabric.Code;C:\Program Files\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\GitHub CLI\;c:\tools\php;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Amazon\SessionManagerPlugin\bin\;C:\Program Files\Amazon\AWSSAMCLI\bin\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\mongosh\;C:\Program Files\LLVM\bin;C:\Program Files (x86)\LLVM\bin;C:\Users\runneradmin\.dotnet\tools;C:\Users\runneradmin\.cargo\bin;C:\Users\runneradmin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Microsoft Visual Studio\Installer;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\Linux\bin\ConnectionManagerExe;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg
+2025-11-01T00:45:44.4798934Z   Platform: x64
+2025-11-01T00:45:44.4799101Z   UCRTVersion: 10.0.26100.0
+2025-11-01T00:45:44.4799373Z   UniversalCRTSdkDir: C:\Program Files (x86)\Windows Kits\10\
+2025-11-01T00:45:44.4799801Z   VCIDEInstallDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\
+2025-11-01T00:45:44.4800273Z   VCINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\
+2025-11-01T00:45:44.4800693Z   VCPKG_ROOT: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\vcpkg
+2025-11-01T00:45:44.4801193Z   VCToolsInstallDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\
+2025-11-01T00:45:44.4801784Z   VCToolsRedistDir: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Redist\MSVC\14.44.35112\
+2025-11-01T00:45:44.4802183Z   VCToolsVersion: 14.44.35207
+2025-11-01T00:45:44.4802381Z   VisualStudioVersion: 17.0
+2025-11-01T00:45:44.4802714Z   VS170COMNTOOLS: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\
+2025-11-01T00:45:44.4803067Z   VSCMD_ARG_app_plat: Desktop
+2025-11-01T00:45:44.4803263Z   VSCMD_ARG_HOST_ARCH: x64
+2025-11-01T00:45:44.4803436Z   VSCMD_ARG_TGT_ARCH: x64
+2025-11-01T00:45:44.4803603Z   VSCMD_VER: 17.14.18
+2025-11-01T00:45:44.4803857Z   VSINSTALLDIR: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\
+2025-11-01T00:45:44.4804280Z   VSSDK150INSTALL: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VSSDK
+2025-11-01T00:45:44.4804713Z   VSSDKINSTALL: C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VSSDK
+2025-11-01T00:45:44.4805302Z   WindowsLibPath: C:\Program Files (x86)\Windows Kits\10\UnionMetadata\10.0.26100.0;C:\Program Files (x86)\Windows Kits\10\References\10.0.26100.0
+2025-11-01T00:45:44.4805863Z   WindowsSdkBinPath: C:\Program Files (x86)\Windows Kits\10\bin\
+2025-11-01T00:45:44.4806196Z   WindowsSdkDir: C:\Program Files (x86)\Windows Kits\10\
+2025-11-01T00:45:44.4806459Z   WindowsSDKLibVersion: 10.0.26100.0\
+2025-11-01T00:45:44.4806784Z   WindowsSdkVerBinPath: C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\
+2025-11-01T00:45:44.4807141Z   WindowsSDKVersion: 10.0.26100.0\
+2025-11-01T00:45:44.4807544Z   WindowsSDK_ExecutablePath_x64: C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\
+2025-11-01T00:45:44.4808130Z   WindowsSDK_ExecutablePath_x86: C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\
+2025-11-01T00:45:44.4808516Z   __DOTNET_ADD_64BIT: 1
+2025-11-01T00:45:44.4808690Z   __DOTNET_PREFERRED_BITNESS: 64
+2025-11-01T00:45:44.4816279Z   __VSCMD_PREINIT_PATH: C:\Program Files\MongoDB\Server\7.0\bin;C:\vcpkg;C:\tools\zstd;C:\hostedtoolcache\windows\stack\3.7.1\x64;C:\cabal\bin;C:\\ghcup\bin;C:\mingw64\bin;C:\Program Files\dotnet;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Program Files\R\R-4.5.1\bin\x64;C:\SeleniumWebDrivers\GeckoDriver;C:\SeleniumWebDrivers\EdgeDriver\;C:\SeleniumWebDrivers\ChromeDriver;C:\Program Files (x86)\sbt\bin;C:\Program Files (x86)\GitHub CLI;C:\Program Files\Git\bin;C:\Program Files (x86)\pipx_bin;C:\npm\prefix;C:\hostedtoolcache\windows\go\1.24.9\x64\bin;C:\hostedtoolcache\windows\Python\3.9.13\x64\Scripts;C:\hostedtoolcache\windows\Python\3.9.13\x64;C:\hostedtoolcache\windows\Ruby\3.3.9\x64\bin;C:\Program Files\OpenSSL\bin;C:\tools\kotlinc\bin;C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\17.0.16-8\x64\bin;C:\Program Files\ImageMagick-7.1.2-Q16-HDRI;C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin;C:\ProgramData\kind;C:\ProgramData\Chocolatey\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\PowerShell\7\;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files\Microsoft SQL Server\150\Tools\Binn\;C:\Program Files\dotnet\;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;C:\Program Files (x86)\WiX Toolset v3.14\bin;C:\Program Files\Microsoft SQL Server\130\DTS\Binn\;C:\Program Files\Microsoft SQL Server\140\DTS\Binn\;C:\Program Files\Microsoft SQL Server\150\DTS\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\Microsoft SQL Server\170\DTS\Binn\;C:\ProgramData\chocolatey\lib\pulumi\tools\Pulumi\bin;C:\Program Files\CMake\bin;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.11\bin;C:\Program Files\Microsoft Service Fabric\bin\Fabric\Fabric.Code;C:\Program Files\Microsoft SDKs\Service Fabric\Tools\ServiceFabricLocalClusterManager;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files\GitHub CLI\;c:\tools\php;C:\Program Files (x86)\sbt\bin;C:\Program Files\Amazon\AWSCLIV2\;C:\Program Files\Amazon\SessionManagerPlugin\bin\;C:\Program Files\Amazon\AWSSAMCLI\bin\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\mongosh\;C:\Program Files\LLVM\bin;C:\Program Files (x86)\LLVM\bin;C:\Users\runneradmin\.dotnet\tools;C:\Users\runneradmin\.cargo\bin;C:\Users\runneradmin\AppData\Local\Microsoft\WindowsApps;C:\Program Files (x86)\Microsoft Visual Studio\Installer
+2025-11-01T00:45:44.4824312Z ##[endgroup]
+2025-11-01T00:45:45.2780560Z [31;1mOperationStopped: [0mD:\a\fontlift-win-cli\fontlift-win-cli\scripts\get-version.ps1:35[0m
+2025-11-01T00:45:45.2782120Z [31;1m[0m[36;1mLine |[0m
+2025-11-01T00:45:45.2788822Z [31;1m[0m[36;1m[36;1m  35 | [0m         [36;1mthrow [ArgumentException]::new("Version string cannot be empt[0m …[0m
+2025-11-01T00:45:45.2789540Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m     | [31;1m         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+2025-11-01T00:45:45.2790116Z [31;1m[0m[36;1m[36;1m[0m[36;1m[0m[36;1m[31;1m[31;1m[36;1m     | [31;1mVersion string cannot be empty.[0m
+2025-11-01T00:45:45.3276387Z ##[error]Process completed with exit code 1.
+2025-11-01T00:45:45.3534554Z Post job cleanup.
+2025-11-01T00:45:45.6105728Z [command]"C:\Program Files\Git\bin\git.exe" version
+2025-11-01T00:45:45.6392067Z git version 2.51.1.windows.1
+2025-11-01T00:45:45.6473450Z Temporarily overriding HOME='D:\a\_temp\d10df6fa-5df5-4750-a026-ecd7ea7e118b' before making global git config changes
+2025-11-01T00:45:45.6474326Z Adding repository directory to the temporary git global config as a safe directory
+2025-11-01T00:45:45.6487762Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\fontlift-win-cli\fontlift-win-cli
+2025-11-01T00:45:45.6823899Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2025-11-01T00:45:45.7172264Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2025-11-01T00:45:46.3032394Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-11-01T00:45:46.3313508Z http.https://github.com/.extraheader
+2025-11-01T00:45:46.3366041Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2025-11-01T00:45:46.3690191Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2025-11-01T00:45:46.9859979Z Cleaning up orphan processes
