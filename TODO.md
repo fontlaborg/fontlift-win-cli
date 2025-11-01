@@ -3,10 +3,11 @@
 
 ## CRITICAL - Current Blockers
 
-- [ ] Trigger GitHub Actions build to validate new semver/version-resource pipeline on Windows runners
-- [ ] Trigger a tag-based release once CI is green to confirm assets, checksums, and version metadata
+- [x] Analyze GitHub Actions failure logs (issue/logs/) to identify root cause of CI failures
+- [x] Fix CI/CD Fix #4: Double version resolution bug in build.cmd and publish.cmd
+- [ ] Trigger GitHub Actions build to validate batch file fixes on Windows runners
+- [ ] Trigger a tag-based release (v1.1.10) once CI is green to confirm assets, checksums, and version metadata
 - [x] Verify `fontlift list` has no prolog/epilog output (requirement: pure list only, pipe-friendly)
-- [ ] Monitor CI/logs post-release to ensure build + publish scripts handle pre-release semver suffixes correctly
 
 ## Completed Issues
 

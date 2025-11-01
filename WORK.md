@@ -1,6 +1,66 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## CI/CD Fix #4: Double Version Resolution Bug
+
+**Date:** 2025-11-02
+
+### Issue Discovered
+Both build and release workflows failing with "Version string cannot be empty" error from PowerShell script. Investigation shows GitHub Actions successfully resolves version and sets environment variables, but then batch scripts fail when executing.
+
+### Root Cause Analysis
+The problem is in `build.cmd` and `publish.cmd` logic:
+1. GitHub Actions workflow resolves version and passes it as an argument (e.g., `build.cmd 1.1.9`)
+2. The batch file receives the argument in `%~1`
+3. **BUG**: The batch file then calls `get-version.cmd` **again** with that argument
+4. `get-version.cmd` invokes PowerShell a second time
+5. When PowerShell parsing fails or environment variable passing fails, variables remain empty
+6. The batch file tries to use empty `%VERSION_BASE%` and errors out
+
+The double resolution is unnecessary and fragile:
+- First resolution: GitHub Actions PowerShell step sets `$env:GITHUB_ENV` variables
+- Second resolution: Batch file calls `get-version.cmd` to re-parse the same version
+- The second call added complexity and failure points without benefit
+
+### Solution Implemented
+Modified both `build.cmd` and `publish.cmd` to:
+1. **If version argument provided**: Use it directly without calling `get-version.cmd`
+   - Parse base version by splitting on `-` or `+` delimiters
+   - Construct tag as `v{semver}`
+2. **If no argument**: Fall back to calling `get-version.cmd` for git resolution
+   - This supports local development without explicit version
+
+**Benefits:**
+- Eliminates double PowerShell invocation in CI/CD
+- Simpler call chain: Workflow → Batch file (no intermediate calls)
+- Faster builds (one less script execution)
+- More robust (fewer failure points)
+- Still supports local builds without arguments
+
+### Changes Made
+**build.cmd** (lines 18-46):
+- Changed from always calling `get-version.cmd` to using argument directly when provided
+- Added simple FOR loop to extract base version from semver string
+- Only calls `get-version.cmd` when no argument provided
+
+**publish.cmd** (lines 17-45):
+- Applied same logic as `build.cmd`
+- Ensures consistency between build and publish scripts
+
+### Verification Plan
+1. Commit fixes to main branch
+2. Monitor GitHub Actions build.yml execution (should pass)
+3. Create test tag (e.g., `v1.1.10`) to test release.yml
+4. Verify both workflows complete successfully
+5. Download and test release artifacts
+
+### Impact Assessment
+- **Risk Level:** LOW - Simplification reduces complexity
+- **Backwards Compatibility:** Preserved - local builds without arguments still work
+- **CI/CD Compatibility:** Improved - eliminates double resolution bug
+
+---
+
 ## Verification Log — 2025-11-02
 
 ### /test command execution

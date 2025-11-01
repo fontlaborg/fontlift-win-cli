@@ -15,31 +15,34 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-set "VERSION_BASE="
-set "VERSION_SEMVER="
-set "VERSION_TAG="
 set "REQUESTED_VERSION=%~1"
 
-if "%REQUESTED_VERSION%"=="" (
-    call scripts\get-version.cmd >nul
+REM If version provided as argument, use it directly
+REM Otherwise, resolve from git
+if not "%REQUESTED_VERSION%"=="" (
+    set "BUILD_SEMVER=%REQUESTED_VERSION%"
+    REM Extract base version (before any - or +)
+    for /f "tokens=1 delims=-+" %%V in ("%REQUESTED_VERSION%") do set "BUILD_VERSION=%%V"
+    set "BUILD_TAG=v%REQUESTED_VERSION%"
 ) else (
-    call scripts\get-version.cmd "%REQUESTED_VERSION%" >nul
-)
-if %ERRORLEVEL% NEQ 0 (
-    set "EXIT_CODE=%ERRORLEVEL%"
-    goto :cleanup
+    REM No argument provided - resolve from git
+    call scripts\get-version.cmd
+    if %ERRORLEVEL% NEQ 0 (
+        set "EXIT_CODE=%ERRORLEVEL%"
+        goto :cleanup
+    )
+    set "BUILD_VERSION=%VERSION_BASE%"
+    set "BUILD_SEMVER=%VERSION_SEMVER%"
+    set "BUILD_TAG=%VERSION_TAG%"
 )
 
-set "BUILD_VERSION=%VERSION_BASE%"
 if "%BUILD_VERSION%"=="" (
     echo ERROR: Version resolution returned empty base value.
     set "EXIT_CODE=1"
     goto :cleanup
 )
 
-set "BUILD_SEMVER=%VERSION_SEMVER%"
 if "%BUILD_SEMVER%"=="" set "BUILD_SEMVER=%BUILD_VERSION%"
-set "BUILD_TAG=%VERSION_TAG%"
 if "%BUILD_TAG%"=="" set "BUILD_TAG=v%BUILD_SEMVER%"
 
 echo Building fontlift %BUILD_SEMVER%...

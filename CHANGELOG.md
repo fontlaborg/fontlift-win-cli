@@ -5,13 +5,25 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Planned for v1.1.4
-- **CI/CD Update** (2025-11-02): Replace legacy batch parsing with PowerShell helpers for version detection (`scripts/get-version.ps1`) and version resource generation (`scripts/generate-version-rc.ps1`)
+### Planned for v1.1.10
+- **CI/CD Fix #4** (2025-11-02): Fixed double version resolution bug in `build.cmd` and `publish.cmd`
+  - **Root Cause**: Batch scripts were calling `get-version.cmd` a second time even when version was passed as argument from GitHub Actions
+  - **Impact**: PowerShell invocations failed with "Version string cannot be empty" error
+  - **Solution**: Modified batch files to use argument directly when provided, only calling `get-version.cmd` when no argument given
+  - **Benefits**: Eliminates redundant script calls, faster builds, more robust CI/CD pipeline
+  - Files changed: `build.cmd` (lines 18-46), `publish.cmd` (lines 17-45)
+
+### Changes in v1.1.4-v1.1.9 (Multiple Release Attempts)
+- **CI/CD Update** (2025-11-02): Replaced legacy batch parsing with PowerShell helpers
+  - New scripts: `scripts/get-version.ps1` and `scripts/generate-version-rc.ps1`
   - Provides accurate SemVer derivation from git tags, including pre-release/build metadata
-  - Eliminates `not was unexpected at this time` failure caused by fragile batch substitution
-  - Exposes `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG` to build/release workflows for consistent artifact naming
-- **PowerShell Compatibility** (2025-11-02): Renamed helper parameters to `-TargetVersion` to avoid clashing with the PowerShell host `-Version` switch, fixing CI builds invoked with explicit version strings.
-- **Workflow Alignment** (2025-11-02): Updated build/release GitHub Actions to consume new version metadata and invoke `build.cmd` / `publish.cmd` with the resolved SemVer string
+  - Eliminates batch script syntax errors in version handling
+  - Exposes `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG` to workflows
+- **PowerShell Compatibility** (2025-11-02): Renamed helper parameters to `-TargetVersion`
+  - Avoids conflict with PowerShell host `-Version` switch
+- **Workflow Alignment** (2025-11-02): Updated GitHub Actions workflows
+  - Build and release workflows now use PowerShell for version resolution
+  - Improved error handling and validation
 
 ### Maintenance
 - 2025-11-01: Ran `/report` workflow; local tests blocked because `build.cmd` requires Windows tooling (non-Windows environment).
