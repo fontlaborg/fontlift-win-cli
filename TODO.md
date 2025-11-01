@@ -177,14 +177,18 @@ Completed (2025-11-02):
 - Cleaner, more focused repository
 - Easier navigation for contributors
 
-## Week 2: Chocolatey Package
+## Week 2: Chocolatey Package (IN PROGRESS)
 
-- [ ] Create fontlift.nuspec (repository root)
-- [ ] Create tools/chocolateyinstall.ps1
-- [ ] Test locally: `choco pack && choco install fontlift -s . -y`
-- [ ] Update .github/workflows/release.yml (add Chocolatey publish)
-- [ ] Submit to https://community.chocolatey.org/
+Completed (2025-11-02):
+
+- ✅ Created fontlift.nuspec (repository root)
+- ✅ Created tools/chocolateyinstall.ps1
+- [ ] Test locally: `choco pack && choco install fontlift -s . -y` (requires Windows with Chocolatey installed)
+- [ ] Update .github/workflows/release.yml (add Chocolatey publish - requires API key)
+- [ ] Submit to https://community.chocolatey.org/ (requires account and approval)
 - [ ] Wait for approval (3-7 days)
+
+**Status:** Package files created and ready for testing. Remaining tasks require Windows environment with Chocolatey installed and community approval process.
 
 ## Week 3: WinGet Package
 
