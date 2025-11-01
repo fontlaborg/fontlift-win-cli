@@ -27,6 +27,7 @@ Windows CLI tool for system font installation and management. Install fonts pers
 - Visual Studio 2017 or later (for MSVC compiler)
 - Git (optional)
 
+
 **Steps:**
 ```cmd
 git clone https://github.com/fontlaborg/fontlift-win-cli.git
