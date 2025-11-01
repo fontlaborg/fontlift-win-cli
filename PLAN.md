@@ -82,14 +82,20 @@ Name Table
 
 ## Implementation Phases
 
-### Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED
+### Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED (v1.1.20)
 
 **Goal:** Implement semantic versioning and automated build/release pipeline.
 
-**Status:** Implemented and fixed. All GitHub Actions workflows are now operational.
+**Status:** Fully implemented with comprehensive fallback mechanisms and batch file delayed expansion fixes (CI/CD Fix #9).
 
 **Problem Analysis:**
 Current build system has hardcoded version (`v0.1.0` in publish.cmd), manual builds only, no CI/CD, no automated releases. Need git tag-based versioning that works locally and in GitHub Actions, with automated binary releases.
+
+**Critical Fix Applied (2025-11-02 - Fix #9):**
+- Added `setlocal enabledelayedexpansion` to both build.cmd and publish.cmd
+- Changed all `%VAR%` to `!VAR!` for proper variable expansion in IF blocks
+- Replaced `if not exist dir (mkdir dir)` with `md dir 2>nul` to avoid batch parsing errors
+- This resolves the "not was unexpected at this time" error that persisted through Fix #6, #7, and #8
 
 **Solution Architecture:**
 

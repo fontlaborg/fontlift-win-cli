@@ -7,11 +7,12 @@
 
 ### Active Implementation
 
-**CI/CD Infrastructure:** COMPLETE ✅
+**CI/CD Infrastructure:** FIXED ✅
 - Semantic versioning via git tags implemented
 - Multi-level fallback chain ensures builds never fail on version issues
 - GitHub Actions workflows for CI build and release
 - Build/publish scripts support automatic version resolution
+- **CRITICAL FIX:** Enabled delayed expansion in batch files
 
 **Core Functionality:** COMPLETE ✅
 - Font installation (system-wide, requires admin)
@@ -28,6 +29,15 @@
 - Exit code standardization via exit_codes.h
 
 ### Recent Changes
+
+**CI/CD Fix #9** (2025-11-02):
+- **ROOT CAUSE:** Batch file variable expansion issues in IF blocks
+- **CRITICAL FIX:** Added `setlocal enabledelayedexpansion` to build.cmd and publish.cmd
+- Changed all %VAR% to !VAR! for proper delayed expansion
+- Replaced `if not exist dir (mkdir dir)` with `md dir 2>nul` to eliminate parsing errors
+- This is the TRUE fix for the "not was unexpected at this time" error
+- Modified: build.cmd, publish.cmd
+- Previous Fix #8 addressed parameter validation but missed the delayed expansion issue
 
 **CI/CD Fix #8** (2025-11-02):
 - Fixed critical batch file syntax errors: `if not exist` statements

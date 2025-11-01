@@ -5,9 +5,22 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Planned for v1.1.17
-- Trigger GitHub Actions build to validate CI/CD Fix #8 on Windows runners
+### Planned for v1.1.20
+- Trigger GitHub Actions build to validate CI/CD Fix #9 on Windows runners
 - Trigger tag-based release to confirm all fallback mechanisms work correctly
+
+## [1.1.20] - 2025-11-02
+
+### Fixed
+- **CI/CD Fix #9**: Fixed batch file delayed expansion issues (THE TRUE FIX)
+  - **ROOT CAUSE**: Variables set inside IF blocks weren't expanded correctly without delayed expansion
+  - **Impact**: "not was unexpected at this time" errors in both build and release workflows
+  - **Solution 1**: Added `setlocal enabledelayedexpansion` at the top of build.cmd and publish.cmd
+  - **Solution 2**: Changed all `%VAR%` to `!VAR!` for proper delayed variable expansion
+  - **Solution 3**: Replaced `if not exist dir (mkdir dir)` with `md dir 2>nul` to eliminate IF block parsing
+  - **Benefits**: Proper variable expansion, no batch parsing errors, more reliable builds
+  - Files changed: `build.cmd`, `publish.cmd`
+  - **Note**: This completes the fixes started in #6, #7, and #8
 
 ## [1.1.17] - 2025-11-02
 

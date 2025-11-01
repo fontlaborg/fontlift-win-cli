@@ -101,12 +101,12 @@ echo See https://github.com/fontlaborg/fontlift-win-cli for documentation >> dis
 
 if exist LICENSE copy LICENSE dist\ >nul
 
-set "ZIPFILE=fontlift-%VERSION_TAG%.zip"
+set "ZIPFILE=fontlift-!VERSION_TAG!.zip"
 
-echo Compressing to %ZIPFILE%...
-powershell -Command "Compress-Archive -Path dist\* -DestinationPath dist\%ZIPFILE% -Force"
+echo Compressing to !ZIPFILE!...
+powershell -Command "Compress-Archive -Path dist\* -DestinationPath dist\!ZIPFILE! -Force"
 
-if %ERRORLEVEL% NEQ 0 (
+if !ERRORLEVEL! NEQ 0 (
     echo ERROR: Failed to create zip archive
     set "EXIT_CODE=1"
     goto :cleanup
@@ -115,10 +115,10 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo ===================================
 echo Distribution package created!
-echo Output: dist\%ZIPFILE%
+echo Output: dist\!ZIPFILE!
 echo ===================================
 dir dist
 
 :cleanup
 popd >nul 2>&1
-exit /b %EXIT_CODE%
+exit /b !EXIT_CODE!
