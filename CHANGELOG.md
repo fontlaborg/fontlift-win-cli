@@ -5,9 +5,22 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Planned for v1.1.14
-- Trigger GitHub Actions build to validate CI/CD fixes on Windows runners
-- Trigger tag-based release to confirm assets, checksums, and version metadata work correctly
+### Planned for v1.1.17
+- Trigger GitHub Actions build to validate CI/CD Fix #8 on Windows runners
+- Trigger tag-based release to confirm all fallback mechanisms work correctly
+
+## [1.1.17] - 2025-11-02
+
+### Fixed
+- **CI/CD Fix #8**: Fixed batch file syntax and added ultimate fallback mechanisms
+  - **Issue 1 - Batch Syntax**: `if not exist build mkdir build` caused "not was unexpected at this time" error
+  - **Issue 2 - Parameter Validation**: get-version.ps1 didn't validate whitespace-only strings
+  - **Issue 3 - No Ultimate Fallback**: No hardcoded constant as absolute last resort
+  - **Solution 1**: Changed to `if not exist build (mkdir build)` with explicit parentheses
+  - **Solution 2**: Added `IsNullOrWhiteSpace` check and try-catch wrapper with fallback
+  - **Solution 3**: Added `ULTIMATE_FALLBACK_*` constants (0.0.0-unknown) in both build scripts
+  - **Benefits**: 6-level fallback chain, builds NEVER fail on version issues, explicit warnings
+  - Files changed: `build.cmd`, `publish.cmd`, `scripts/get-version.ps1`
 
 ## [1.1.13] - 2025-11-02
 
