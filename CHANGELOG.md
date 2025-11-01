@@ -11,6 +11,9 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Fixes GitHub Actions workflow failures in version extraction step
   - Enables successful builds and automated releases
 
+### Maintenance
+- 2025-11-01: Ran `/report` workflow; local tests blocked because `build.cmd` requires Windows tooling (non-Windows environment).
+
 ## [1.1.3] - 2025-11-01 (Release Failed - No Assets)
 
 ### Known Issues
