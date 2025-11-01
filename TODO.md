@@ -3,6 +3,25 @@
 
 See docs/STREAMLINING_PLAN.md for complete execution plan.
 
+## Immediate: Quality & Robustness Improvements
+
+Based on /test results, these critical fixes improve reliability:
+
+- [ ] **Fix argv bounds checking in main.cpp** (MEDIUM severity)
+  - Lines 65, 87, 113: Add `i < argc - 1` check before accessing `argv[i+1]`
+  - Prevents potential crash with malformed CLI arguments
+  - Example: `fontlift uninstall -p` (missing argument after -p)
+
+- [ ] **Add input validation for font file paths**
+  - Validate paths don't contain `..\\` or absolute paths outside fonts directory
+  - Prevents path traversal if registry is compromised
+  - Apply to: RemoveFontByName, UninstallFontByName
+
+- [ ] **Improve error handling in InstallFont**
+  - Fail operation if AddFontResourceExA fails (don't just warn)
+  - Add rollback: delete registry entry + copied file on failure
+  - Ensures consistent state (font either fully installed or not at all)
+
 ## Week 1: Documentation Cleanup
 
 - [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)
@@ -46,3 +65,5 @@ See docs/STREAMLINING_PLAN.md for complete execution plan.
 - ✅ Initial documentation cleanup (removed 4 LLM files)
 - ✅ Created streamlining plan (docs/STREAMLINING_PLAN.md)
 - ✅ Created package distribution plan (docs/PACKAGE_DISTRIBUTION.md)
+- ✅ /test - Comprehensive code verification
+- ✅ /report - Updated WORK.md and CHANGELOG.md with test results

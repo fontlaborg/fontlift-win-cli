@@ -26,6 +26,9 @@ namespace SysUtils {
     // Get filename from full path
     std::string GetFileName(const char* path);
 
+    // Validate font file path (no path traversal, must be in fonts dir if absolute)
+    bool IsValidFontPath(const char* path);
+
     // Registry operations
     bool RegReadFontEntry(const char* valueName, std::string& fontFile);
     bool RegWriteFontEntry(const char* valueName, const char* fontFile);

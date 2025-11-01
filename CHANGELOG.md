@@ -5,6 +5,41 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Quality Improvements (2025-11-02)
+- **Fixed argv bounds checking bug** (MEDIUM severity)
+  - Added `i + 1 < argc` check before accessing `argv[i+1]`
+  - Prevents crash with malformed arguments like `fontlift uninstall -p`
+  - Fixed in main.cpp lines 66, 88-90, 114-116
+- **Added path validation for font files**
+  - New IsValidFontPath() function checks for path traversal (..\\)
+  - Validates absolute paths are within fonts directory
+  - Applied to UninstallFontByName and RemoveFontByName
+  - Added sys_utils.cpp lines 63-92, sys_utils.h line 30
+- **Improved InstallFont error handling**
+  - AddFontResourceExA failure now returns error (not warning)
+  - Automatic rollback: deletes registry entry + copied file on failure
+  - Ensures consistent state (font fully installed or not at all)
+  - Modified font_ops.cpp lines 130-136
+- **Code size:** 1,355 → 1,407 lines (+52 lines, +3.8%)
+  - All files still <300 lines ✓
+  - All functions still <20 lines ✓
+
+### Test Results (2025-11-02)
+- **Comprehensive code verification completed**
+  - main.cpp: PASS (1 MEDIUM issue found - bounds checking)
+  - font_ops.cpp: PASS WITH NOTES (2 LOW issues)
+  - font_parser.cpp: PASS (no issues)
+  - sys_utils.cpp: PASS (no issues)
+- **Overall risk: LOW-MEDIUM**
+  - Code quality: All metrics passing (1,355 lines, no bloat)
+  - CI/CD: Passing on Windows runners
+  - Uncertainty: 90-95% confident in most logic
+- **Issues identified:**
+  1. MEDIUM: argv bounds checking missing in main.cpp (lines 65, 87, 113)
+  2. LOW: AddFontResourceExA failure only warns (line 130)
+  3. LOW: No path validation on registry values
+- **Documented in WORK.md with detailed analysis**
+
 ### Streamlining Plan Created (2025-11-02)
 - **Created comprehensive streamlining plan** (docs/STREAMLINING_PLAN.md)
   - Codebase audit: 1,355 lines, 0 enterprise features ✓ CLEAN

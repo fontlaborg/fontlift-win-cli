@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
             filepath = argv[2];
         } else {
             for (int i = 2; i < argc - 1; i++) {
-                if (strcmp(argv[i], "-p") == 0) {
+                if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
                     filepath = argv[i + 1];
                     break;
                 }
@@ -85,9 +85,9 @@ int main(int argc, char* argv[]) {
         const char* fontname = nullptr;
 
         for (int i = 2; i < argc - 1; i++) {
-            if (strcmp(argv[i], "-p") == 0) {
+            if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
                 filepath = argv[i + 1];
-            } else if (strcmp(argv[i], "-n") == 0) {
+            } else if (strcmp(argv[i], "-n") == 0 && i + 1 < argc) {
                 fontname = argv[i + 1];
             }
         }
@@ -111,9 +111,9 @@ int main(int argc, char* argv[]) {
         const char* fontname = nullptr;
 
         for (int i = 2; i < argc - 1; i++) {
-            if (strcmp(argv[i], "-p") == 0) {
+            if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
                 filepath = argv[i + 1];
-            } else if (strcmp(argv[i], "-n") == 0) {
+            } else if (strcmp(argv[i], "-n") == 0 && i + 1 < argc) {
                 fontname = argv[i + 1];
             }
         }

@@ -128,7 +128,11 @@ int InstallFont(const char* fontPath) {
 
     // Load font into system
     if (AddFontResourceExA(destPath.c_str(), FR_PRIVATE, 0) == 0) {
-        std::cerr << "Warning: Failed to load font resource\n";
+        std::cerr << "Error: Failed to load font resource\n";
+        // Rollback: remove registry entry and delete copied file
+        SysUtils::RegDeleteFontEntry(regName.c_str());
+        SysUtils::DeleteFromFontsFolder(filename.c_str());
+        return EXIT_ERROR;
     }
 
     // Notify system
@@ -183,6 +187,12 @@ int UninstallFontByName(const char* fontName) {
 
     if (!found) {
         std::cerr << "Error: Font not found in registry: " << fontName << "\n";
+        return EXIT_ERROR;
+    }
+
+    // Validate font file path from registry
+    if (!SysUtils::IsValidFontPath(fontFile.c_str())) {
+        std::cerr << "Error: Invalid font path in registry: " << fontFile << "\n";
         return EXIT_ERROR;
     }
 
@@ -252,6 +262,12 @@ int RemoveFontByName(const char* fontName) {
 
     if (!found) {
         std::cerr << "Error: Font not found in registry: " << fontName << "\n";
+        return EXIT_ERROR;
+    }
+
+    // Validate font file path from registry
+    if (!SysUtils::IsValidFontPath(fontFile.c_str())) {
+        std::cerr << "Error: Invalid font path in registry: " << fontFile << "\n";
         return EXIT_ERROR;
     }
 
