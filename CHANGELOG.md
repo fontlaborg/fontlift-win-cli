@@ -10,6 +10,7 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Provides accurate SemVer derivation from git tags, including pre-release/build metadata
   - Eliminates `not was unexpected at this time` failure caused by fragile batch substitution
   - Exposes `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG` to build/release workflows for consistent artifact naming
+- **PowerShell Compatibility** (2025-11-02): Renamed helper parameters to `-TargetVersion` to avoid clashing with the PowerShell host `-Version` switch, fixing CI builds invoked with explicit version strings.
 - **Workflow Alignment** (2025-11-02): Updated build/release GitHub Actions to consume new version metadata and invoke `build.cmd` / `publish.cmd` with the resolved SemVer string
 
 ### Maintenance

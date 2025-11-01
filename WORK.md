@@ -685,6 +685,7 @@ The v1.1.0 implementation is:
 - Simplified batch shims:
   - `scripts/get-version.cmd` now delegates to PowerShell, surfaces `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG`, and echoes the base for legacy callers.
   - `scripts/generate-version-rc.cmd` is a thin wrapper over the PowerShell generator.
+- Renamed PowerShell script parameters to `-TargetVersion` to avoid clashing with the host `-Version` switch that PowerShell reserves for engine selection.
 - Hardened `build.cmd` / `publish.cmd`:
   - Resolve versions via helper regardless of invocation directory (`pushd` to script root).
   - Feed full SemVer into version resource strings while keeping numeric components clean.

@@ -78,6 +78,7 @@
 - [x] Verify CI build workflow triggers
 - [x] Fix batch script bug #1 (delayed expansion syntax in generate-version-rc.cmd)
 - [x] Replace fragile batch parsing with PowerShell helpers for version detection and version.rc generation
+- [x] Rename helper parameters to `-TargetVersion` to avoid PowerShell host switch conflicts when passing explicit versions
 - [ ] Verify CI build workflow passes (pending Windows runner execution)
 - [ ] Verify artifact uploaded (pending CI rerun)
 - [ ] Download CI artifact and test locally (pending CI rerun)
