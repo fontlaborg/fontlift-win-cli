@@ -5,35 +5,37 @@
 
 ### CI/CD Validation
 
-- [ ] Trigger GitHub Actions build workflow via `gh run`
-- [ ] Analyze build logs for compilation and workflow issues
-- [ ] Create tag v1.1.24 once build passes
-- [ ] Verify GitHub Release created with correct version metadata
-- [ ] Download and verify release artifacts (zip + checksums)
+- [ ] Trigger GitHub Actions build workflow: `gh workflow run build.yml`
+- [ ] Analyze build logs, fix any issues
+- [ ] Create release tag: `git tag v1.1.24 && git push origin v1.1.24`
+- [ ] Verify release artifacts (zip + checksums)
 
-### Phase 7: Manual Testing (Windows Required)
+### Package Distribution
 
-- [ ] Test with filenames containing spaces
-- [ ] Test with Unicode file paths
-- [ ] Test with .otc files (OpenType Collection)
-- [ ] Test with corrupt/invalid font files
-- [ ] Test uninstall/remove of system fonts
-- [ ] Verify final executable size <200 KB
-- [ ] Integration test: install font, reboot, verify persistence, uninstall
+- [ ] Create Chocolatey package manifest
+- [ ] Test Chocolatey installation flow
+- [ ] Submit to Chocolatey community repository
+- [ ] Create WinGet package manifest
+- [ ] Test WinGet installation flow
+- [ ] Submit to winget-pkgs repository
+
+### Manual Testing (Windows Required)
+
+- [ ] Test edge cases: spaces in filenames, Unicode paths, .otc files
+- [ ] Test error handling: corrupt files, non-admin execution
+- [ ] Verify executable size <200 KB
+- [ ] Integration test: install → reboot → verify → uninstall
 
 ### Documentation
 
-- [ ] Update CHANGELOG.md after successful CI/CD test
-- [ ] Add release notes for v1.1.24 when tagged
+- [ ] Update CHANGELOG.md after CI/CD test
+- [ ] Add release notes for v1.1.24
 
 ---
 
 ## Completed ✅
 
-- ✅ CI/CD infrastructure (semantic versioning, GitHub Actions workflows, fallback mechanisms)
-- ✅ Core font management (install, uninstall, remove, list, parse TTF/OTF/TTC/OTC)
-- ✅ Code quality verification (838 lines, memory safety, security hardening)
-- ✅ All documentation files (README, CONTRIBUTING, DEPENDENCIES, etc.)
-- ✅ Batch file delayed expansion fixes (CI/CD Fix #9)
-
----
+- ✅ Core functionality (install, uninstall, remove, list, parse)
+- ✅ CI/CD infrastructure (semantic versioning, GitHub Actions)
+- ✅ Code quality verification (857 lines, memory safe)
+- ✅ Documentation cleanup and streamlining

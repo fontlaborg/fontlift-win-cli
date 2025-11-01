@@ -5,9 +5,28 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Planned for v1.1.20
-- Trigger GitHub Actions build to validate CI/CD Fix #9 on Windows runners
-- Trigger tag-based release to confirm all fallback mechanisms work correctly
+### Documentation Cleanup (2025-11-02)
+- **Streamlined documentation:** Aggressively reduced verbose files
+  - WORK.md: 102→44 lines (57% reduction) - removed completed task details
+  - PLAN.md: 570→90 lines (84% reduction) - removed verbose implementation details
+  - TODO.md: Consolidated and focused on actionable items
+  - Removed 4 unnecessary LLM-specific files (AGENTS.md, GEMINI.md, LLXPRT.md, QWEN.md) - saved 88KB
+- **Package Distribution Plan:** Created comprehensive plan for Chocolatey and WinGet distribution
+  - Chocolatey: .nuspec manifest, install/uninstall scripts, automated publishing workflow
+  - WinGet: Multi-file manifest structure, submission process, update workflow
+  - Timeline: 4-week rollout plan
+
+### CI/CD Fix #12 (2025-11-02)
+- **Fixed GitHub Actions workflow exit code handling**
+  - **Issue:** Test step ran fontlift.exe (exit code 1 for usage), verified success, but didn't reset exit code
+  - **Impact:** All CI builds failed even though build and executable test passed
+  - **Solution:** Added `exit /b 0` after successful test verification
+  - **File changed:** `.github/workflows/build.yml` (line 76)
+
+### Planned for v1.1.25
+- Verify CI/CD build passes on Windows runners
+- Test Chocolatey and WinGet package creation
+- Execute package distribution plan
 
 ## [1.1.20] - 2025-11-02
 

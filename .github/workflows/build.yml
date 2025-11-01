@@ -73,6 +73,7 @@ jobs:
         build\fontlift.exe
         if %ERRORLEVEL% EQU 1 (
           echo Executable runs correctly - showed usage message
+          exit /b 0
         ) else (
           echo ERROR: Unexpected exit code %ERRORLEVEL%
           exit /b 1
