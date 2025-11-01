@@ -1,49 +1,39 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## ALWAYS
+## Next Actions
 
-test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate, keep updating @WORK.md @TODO.md @PLAN.md @CHANGELOG.md
+### CI/CD Validation
 
-## CRITICAL - Current Blockers
+- [ ] Trigger GitHub Actions build workflow via `gh run`
+- [ ] Analyze build logs for compilation and workflow issues
+- [ ] Create tag v1.1.24 once build passes
+- [ ] Verify GitHub Release created with correct version metadata
+- [ ] Download and verify release artifacts (zip + checksums)
 
-- [x] Analyze GitHub Actions failure logs (issue/logs/) to identify root cause of CI failures
-- [x] Fix CI/CD Fix #9: Batch file delayed expansion issues (THE TRUE FIX)
-- [ ] Trigger GitHub Actions build to validate Fix #9 on Windows runners
-- [ ] Create tag v1.1.20 once CI is green to confirm release workflow works
-- [ ] Verify GitHub Release artifacts are created correctly with proper version metadata
+### Phase 7: Manual Testing (Windows Required)
 
-## Completed Issues
-
-- [x] CI/CD infrastructure (100% complete as of v1.1.20 with Fix #9)
-- [x] Core font management functionality (100% complete)
-- [x] Code quality verification (100% complete)
-
-## Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED
-
-All version infrastructure, build scripts, GitHub Actions workflows, and fallback mechanisms are complete. CI/CD Fix #9 resolves the batch file delayed expansion issues. Testing pending on Windows runners.
-
-## Phase 1-6: Core Implementation ✅ COMPLETED
-
-All core functionality has been implemented and verified:
-- Command-line parsing and routing
-- Font listing (Registry enumeration)
-- Font installation with admin privilege checks
-- Font name parsing (TTF, OTF, TTC, OTC)
-- Font uninstallation by path or name
-- Font removal (uninstall + delete file)
-
-Code quality verified: 838 lines total, all files under 200 lines, no memory leaks.
-
-## Phase 7: Polish & Testing - PENDING
-
-Manual testing on Windows systems still required:
 - [ ] Test with filenames containing spaces
 - [ ] Test with Unicode file paths
-- [ ] Test with .otc files
+- [ ] Test with .otc files (OpenType Collection)
 - [ ] Test with corrupt/invalid font files
 - [ ] Test uninstall/remove of system fonts
 - [ ] Verify final executable size <200 KB
-- [ ] Final integration test: install, reboot, verify, uninstall
+- [ ] Integration test: install font, reboot, verify persistence, uninstall
 
-All documentation complete. Code quality checks passed.
+### Documentation
+
+- [ ] Update CHANGELOG.md after successful CI/CD test
+- [ ] Add release notes for v1.1.24 when tagged
+
+---
+
+## Completed ✅
+
+- ✅ CI/CD infrastructure (semantic versioning, GitHub Actions workflows, fallback mechanisms)
+- ✅ Core font management (install, uninstall, remove, list, parse TTF/OTF/TTC/OTC)
+- ✅ Code quality verification (838 lines, memory safety, security hardening)
+- ✅ All documentation files (README, CONTRIBUTING, DEPENDENCIES, etc.)
+- ✅ Batch file delayed expansion fixes (CI/CD Fix #9)
+
+---
