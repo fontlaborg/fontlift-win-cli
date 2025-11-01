@@ -8,6 +8,14 @@
 
 namespace FontParser {
 
+// File size validation constants
+constexpr size_t MIN_FONT_FILE_SIZE = 100;           // Minimum valid font file size (bytes)
+constexpr size_t MAX_FONT_FILE_SIZE = 50 * 1024 * 1024;  // Maximum font file size (50 MB)
+
+// Font parsing constants
+constexpr size_t MAX_NAME_TABLE_SIZE = 1024 * 1024;  // Maximum name table size (1 MB)
+constexpr uint32_t MAX_FONTS_IN_COLLECTION = 256;    // Maximum fonts to process in TTC/OTC
+
 // Helper: Read big-endian uint16
 static uint16_t ReadUInt16BE(const uint8_t* data) {
     return (data[0] << 8) | data[1];
@@ -90,8 +98,8 @@ static std::string ParseFontAtOffset(std::ifstream& file, uint32_t offset) {
 
         // 'name' = 0x6E616D65
         if (tag == 0x6E616D65) {
-            // Sanity check: name table shouldn't be > 1MB
-            if (tableLength == 0 || tableLength > 1024 * 1024) return "";
+            // Sanity check: name table shouldn't exceed maximum size
+            if (tableLength == 0 || tableLength > MAX_NAME_TABLE_SIZE) return "";
 
             std::vector<uint8_t> nameTable(tableLength);
             file.seekg(tableOffset);
@@ -134,12 +142,12 @@ std::string GetFontName(const char* fontPath) {
     std::ifstream file(fontPath, std::ios::binary);
     if (!file) return "";
 
-    // Validate file size: must be between 100 bytes and 50MB
+    // Validate file size: must be within valid range
     file.seekg(0, std::ios::end);
     std::streampos fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    if (fileSize < 100 || fileSize > 50 * 1024 * 1024) {
+    if (fileSize < MIN_FONT_FILE_SIZE || fileSize > MAX_FONT_FILE_SIZE) {
         return "";  // File too small or too large to be valid font
     }
 
@@ -156,12 +164,12 @@ std::vector<std::string> GetFontsInCollection(const char* fontPath) {
     std::ifstream file(fontPath, std::ios::binary);
     if (!file) return names;
 
-    // Validate file size: must be between 100 bytes and 50MB
+    // Validate file size: must be within valid range
     file.seekg(0, std::ios::end);
     std::streampos fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
 
-    if (fileSize < 100 || fileSize > 50 * 1024 * 1024) {
+    if (fileSize < MIN_FONT_FILE_SIZE || fileSize > MAX_FONT_FILE_SIZE) {
         return names;  // File too small or too large to be valid font
     }
 
@@ -173,7 +181,10 @@ std::vector<std::string> GetFontsInCollection(const char* fontPath) {
 
     uint32_t numFonts = ReadUInt32BE(header + 8);
 
-    for (uint32_t i = 0; i < numFonts && i < 256; i++) {
+    // Validate numFonts is reasonable (0 or suspiciously large values indicate corruption)
+    if (numFonts == 0 || numFonts > MAX_FONTS_IN_COLLECTION) return names;
+
+    for (uint32_t i = 0; i < numFonts; i++) {
         uint8_t offsetData[4];
         if (!file.read((char*)offsetData, 4)) break;
 

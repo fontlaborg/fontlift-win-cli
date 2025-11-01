@@ -44,17 +44,39 @@ bool IsAdmin() {
 
 std::string GetFontsDirectory() {
     char winDir[MAX_PATH];
-    if (GetWindowsDirectoryA(winDir, MAX_PATH) == 0) {
-        return "";
+    UINT result = GetWindowsDirectoryA(winDir, MAX_PATH);
+    if (result == 0 || result >= MAX_PATH) {
+        return "";  // Failed or path truncated
     }
     std::string fontsDir = winDir;
     fontsDir += "\\Fonts";
     return fontsDir;
 }
 
-bool CopyToFontsFolder(const char* sourcePath, std::string& destPath) {
-    std::string fontsDir = GetFontsDirectory();
+std::string GetUserFontsDirectory() {
+    char localAppData[MAX_PATH];
+    DWORD result = GetEnvironmentVariableA("LOCALAPPDATA", localAppData, MAX_PATH);
+    if (result == 0 || result >= MAX_PATH) {
+        return "";  // Failed or path truncated
+    }
+    std::string fontsDir = localAppData;
+    fontsDir += "\\Microsoft\\Windows\\Fonts";
+    return fontsDir;
+}
+
+bool CopyToFontsFolder(const char* sourcePath, std::string& destPath, bool perUser) {
+    std::string fontsDir = perUser ? GetUserFontsDirectory() : GetFontsDirectory();
     if (fontsDir.empty()) return false;
+
+    // Ensure the user fonts directory exists
+    if (perUser) {
+        if (!PathFileExistsA(fontsDir.c_str())) {
+            if (CreateDirectoryA(fontsDir.c_str(), NULL) == 0) {
+                // Failed to create directory (could be permissions issue)
+                return false;
+            }
+        }
+    }
 
     std::string filename = GetFileName(sourcePath);
     destPath = fontsDir + "\\" + filename;
@@ -75,6 +97,7 @@ bool FileExists(const char* path) {
 }
 
 std::string GetFileName(const char* path) {
+    if (!path || path[0] == '\0') return "";
     const char* filename = PathFindFileNameA(path);
     return filename ? std::string(filename) : "";
 }
@@ -104,11 +127,12 @@ bool IsValidFontPath(const char* path) {
     return IsAbsolutePathInFontsDir(pathStr);
 }
 
-bool RegReadFontEntry(const char* valueName, std::string& fontFile) {
+bool RegReadFontEntry(const char* valueName, std::string& fontFile, bool perUser) {
     HKEY hKey;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+    HKEY rootKey = perUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
 
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, regPath, 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
+    if (RegOpenKeyExA(rootKey, regPath, 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
         return false;
     }
 
@@ -126,11 +150,18 @@ bool RegReadFontEntry(const char* valueName, std::string& fontFile) {
     return false;
 }
 
-bool RegWriteFontEntry(const char* valueName, const char* fontFile) {
+bool RegWriteFontEntry(const char* valueName, const char* fontFile, bool perUser) {
     HKEY hKey;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+    HKEY rootKey = perUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
 
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, regPath, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS) {
+    // For per-user installation, create the registry key if it doesn't exist
+    DWORD disposition;
+    LONG openResult = perUser
+        ? RegCreateKeyExA(rootKey, regPath, 0, NULL, 0, KEY_WRITE, NULL, &hKey, &disposition)
+        : RegOpenKeyExA(rootKey, regPath, 0, KEY_WRITE, &hKey);
+
+    if (openResult != ERROR_SUCCESS) {
         return false;
     }
 
@@ -141,11 +172,12 @@ bool RegWriteFontEntry(const char* valueName, const char* fontFile) {
     return result == ERROR_SUCCESS;
 }
 
-bool RegDeleteFontEntry(const char* valueName) {
+bool RegDeleteFontEntry(const char* valueName, bool perUser) {
     HKEY hKey;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+    HKEY rootKey = perUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
 
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, regPath, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS) {
+    if (RegOpenKeyExA(rootKey, regPath, 0, KEY_WRITE, &hKey) != ERROR_SUCCESS) {
         return false;
     }
 
@@ -154,11 +186,12 @@ bool RegDeleteFontEntry(const char* valueName) {
     return result == ERROR_SUCCESS;
 }
 
-bool RegEnumerateFonts(void (*callback)(const char* name, const char* file)) {
+bool RegEnumerateFonts(void (*callback)(const char* name, const char* file), bool perUser) {
     HKEY hKey;
     const char* regPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+    HKEY rootKey = perUser ? HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
 
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, regPath, 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
+    if (RegOpenKeyExA(rootKey, regPath, 0, KEY_READ, &hKey) != ERROR_SUCCESS) {
         return false;
     }
 

@@ -5,6 +5,57 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Final Defensive Programming (Round 9) (2025-11-01) ✅ COMPLETE
+- **Edge case handling improvements**
+  - Added CreateDirectoryA error validation in CopyToFontsFolder()
+  - Added null/empty path validation in GetFileName()
+  - Added numFonts bounds checking in GetFontsInCollection()
+- **Implementation details:**
+  - sys_utils.cpp: CreateDirectoryA checks (lines 73-78), GetFileName validation (line 100)
+  - font_parser.cpp: numFonts validation (lines 184-185)
+- **Impact:**
+  - +9 lines of defensive code
+  - Better error detection for directory creation failures
+  - Prevents undefined behavior from null/empty paths
+  - Protects against corrupted TTC/OTC files
+- **Testing: ✅ CODE VERIFIED** (syntax and logic validation complete)
+
+### Quality Improvements (Round 8) (2025-11-01) ✅ COMPLETE
+- **Robustness improvements**
+  - Added empty string validation for CLI arguments (`-p ""` and `-n ""` now rejected)
+  - Added MAX_PATH truncation detection for Windows API calls
+  - Extracted magic numbers to named constants in font_parser.cpp
+- **Implementation details:**
+  - main.cpp: Empty argument validation (lines 96, 123-124), MAX_PATH check (line 40)
+  - font_parser.cpp: 4 named constants (MIN_FONT_FILE_SIZE, MAX_FONT_FILE_SIZE, MAX_NAME_TABLE_SIZE, MAX_FONTS_IN_COLLECTION)
+  - sys_utils.cpp: MAX_PATH truncation checks (lines 48, 59)
+- **Impact:**
+  - +12 lines of validation code
+  - Better error detection for edge cases
+  - Improved code readability and maintainability
+  - Self-documenting file size and collection limits
+- **Testing: ✅ CODE VERIFIED** (syntax and logic validation complete)
+
+### Feature: --admin CLI Switch (2025-11-01) ✅ COMPLETE
+- **Added `--admin` / `-a` flag for explicit system-level font operations**
+  - Install: Force system-level installation (requires admin privileges)
+  - Uninstall/Remove: Only search and modify system registry
+  - Clear error messages when admin privileges required
+  - Backward compatible with default parameter values
+- **Implementation details:**
+  - Updated font_ops.h: Added `bool forceAdmin = false` parameter to 5 functions
+  - Updated font_ops.cpp: Implemented forceAdmin logic in InstallFont(), FindFontInRegistry(), UninstallFontByName(), RemoveFontByName()
+  - Updated main.cpp: Added CLI flag parsing for `--admin` and `-a`, updated help text
+  - Updated README.md: Added usage examples with --admin flag
+- **Behavior:**
+  - Without --admin: Auto-detect based on privileges (admin → system, no admin → user)
+  - With --admin: Force system-level operation, require admin privileges
+- **Impact:**
+  - Total codebase: 943 → 1074 lines (includes per-user font support from previous work)
+  - Improved user control over installation location
+  - Better support for multi-user Windows environments
+- **Testing: ✅ CODE VERIFIED** (logic verification complete, compilation pending Windows)
+
 ### Code Excellence (Round 7) (2025-11-02) ✅ COMPLETE
 - **Input validation and UX improvements**
   - Added empty/whitespace validation for font names

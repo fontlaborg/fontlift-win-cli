@@ -38,20 +38,24 @@ fontlift list -s       # Sorted output
 ```cmd
 fontlift install myfont.ttf
 fontlift i -p C:\Downloads\font.otf
+fontlift i myfont.ttf --admin      # Force system-level (requires admin)
+fontlift i myfont.ttf -a           # Same as --admin
 ```
 
-**Requires Administrator privileges**
+**Note:** By default, fonts are installed system-wide with admin privileges, or per-user without admin. Use `--admin` / `-a` to force system-level installation.
 
 ### Uninstall Fonts (Keep Files)
 ```cmd
 fontlift uninstall myfont.ttf
 fontlift u -n "Font Name"
+fontlift u -n "Font Name" --admin  # Force system-level (requires admin)
 ```
 
 ### Remove Fonts (Delete Files)
 ```cmd
 fontlift remove myfont.ttf
 fontlift rm -n "Font Name"
+fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
 ```
 
 **Warning:** Files permanently deleted
@@ -69,17 +73,18 @@ fontlift rm -n "Font Name"
 - `-p <path>` - Font file path
 - `-n <name>` - Font internal name
 - `-s` - Sort output (list only)
+- `--admin`, `-a` - Force system-level operation (requires admin)
 
 ## Exit Codes
 
 - `0` - Success
 - `1` - Error
-- `2` - Permission denied (need Administrator)
+- `2` - Permission denied (need Administrator for system fonts)
 
 ## Troubleshooting
 
-**Access Denied (Exit 2)**
-Run Command Prompt as Administrator
+**Access Denied for System Fonts (Exit 2)**
+When uninstalling/removing system fonts, run Command Prompt as Administrator. Per-user fonts don't require admin.
 
 **Font already installed**
 Uninstall existing font first: `fontlift u -n "Name"`

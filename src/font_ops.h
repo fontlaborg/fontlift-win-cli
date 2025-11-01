@@ -13,20 +13,25 @@ namespace FontOps {
     int ListFonts(bool showPaths, bool showNames, bool sorted);
 
     // Install font from file path
+    // forceAdmin: if true, force system-level installation (requires admin)
     // Returns: 0=success, 1=error, 2=permission denied
-    int InstallFont(const char* fontPath);
+    int InstallFont(const char* fontPath, bool forceAdmin = false);
 
     // Uninstall font by path (keeps file)
-    int UninstallFontByPath(const char* fontPath);
+    // forceAdmin: if true, only uninstall from system registry
+    int UninstallFontByPath(const char* fontPath, bool forceAdmin = false);
 
     // Uninstall font by name (keeps file)
-    int UninstallFontByName(const char* fontName);
+    // forceAdmin: if true, only uninstall from system registry
+    int UninstallFontByName(const char* fontName, bool forceAdmin = false);
 
     // Remove font by path (deletes file)
-    int RemoveFontByPath(const char* fontPath);
+    // forceAdmin: if true, only remove from system registry
+    int RemoveFontByPath(const char* fontPath, bool forceAdmin = false);
 
     // Remove font by name (deletes file)
-    int RemoveFontByName(const char* fontName);
+    // forceAdmin: if true, only remove from system registry
+    int RemoveFontByName(const char* fontName, bool forceAdmin = false);
 }
 
 #endif // FONT_OPS_H

@@ -177,6 +177,63 @@ Completed (2025-11-02):
 - Cleaner, more focused repository
 - Easier navigation for contributors
 
+## Immediate: Quality Improvements (Round 8) ✅ COMPLETE
+
+Small-scale robustness improvements (2025-11-01):
+
+- ✅ **Add validation for empty/invalid CLI arguments**
+  - Issue: `-p ""` or `-n ""` accepted but will fail later
+  - Solution: Validate arguments are non-empty after parsing
+  - Files: main.cpp (HandleInstallCommand line 96, HandleUninstallOrRemove lines 123-124)
+  - Impact: Better error messages, fail fast on invalid input
+
+- ✅ **Extract magic numbers to named constants**
+  - Issue: font_parser.cpp has hardcoded values (100, 50*1024*1024, 256, 1024*1024)
+  - Solution: Created 4 named constants at file scope
+  - Files: font_parser.cpp (lines 11-17, updated lines 102, 150, 172, 184)
+  - Impact: Better code readability and maintainability
+
+- ✅ **Add validation for MAX_PATH truncation**
+  - Issue: GetModuleFileNameA, GetWindowsDirectoryA, GetEnvironmentVariableA could truncate paths
+  - Solution: Check return values indicate buffer was large enough
+  - Files: main.cpp line 40, sys_utils.cpp lines 48, 59
+  - Impact: Detect path truncation errors early
+
+**Total Impact:**
+- main.cpp: +3 lines (validation improvements)
+- font_parser.cpp: +7 lines (constants), updated 4 locations
+- sys_utils.cpp: +2 lines (validation improvements)
+- Improved robustness and code quality
+
+## Immediate: Final Defensive Programming (Round 9) ✅ COMPLETE
+
+Micro-improvements for edge case handling (2025-11-01):
+
+- ✅ **Add CreateDirectoryA error handling**
+  - Issue: CreateDirectoryA() in CopyToFontsFolder() doesn't check success
+  - Solution: Check if directory exists first, validate creation success
+  - Files: sys_utils.cpp lines 73-78 (CopyToFontsFolder)
+  - Impact: Better error handling for permission/disk issues
+
+- ✅ **Add validation for empty/null path in GetFileName**
+  - Issue: GetFileName() doesn't validate input path is non-null/empty
+  - Solution: Add early return for null/empty path
+  - Files: sys_utils.cpp line 100 (GetFileName)
+  - Impact: Prevent undefined behavior with invalid inputs
+
+- ✅ **Add bounds check for collection numFonts**
+  - Issue: GetFontsInCollection() trusts numFonts from file header
+  - Solution: Validate numFonts is reasonable (>0 and ≤256) before loop
+  - Files: font_parser.cpp lines 184-185 (GetFontsInCollection)
+  - Impact: Prevent processing corrupted TTC files with invalid font counts
+
+**Total Impact:**
+- sys_utils.cpp: +6 lines (CreateDirectoryA validation), +1 line (GetFileName validation)
+- font_parser.cpp: +2 lines (numFonts validation)
+- Total: +9 lines of defensive code
+- Improved error detection for edge cases
+- Better handling of corrupted/malicious input files
+
 ## Week 2: Chocolatey Package (IN PROGRESS)
 
 Completed (2025-11-02):

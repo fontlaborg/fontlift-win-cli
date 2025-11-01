@@ -22,18 +22,22 @@ void ShowUsage(const char* programName) {
     std::cout << "    -n -p              Show both (path;name format)\n";
     std::cout << "    -s                 Sort output and remove duplicates\n\n";
     std::cout << "  install, i <path>    Install font from filepath\n";
-    std::cout << "    -p <filepath>      Specify font file path\n\n";
+    std::cout << "    -p <filepath>      Specify font file path\n";
+    std::cout << "    --admin, -a        Force system-level installation (requires admin)\n\n";
     std::cout << "  uninstall, u         Uninstall font (keep file)\n";
     std::cout << "    -p <filepath>      Uninstall by path\n";
-    std::cout << "    -n <fontname>      Uninstall by internal name\n\n";
+    std::cout << "    -n <fontname>      Uninstall by internal name\n";
+    std::cout << "    --admin, -a        Force system-level uninstallation (requires admin)\n\n";
     std::cout << "  remove, rm           Uninstall font (delete file)\n";
     std::cout << "    -p <filepath>      Remove by path\n";
-    std::cout << "    -n <fontname>      Remove by internal name\n\n";
+    std::cout << "    -n <fontname>      Remove by internal name\n";
+    std::cout << "    --admin, -a        Force system-level removal (requires admin)\n\n";
 }
 
 static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) {
     char filename[MAX_PATH];
-    if (GetModuleFileNameA(NULL, filename, MAX_PATH) == 0) return false;
+    DWORD result = GetModuleFileNameA(NULL, filename, MAX_PATH);
+    if (result == 0 || result >= MAX_PATH) return false;  // Failed or path truncated
 
     DWORD handle;
     DWORD size = GetFileVersionInfoSizeA(filename, &handle);
@@ -76,40 +80,59 @@ static int HandleListCommand(int argc, char* argv[]) {
 
 static int HandleInstallCommand(int argc, char* argv[], const char* progName) {
     const char* filepath = nullptr;
-    if (argc == 3 && argv[2][0] != '-') {
-        filepath = argv[2];
-    } else {
-        for (int i = 2; i < argc - 1; i++) {
-            if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
-                filepath = argv[i + 1];
-                break;
-            }
+    bool forceAdmin = false;
+
+    // Parse flags
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "--admin") == 0 || strcmp(argv[i], "-a") == 0) {
+            forceAdmin = true;
+        } else if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+            filepath = argv[i + 1];
+            i++; // Skip the next argument as it's the filepath
+        } else if (argv[i][0] != '-') {
+            filepath = argv[i];
         }
     }
-    if (!filepath) {
+
+    if (!filepath || filepath[0] == '\0') {
         std::cerr << "Error: No font file specified\n";
         ShowUsage(progName);
         return EXIT_ERROR;
     }
-    return FontOps::InstallFont(filepath);
+    return FontOps::InstallFont(filepath, forceAdmin);
 }
 
 static int HandleUninstallOrRemove(int argc, char* argv[], const char* progName, bool deleteFile) {
     const char* filepath = nullptr;
     const char* fontname = nullptr;
-    for (int i = 2; i < argc - 1; i++) {
-        if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) filepath = argv[i + 1];
-        else if (strcmp(argv[i], "-n") == 0 && i + 1 < argc) fontname = argv[i + 1];
+    bool forceAdmin = false;
+
+    // Parse flags
+    for (int i = 2; i < argc; i++) {
+        if (strcmp(argv[i], "--admin") == 0 || strcmp(argv[i], "-a") == 0) {
+            forceAdmin = true;
+        } else if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+            filepath = argv[i + 1];
+            i++; // Skip the next argument
+        } else if (strcmp(argv[i], "-n") == 0 && i + 1 < argc) {
+            fontname = argv[i + 1];
+            i++; // Skip the next argument
+        }
     }
+
+    // Validate arguments are non-empty
+    if (filepath && filepath[0] == '\0') filepath = nullptr;
+    if (fontname && fontname[0] == '\0') fontname = nullptr;
+
     if (!filepath && !fontname) {
         std::cerr << "Error: Must specify -p <path> or -n <name>\n";
         ShowUsage(progName);
         return EXIT_ERROR;
     }
     if (filepath) {
-        return deleteFile ? FontOps::RemoveFontByPath(filepath) : FontOps::UninstallFontByPath(filepath);
+        return deleteFile ? FontOps::RemoveFontByPath(filepath, forceAdmin) : FontOps::UninstallFontByPath(filepath, forceAdmin);
     } else {
-        return deleteFile ? FontOps::RemoveFontByName(fontname) : FontOps::UninstallFontByName(fontname);
+        return deleteFile ? FontOps::RemoveFontByName(fontname, forceAdmin) : FontOps::UninstallFontByName(fontname, forceAdmin);
     }
 }
 

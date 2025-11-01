@@ -14,11 +14,14 @@ namespace SysUtils {
     // Check if running with administrator privileges
     bool IsAdmin();
 
-    // Get Windows fonts directory path
+    // Get Windows fonts directory path (system)
     std::string GetFontsDirectory();
 
-    // Copy file to fonts directory
-    bool CopyToFontsFolder(const char* sourcePath, std::string& destPath);
+    // Get user fonts directory path
+    std::string GetUserFontsDirectory();
+
+    // Copy file to fonts directory (system or user)
+    bool CopyToFontsFolder(const char* sourcePath, std::string& destPath, bool perUser = false);
 
     // Delete file from fonts directory
     bool DeleteFromFontsFolder(const char* filename);
@@ -32,11 +35,11 @@ namespace SysUtils {
     // Validate font file path (no path traversal, must be in fonts dir if absolute)
     bool IsValidFontPath(const char* path);
 
-    // Registry operations
-    bool RegReadFontEntry(const char* valueName, std::string& fontFile);
-    bool RegWriteFontEntry(const char* valueName, const char* fontFile);
-    bool RegDeleteFontEntry(const char* valueName);
-    bool RegEnumerateFonts(void (*callback)(const char* name, const char* file));
+    // Registry operations (perUser: false = HKEY_LOCAL_MACHINE, true = HKEY_CURRENT_USER)
+    bool RegReadFontEntry(const char* valueName, std::string& fontFile, bool perUser = false);
+    bool RegWriteFontEntry(const char* valueName, const char* fontFile, bool perUser = false);
+    bool RegDeleteFontEntry(const char* valueName, bool perUser = false);
+    bool RegEnumerateFonts(void (*callback)(const char* name, const char* file), bool perUser = false);
 
     // Notify system of font changes
     void NotifyFontChange();
