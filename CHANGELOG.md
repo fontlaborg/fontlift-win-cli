@@ -5,6 +5,21 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Code Refactoring (Round 6) (2025-11-02) ✅ COMPLETE
+- **Final polish - Refactored HandleVersionCommand()**
+  - Reduced from 23 to 8 lines (-65% reduction)
+  - Extracted ExtractVersionInfo() helper function (19 lines)
+  - Cleaner error handling with early returns
+  - Improved code readability
+- **Verified code standards**
+  - All files have correct `this_file` tracking ✓
+  - All function parameters properly const-correct ✓
+- **Impact:**
+  - Total codebase: 904 → 911 lines (+7 lines for helper)
+  - Functions >20 lines: 5 → 4 (HandleVersionCommand was 23, now 8)
+  - Improved code organization and maintainability
+- **CI/CD Status: ✅ PASSING** (Run #18997822459)
+
 ### Code Refactoring (Round 5) (2025-11-02) ✅ COMPLETE
 - **Refactored 3 oversized functions to reduce complexity**
   - main(): 136 → 32 lines (-76% reduction)
