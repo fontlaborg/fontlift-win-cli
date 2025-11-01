@@ -11,7 +11,7 @@ set "REQUESTED_VERSION=%~1"
 if "%REQUESTED_VERSION%"=="" (
     for /f "usebackq tokens=1,2 delims==" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get-version.ps1"`) do call :__assign %%A %%B
 ) else (
-    for /f "usebackq tokens=1,2 delims==" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get-version.ps1" -Version "%REQUESTED_VERSION%"`) do call :__assign %%A %%B
+    for /f "usebackq tokens=1,2 delims==" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get-version.ps1" -TargetVersion "%REQUESTED_VERSION%"`) do call :__assign %%A %%B
 )
 
 if not defined VERSION_BASE (

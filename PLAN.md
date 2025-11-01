@@ -360,7 +360,7 @@ jobs:
       run: |
         $ref = $env:GITHUB_REF_NAME
         if ($ref.StartsWith('v')) { $ref = $ref.Substring(1) }
-        $json = & scripts/get-version.ps1 -Version $ref -Format Json
+        $json = & scripts/get-version.ps1 -TargetVersion $ref -Format Json
         $info = $json | ConvertFrom-Json
         "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
         "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8

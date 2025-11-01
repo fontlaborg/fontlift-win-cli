@@ -1,7 +1,7 @@
 # this_file: scripts/get-version.ps1
 
 param(
-    [string]$Version,
+    [string]$TargetVersion,
     [ValidateSet('String', 'Json', 'Object')]
     [string]$Format = 'String'
 )
@@ -120,8 +120,8 @@ function Resolve-Fallback {
 }
 
 $result =
-    if ($Version) {
-        Resolve-FromProvidedVersion -Input $Version
+    if ($TargetVersion) {
+        Resolve-FromProvidedVersion -Input $TargetVersion
     } else {
         $gitResult = Resolve-FromGit
         if ($gitResult) {

@@ -2,13 +2,13 @@
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$Version
+    [string]$TargetVersion
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$clean = $Version.Trim()
+$clean = $TargetVersion.Trim()
 if (-not $clean) {
     throw [ArgumentException]::new("Version string cannot be empty.")
 }
@@ -16,7 +16,7 @@ if (-not $clean) {
 $pattern = '^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(?<suffix>[-+].*)?$'
 $match = [regex]::Match($clean, $pattern)
 if (-not $match.Success) {
-    throw [ArgumentException]::new("Invalid semantic version for version.rc: $Version")
+    throw [ArgumentException]::new("Invalid semantic version for version.rc: $TargetVersion")
 }
 
 $major = [int]$match.Groups['major'].Value

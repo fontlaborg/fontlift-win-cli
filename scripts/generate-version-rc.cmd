@@ -9,5 +9,5 @@ if "%VERSION_INPUT%"=="" (
     exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0generate-version-rc.ps1" -Version "%VERSION_INPUT%"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0generate-version-rc.ps1" -TargetVersion "%VERSION_INPUT%"
 exit /b %ERRORLEVEL%
