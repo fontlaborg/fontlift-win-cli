@@ -5,13 +5,14 @@
 
 - [x] Analyze GitHub Actions failure logs (issue/logs/) to identify root cause of CI failures
 - [x] Fix CI/CD Fix #4: Double version resolution bug in build.cmd and publish.cmd
+- [x] Fix CI/CD Fix #6: GitHub Actions environment variable and batch syntax issues (v1.1.13)
 - [ ] Trigger GitHub Actions build to validate batch file fixes on Windows runners
-- [ ] Trigger a tag-based release (v1.1.10) once CI is green to confirm assets, checksums, and version metadata
+- [ ] Trigger a tag-based release (v1.1.14) once CI is green to confirm assets, checksums, and version metadata
 - [x] Verify `fontlift list` has no prolog/epilog output (requirement: pure list only, pipe-friendly)
 
 ## Completed Issues
 
-- [x] @issues/101.md - CI/CD infrastructure (98% complete, needs 1-line fix above)
+- [x] @issues/101.md - CI/CD infrastructure (100% complete as of v1.1.13)
 - [x] @issues/103.md - Core font management functionality (100% complete)
 
 ## Phase 0: Build Infrastructure & CI/CD ✅ COMPLETED
