@@ -5,6 +5,21 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Code Excellence (Round 7) (2025-11-02) ✅ COMPLETE
+- **Input validation and UX improvements**
+  - Added empty/whitespace validation for font names
+  - Added file extension validation (.ttf, .otf, .ttc, .otc)
+  - Optimized duplicate warning message (3 lines → 1 line)
+- **New helper functions:**
+  - IsEmptyOrWhitespace() - validates font name inputs (6 lines)
+  - HasValidFontExtension() - validates font file extensions (11 lines)
+- **Impact:**
+  - Total codebase: 911 → 943 lines (+32 lines for validators)
+  - Functions >20 lines: 4 → 5 (validation added to 2 functions)
+  - Better error messages and input validation
+  - Improved user experience
+- **CI/CD Status: ✅ PASSING** (Run #18997936485)
+
 ### Code Refactoring (Round 6) (2025-11-02) ✅ COMPLETE
 - **Final polish - Refactored HandleVersionCommand()**
   - Reduced from 23 to 8 lines (-65% reduction)
