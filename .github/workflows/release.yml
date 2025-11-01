@@ -23,22 +23,28 @@ jobs:
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Extract version from tag
+    - name: Resolve version from tag
       id: version
-      shell: bash
+      shell: pwsh
       run: |
-        VERSION=${GITHUB_REF_NAME#v}
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "VERSION_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
-        echo "Building version: $VERSION"
+        $ref = $env:GITHUB_REF_NAME
+        if ($ref.StartsWith('v')) {
+          $ref = $ref.Substring(1)
+        }
+        $json = & scripts/get-version.ps1 -Version $ref -Format Json
+        $info = $json | ConvertFrom-Json
+        "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        Write-Host "Building release for $($info.semver)"
 
     - name: Build release
       shell: cmd
-      run: build.cmd %VERSION%
+      run: build.cmd %VERSION_SEMVER%
 
     - name: Package release
       shell: cmd
-      run: publish.cmd %VERSION%
+      run: publish.cmd %VERSION_SEMVER%
 
     - name: Generate checksums
       shell: cmd

@@ -6,10 +6,11 @@ All notable changes to fontlift-win-cli will be documented in this file.
 ## [Unreleased]
 
 ### Planned for v1.1.4
-- **CI/CD Fix #2** (2025-11-01): Fix PowerShell compatibility in `scripts/get-version.cmd`
-  - Change line 21 from `echo|set /p="%VERSION%"` to `echo %VERSION%`
-  - Fixes GitHub Actions workflow failures in version extraction step
-  - Enables successful builds and automated releases
+- **CI/CD Update** (2025-11-02): Replace legacy batch parsing with PowerShell helpers for version detection (`scripts/get-version.ps1`) and version resource generation (`scripts/generate-version-rc.ps1`)
+  - Provides accurate SemVer derivation from git tags, including pre-release/build metadata
+  - Eliminates `not was unexpected at this time` failure caused by fragile batch substitution
+  - Exposes `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG` to build/release workflows for consistent artifact naming
+- **Workflow Alignment** (2025-11-02): Updated build/release GitHub Actions to consume new version metadata and invoke `build.cmd` / `publish.cmd` with the resolved SemVer string
 
 ### Maintenance
 - 2025-11-01: Ran `/report` workflow; local tests blocked because `build.cmd` requires Windows tooling (non-Windows environment).

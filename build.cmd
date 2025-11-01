@@ -3,39 +3,66 @@ REM this_file: build.cmd
 REM Build script for fontlift-win-cli
 REM Requires Visual Studio 2017 or later with MSVC compiler
 REM Usage: build.cmd [version]
-REM   version: Optional version string (e.g., "0.1.0"). If not provided, extracted from git tags.
+REM   version: Optional semantic version (e.g., "1.2.3" or "1.2.3-dev.1")
 
-REM Get version from parameter or git tags
-set BUILD_VERSION=%~1
-if "%BUILD_VERSION%"=="" (
-    for /f "delims=" %%i in ('scripts\get-version.cmd') do set "BUILD_VERSION=%%i"
+set "EXIT_CODE=0"
+set "SCRIPT_ROOT=%~dp0"
+if "%SCRIPT_ROOT%"=="" set "SCRIPT_ROOT=."
+
+pushd "%SCRIPT_ROOT%" >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo ERROR: Failed to change directory to %SCRIPT_ROOT%
+    exit /b 1
 )
-REM Trim trailing spaces
-for /f "tokens=* delims= " %%a in ("%BUILD_VERSION%") do set "BUILD_VERSION=%%a"
 
-echo Building fontlift v%BUILD_VERSION%...
+set "VERSION_BASE="
+set "VERSION_SEMVER="
+set "VERSION_TAG="
+set "REQUESTED_VERSION=%~1"
 
-REM Check if cl.exe is available
+if "%REQUESTED_VERSION%"=="" (
+    call scripts\get-version.cmd >nul
+) else (
+    call scripts\get-version.cmd "%REQUESTED_VERSION%" >nul
+)
+if %ERRORLEVEL% NEQ 0 (
+    set "EXIT_CODE=%ERRORLEVEL%"
+    goto :cleanup
+)
+
+set "BUILD_VERSION=%VERSION_BASE%"
+if "%BUILD_VERSION%"=="" (
+    echo ERROR: Version resolution returned empty base value.
+    set "EXIT_CODE=1"
+    goto :cleanup
+)
+
+set "BUILD_SEMVER=%VERSION_SEMVER%"
+if "%BUILD_SEMVER%"=="" set "BUILD_SEMVER=%BUILD_VERSION%"
+set "BUILD_TAG=%VERSION_TAG%"
+if "%BUILD_TAG%"=="" set "BUILD_TAG=v%BUILD_SEMVER%"
+
+echo Building fontlift %BUILD_SEMVER%...
+
 where cl.exe >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: MSVC compiler (cl.exe) not found
-    echo Please run this from Visual Studio Developer Command Prompt
+    echo Please run this from a Visual Studio Developer Command Prompt
     echo Or run: "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
-    exit /b 1
+    set "EXIT_CODE=1"
+    goto :cleanup
 )
 
-REM Create output directory
 if not exist "build" mkdir "build"
 
-REM Generate version resource file
 echo Generating version resource...
-call scripts\generate-version-rc.cmd "%BUILD_VERSION%"
+call scripts\generate-version-rc.cmd "%BUILD_SEMVER%" >nul
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Failed to generate version resource
-    exit /b 1
+    set "EXIT_CODE=1"
+    goto :cleanup
 )
 
-REM Compile with C++17, warnings, optimizations, including version resource
 cl.exe /std:c++17 /EHsc /W4 /O2 ^
     /Fobuild\ ^
     src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp src\version.rc ^
@@ -45,14 +72,17 @@ if %ERRORLEVEL% EQU 0 (
     echo.
     echo ===================================
     echo Build successful!
-    echo Version: %BUILD_VERSION%
+    echo Version: %BUILD_SEMVER%
     echo Output: build\fontlift.exe
     echo ===================================
-    exit /b 0
 ) else (
     echo.
     echo ===================================
     echo Build failed!
     echo ===================================
-    exit /b 1
+    set "EXIT_CODE=1"
 )
+
+:cleanup
+popd >nul 2>&1
+exit /b %EXIT_CODE%

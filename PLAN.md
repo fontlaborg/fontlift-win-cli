@@ -292,7 +292,7 @@ jobs:
 
     - name: Build
       shell: cmd
-      run: build.cmd %VERSION%
+      run: build.cmd %VERSION_SEMVER%
 
     - name: Test executable exists
       shell: cmd
@@ -346,11 +346,11 @@ jobs:
 
     - name: Build release
       shell: cmd
-      run: build.cmd %VERSION%
+      run: build.cmd %VERSION_SEMVER%
 
     - name: Package release
       shell: cmd
-      run: publish.cmd %VERSION%
+      run: publish.cmd %VERSION_SEMVER%
 
     - name: Generate checksums
       shell: cmd

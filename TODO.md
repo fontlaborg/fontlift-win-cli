@@ -3,10 +3,10 @@
 
 ## CRITICAL - Current Blockers
 
-- [ ] **CI/CD FIX REQUIRED:** Change `scripts/get-version.cmd` line 21 from `echo|set /p="%VERSION%"` to `echo %VERSION%` to fix PowerShell compatibility issue causing all GitHub Actions to fail
-- [ ] Verify `fontlift list` has no prolog/epilog output (requirement: pure list only, pipe-friendly)
-- [ ] Test CI/CD after fix - verify green build
-- [ ] Create v1.1.4 release after CI passes
+- [ ] Trigger GitHub Actions build to validate new semver/version-resource pipeline on Windows runners
+- [ ] Trigger a tag-based release once CI is green to confirm assets, checksums, and version metadata
+- [x] Verify `fontlift list` has no prolog/epilog output (requirement: pure list only, pipe-friendly)
+- [ ] Monitor CI/logs post-release to ensure build + publish scripts handle pre-release semver suffixes correctly
 
 ## Completed Issues
 
@@ -77,18 +77,18 @@
 - [x] Push to main branch
 - [x] Verify CI build workflow triggers
 - [x] Fix batch script bug #1 (delayed expansion syntax in generate-version-rc.cmd)
-- [ ] Fix batch script bug #2 (echo|set /p incompatibility with PowerShell in get-version.cmd) **← CURRENT BLOCKER**
-- [ ] Verify CI build workflow passes (blocked by bug #2)
-- [ ] Verify artifact uploaded (blocked by bug #2)
-- [ ] Download CI artifact and test locally (blocked by bug #2)
+- [x] Replace fragile batch parsing with PowerShell helpers for version detection and version.rc generation
+- [ ] Verify CI build workflow passes (pending Windows runner execution)
+- [ ] Verify artifact uploaded (pending CI rerun)
+- [ ] Download CI artifact and test locally (pending CI rerun)
 - [x] Create and push git tags: `v0.1.0`, `v1.0.0`, `v1.1.0`, `v1.1.1`, `v1.1.2`, `v1.1.3`
 - [x] Verify release workflow triggers
-- [ ] Verify release workflow passes (blocked by bug #2)
-- [ ] Verify GitHub Release created (v1.1.3 created but has no assets due to build failure)
-- [ ] Verify release assets uploaded (blocked by bug #2)
-- [ ] Download release zip and verify contents (blocked by bug #2)
-- [ ] Verify executable has correct version in properties (blocked by bug #2)
-- [ ] Test release executable runs correctly (blocked by bug #2)
+- [ ] Verify release workflow passes (pending new tag after CI validation)
+- [ ] Verify GitHub Release created with assets (pending next release tag)
+- [ ] Verify release assets uploaded (pending release rerun)
+- [ ] Download release zip and verify contents (pending release rerun)
+- [ ] Verify executable has correct version in properties (pending release rerun)
+- [ ] Test release executable runs correctly (pending release rerun)
 
 ### Documentation Updates
 - [x] Update README.md - add "Building from Source" section
@@ -221,4 +221,3 @@
 - [ ] Verify final executable size <200 KB
 - [ ] Verify total code <1000 lines
 - [ ] Final integration test: install, reboot, verify, uninstall
-

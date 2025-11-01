@@ -1,25 +1,29 @@
 @echo off
 REM this_file: scripts/get-version.cmd
-REM Extract version from git tags or use provided parameter
+REM Resolve semantic version information from git tags or provided input.
 
-if "%~1"=="" (
-    REM No parameter - get from git tag
-    for /f "tokens=*" %%i in ('git describe --tags --abbrev^=0 2^>nul') do set VERSION=%%i
-    if "%VERSION%"=="" (
-        REM No tags exist - use default development version
-        set VERSION=v0.0.0
-    )
+set "VERSION_BASE="
+set "VERSION_SEMVER="
+set "VERSION_TAG="
+
+set "REQUESTED_VERSION=%~1"
+
+if "%REQUESTED_VERSION%"=="" (
+    for /f "usebackq tokens=1,2 delims==" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get-version.ps1"`) do call :__assign %%A %%B
 ) else (
-    REM Use provided parameter
-    set VERSION=%~1
+    for /f "usebackq tokens=1,2 delims==" %%A in (`powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0get-version.ps1" -Version "%REQUESTED_VERSION%"`) do call :__assign %%A %%B
 )
 
-REM Strip leading 'v' if present
-if "%VERSION:~0,1%"=="v" set VERSION=%VERSION:~1%
+if not defined VERSION_BASE (
+    >&2 echo Error: Failed to resolve version information.
+    exit /b 1
+)
 
-REM Strip any suffix after hyphen (e.g., "1.2.3-dev" -> "1.2.3")
-REM This avoids batch script issues with hyphens in version strings
-for /f "tokens=1 delims=-" %%a in ("%VERSION%") do set VERSION=%%a
+echo %VERSION_BASE%
+exit /b 0
 
-REM Output the version
-echo %VERSION%
+:__assign
+if /I "%~1"=="BASE" set "VERSION_BASE=%~2"
+if /I "%~1"=="SEMVER" set "VERSION_SEMVER=%~2"
+if /I "%~1"=="TAG" set "VERSION_TAG=%~2"
+goto :eof
