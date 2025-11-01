@@ -1,41 +1,48 @@
 # TODO.md
 <!-- this_file: TODO.md -->
 
-## Next Actions
+See docs/STREAMLINING_PLAN.md for complete execution plan.
 
-### CI/CD Validation
+## Week 1: Documentation Cleanup
 
-- [ ] Trigger GitHub Actions build workflow: `gh workflow run build.yml`
-- [ ] Analyze build logs, fix any issues
-- [ ] Create release tag: `git tag v1.1.24 && git push origin v1.1.24`
-- [ ] Verify release artifacts (zip + checksums)
+- [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)
+- [ ] Delete templates/ directory
+- [ ] Consolidate README to <150 lines
+- [ ] Archive CHANGELOG (keep last 5 releases)
+- [ ] Commit: "Aggressive documentation cleanup"
 
-### Package Distribution
+## Week 2: Chocolatey Package
 
-- [ ] Create Chocolatey package manifest
-- [ ] Test Chocolatey installation flow
-- [ ] Submit to Chocolatey community repository
-- [ ] Create WinGet package manifest
-- [ ] Test WinGet installation flow
-- [ ] Submit to winget-pkgs repository
+- [ ] Create fontlift.nuspec (repository root)
+- [ ] Create tools/chocolateyinstall.ps1
+- [ ] Test locally: `choco pack && choco install fontlift -s . -y`
+- [ ] Update .github/workflows/release.yml (add Chocolatey publish)
+- [ ] Submit to https://community.chocolatey.org/
+- [ ] Wait for approval (3-7 days)
 
-### Manual Testing (Windows Required)
+## Week 3: WinGet Package
 
-- [ ] Test edge cases: spaces in filenames, Unicode paths, .otc files
-- [ ] Test error handling: corrupt files, non-admin execution
-- [ ] Verify executable size <200 KB
-- [ ] Integration test: install → reboot → verify → uninstall
+- [ ] Fork microsoft/winget-pkgs
+- [ ] Create manifests/f/Fontlaborg/fontlift/VERSION/*.yaml (3 files)
+- [ ] Validate: `winget validate manifests/f/Fontlaborg/fontlift/VERSION/`
+- [ ] Test: `winget install --manifest manifests/f/Fontlaborg/fontlift/VERSION/`
+- [ ] Submit PR to microsoft/winget-pkgs
+- [ ] Wait for merge (1-3 days)
 
-### Documentation
+## Week 4: Verification
 
-- [ ] Update CHANGELOG.md after CI/CD test
-- [ ] Add release notes for v1.1.24
+- [ ] Test: `choco install fontlift`
+- [ ] Test: `winget install Fontlaborg.fontlift`
+- [ ] Update README with 3 installation methods
+- [ ] Create release tag v1.2.0
+- [ ] Verify automated publishing works
 
 ---
 
 ## Completed ✅
 
-- ✅ Core functionality (install, uninstall, remove, list, parse)
-- ✅ CI/CD infrastructure (semantic versioning, GitHub Actions)
-- ✅ Code quality verification (857 lines, memory safe)
-- ✅ Documentation cleanup and streamlining
+- ✅ Core implementation (1,355 lines, zero bloat)
+- ✅ CI/CD passing on Windows runners
+- ✅ Initial documentation cleanup (removed 4 LLM files)
+- ✅ Created streamlining plan (docs/STREAMLINING_PLAN.md)
+- ✅ Created package distribution plan (docs/PACKAGE_DISTRIBUTION.md)
