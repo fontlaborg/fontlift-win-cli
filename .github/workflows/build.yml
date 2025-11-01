@@ -26,8 +26,13 @@ jobs:
       id: version
       shell: pwsh
       run: |
+        # Call get-version.ps1 to derive version from git tags
+        # Returns JSON with: base (X.Y.Z), semver (X.Y.Z-pre+build), tag (vX.Y.Z...)
+        # Handles repos without tags by falling back to 0.0.0-dev.{count}+g{sha}
         $json = & scripts/get-version.ps1 -Format Json
         $info = $json | ConvertFrom-Json
+
+        # Export to GITHUB_ENV for use in subsequent steps
         "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
         "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
         "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8

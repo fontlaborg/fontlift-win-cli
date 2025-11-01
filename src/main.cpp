@@ -2,14 +2,10 @@
 // fontlift-win-cli - Windows font management CLI tool
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
 
+#include "exit_codes.h"
 #include "font_ops.h"
 #include <iostream>
 #include <cstring>
-
-// Exit codes
-constexpr int EXIT_SUCCESS_CODE = 0;
-constexpr int EXIT_ERROR = 1;
-constexpr int EXIT_PERMISSION_DENIED = 2;
 
 void ShowUsage(const char* programName) {
     std::cout << "fontlift - Windows Font Management CLI\n\n";

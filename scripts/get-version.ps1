@@ -52,6 +52,8 @@ function Resolve-FromProvidedVersion {
 }
 
 function Resolve-FromGit {
+    # Attempt to resolve version from git tags
+    # Returns $null if git is not available, no tags exist, or describe fails
     $describe = git describe --tags --match 'v[0-9]*.[0-9]*.[0-9]*' --long --dirty 2>$null
     if ($LASTEXITCODE -ne 0 -or -not $describe) {
         return $null
@@ -99,6 +101,9 @@ function Resolve-FromGit {
 }
 
 function Resolve-Fallback {
+    # Fallback version for repos without tags or when git is unavailable
+    # Returns 0.0.0-dev.{count}+g{sha} format
+    # Handles missing git gracefully with "unknown" and count 0
     $sha = git rev-parse --short HEAD 2>$null
     if ($LASTEXITCODE -ne 0 -or -not $sha) {
         $sha = "unknown"

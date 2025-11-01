@@ -2,6 +2,7 @@
 // Font operations implementation
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
 
+#include "exit_codes.h"
 #include "font_ops.h"
 #include "sys_utils.h"
 #include "font_parser.h"
@@ -14,10 +15,6 @@
 #include <algorithm>
 
 namespace FontOps {
-
-constexpr int EXIT_SUCCESS_CODE = 0;
-constexpr int EXIT_ERROR = 1;
-constexpr int EXIT_PERMISSION_DENIED = 2;
 
 // Helper: global context for registry enumeration callback
 static struct {
