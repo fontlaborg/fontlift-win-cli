@@ -31,27 +31,34 @@ void ShowUsage(const char* programName) {
     std::cout << "    -n <fontname>      Remove by internal name\n\n";
 }
 
-static int HandleVersionCommand() {
+static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) {
     char filename[MAX_PATH];
-    if (GetModuleFileNameA(NULL, filename, MAX_PATH) > 0) {
-        DWORD handle;
-        DWORD size = GetFileVersionInfoSizeA(filename, &handle);
-        if (size > 0) {
-            std::vector<BYTE> buffer(size);
-            if (GetFileVersionInfoA(filename, 0, size, buffer.data())) {
-                VS_FIXEDFILEINFO* fileInfo;
-                UINT len;
-                if (VerQueryValueA(buffer.data(), "\\", (LPVOID*)&fileInfo, &len)) {
-                    WORD major = HIWORD(fileInfo->dwFileVersionMS);
-                    WORD minor = LOWORD(fileInfo->dwFileVersionMS);
-                    WORD patch = HIWORD(fileInfo->dwFileVersionLS);
-                    std::cout << "fontlift version " << major << "." << minor << "." << patch << "\n";
-                    return EXIT_SUCCESS_CODE;
-                }
-            }
-        }
+    if (GetModuleFileNameA(NULL, filename, MAX_PATH) == 0) return false;
+
+    DWORD handle;
+    DWORD size = GetFileVersionInfoSizeA(filename, &handle);
+    if (size == 0) return false;
+
+    std::vector<BYTE> buffer(size);
+    if (!GetFileVersionInfoA(filename, 0, size, buffer.data())) return false;
+
+    VS_FIXEDFILEINFO* fileInfo;
+    UINT len;
+    if (!VerQueryValueA(buffer.data(), "\\", (LPVOID*)&fileInfo, &len)) return false;
+
+    major = HIWORD(fileInfo->dwFileVersionMS);
+    minor = LOWORD(fileInfo->dwFileVersionMS);
+    patch = HIWORD(fileInfo->dwFileVersionLS);
+    return true;
+}
+
+static int HandleVersionCommand() {
+    WORD major, minor, patch;
+    if (ExtractVersionInfo(major, minor, patch)) {
+        std::cout << "fontlift version " << major << "." << minor << "." << patch << "\n";
+    } else {
+        std::cout << "fontlift version unknown\n";
     }
-    std::cout << "fontlift version unknown\n";
     return EXIT_SUCCESS_CODE;
 }
 

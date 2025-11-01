@@ -110,6 +110,25 @@ Code complexity violations fixed (2025-11-02):
 - Improved code readability and maintainability
 - CI/CD passing (Run #18997732386)
 
+## Immediate: Final Polish (Round 6)
+
+Small but important quality improvements (2025-11-02):
+
+- [ ] **Add `this_file` comments to all source files**
+  - Currently missing from src/*.cpp and src/*.h files
+  - Ensures file path tracking consistency with project standards
+  - Add `// this_file: src/filename.cpp` near top of each file
+
+- [ ] **Add const correctness to function parameters**
+  - Review all function signatures in headers
+  - Add `const` to parameters that shouldn't be modified
+  - Improves type safety and compiler optimization
+
+- [ ] **Refactor HandleVersionCommand() to reduce size**
+  - Currently 23 lines (slightly over 20 line target)
+  - Extract version extraction logic into helper function
+  - Target: <20 lines
+
 ## Week 1: Documentation Cleanup
 
 - [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)
