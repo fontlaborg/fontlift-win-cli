@@ -73,83 +73,121 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
     return EXIT_SUCCESS_CODE;
 }
 
-int InstallFont(const char* fontPath) {
-    // Check admin privileges
+// Helper: Validate prerequisites for font installation
+static int ValidateInstallPrerequisites(const char* fontPath) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
-
-    // Check if file exists
     if (!SysUtils::FileExists(fontPath)) {
         std::cerr << "Error: Font file not found: " << fontPath << "\n";
         std::cerr << "Solution: Check the file path and ensure the font file exists\n";
         return EXIT_ERROR;
     }
+    return EXIT_SUCCESS_CODE;
+}
 
-    // Get font name
-    std::string fontName;
+// Helper: Extract font name from font file
+static int ExtractFontName(const char* fontPath, std::string& outName) {
     if (FontParser::IsCollection(fontPath)) {
         std::vector<std::string> names = FontParser::GetFontsInCollection(fontPath);
         if (names.empty()) {
             std::cerr << "Error: Failed to parse font collection\n";
             return EXIT_ERROR;
         }
-        fontName = names[0];  // Use first font in collection
-        if (names.size() > 1) {
-            std::cout << "Note: Collection contains " << names.size() << " fonts\n";
-        }
+        outName = names[0];
+        if (names.size() > 1) std::cout << "Note: Collection contains " << names.size() << " fonts\n";
     } else {
-        fontName = FontParser::GetFontName(fontPath);
-        if (fontName.empty()) {
+        outName = FontParser::GetFontName(fontPath);
+        if (outName.empty()) {
             std::cerr << "Error: Failed to parse font name\n";
             return EXIT_ERROR;
         }
     }
+    return EXIT_SUCCESS_CODE;
+}
 
-    // Copy to fonts folder
-    std::string destPath;
-    if (!SysUtils::CopyToFontsFolder(fontPath, destPath)) {
-        std::cerr << "Error: Failed to copy font file" << SysUtils::GetLastErrorMessage() << "\n";
-        return EXIT_ERROR;
+// Helper: Find font entry in registry with name variant matching
+static bool FindFontInRegistry(const char* fontName, std::string& outFile, std::string& outRegName) {
+    std::vector<std::string> variants = {
+        std::string(fontName) + " (TrueType)",
+        std::string(fontName) + " (OpenType)",
+        std::string(fontName)
+    };
+    for (const auto& variant : variants) {
+        if (SysUtils::RegReadFontEntry(variant.c_str(), outFile)) {
+            outRegName = variant;
+            return true;
+        }
     }
+    return false;
+}
 
+// Helper: Register font and load into system
+static int RegisterAndLoadFont(const std::string& destPath, const std::string& fontName) {
     std::string filename = SysUtils::GetFileName(destPath.c_str());
-
-    // Determine font type and registry value name
     std::string regName = fontName + " (TrueType)";
-
-    // Check if font already installed
     std::string existingFile;
     if (SysUtils::RegReadFontEntry(regName.c_str(), existingFile)) {
         std::cerr << "Warning: Font already installed: " << fontName << "\n";
         std::cerr << "Existing location: " << SysUtils::GetFontsDirectory() << "\\" << existingFile << "\n";
         std::cerr << "Overwriting with new installation...\n";
     }
-
-    // Add to registry
     if (!SysUtils::RegWriteFontEntry(regName.c_str(), filename.c_str())) {
         std::cerr << "Error: Failed to register font in registry" << SysUtils::GetLastErrorMessage() << "\n";
-        SysUtils::DeleteFromFontsFolder(filename.c_str());  // Cleanup
+        SysUtils::DeleteFromFontsFolder(filename.c_str());
         return EXIT_ERROR;
     }
-
-    // Load font into system
     if (AddFontResourceExA(destPath.c_str(), FR_PRIVATE, 0) == 0) {
         std::cerr << "Error: Failed to load font resource" << SysUtils::GetLastErrorMessage() << "\n";
-        // Rollback: remove registry entry and delete copied file
         SysUtils::RegDeleteFontEntry(regName.c_str());
         SysUtils::DeleteFromFontsFolder(filename.c_str());
         return EXIT_ERROR;
     }
+    return EXIT_SUCCESS_CODE;
+}
 
-    // Notify system
+// Helper: Unload font and cleanup registry (shared by Uninstall and Remove)
+static int UnloadAndCleanupFont(const std::string& fontFile, const std::string& matchedName, const std::string& fontName, bool deleteFile) {
+    std::string fontsDir = SysUtils::GetFontsDirectory();
+    std::string fullPath = fontsDir + "\\" + fontFile;
+    if (RemoveFontResourceExA(fullPath.c_str(), FR_PRIVATE, 0) == 0) {
+        std::cerr << "Warning: Failed to unload font resource\n";
+    }
+    if (!SysUtils::RegDeleteFontEntry(matchedName.c_str())) {
+        std::cerr << "Error: Failed to remove font from registry\n";
+        return EXIT_ERROR;
+    }
+    if (deleteFile && !SysUtils::DeleteFromFontsFolder(fontFile.c_str())) {
+        std::cerr << "Error: Failed to delete font file: " << fullPath << "\n";
+        std::cerr << "Font has been uninstalled but file remains\n";
+        SysUtils::NotifyFontChange();
+        return EXIT_ERROR;
+    }
     SysUtils::NotifyFontChange();
+    std::cout << "Successfully " << (deleteFile ? "removed" : "uninstalled") << ": " << fontName << "\n";
+    if (!deleteFile) std::cout << "Font file remains at: " << fullPath << "\n";
+    else std::cout << "File deleted: " << fullPath << "\n";
+    return EXIT_SUCCESS_CODE;
+}
 
+int InstallFont(const char* fontPath) {
+    int result = ValidateInstallPrerequisites(fontPath);
+    if (result != EXIT_SUCCESS_CODE) return result;
+    std::string fontName;
+    result = ExtractFontName(fontPath, fontName);
+    if (result != EXIT_SUCCESS_CODE) return result;
+    std::string destPath;
+    if (!SysUtils::CopyToFontsFolder(fontPath, destPath)) {
+        std::cerr << "Error: Failed to copy font file" << SysUtils::GetLastErrorMessage() << "\n";
+        return EXIT_ERROR;
+    }
+    result = RegisterAndLoadFont(destPath, fontName);
+    if (result != EXIT_SUCCESS_CODE) return result;
+    SysUtils::NotifyFontChange();
     std::cout << "Successfully installed: " << fontName << "\n";
     std::cout << "Location: " << destPath << "\n";
-
     return EXIT_SUCCESS_CODE;
 }
 
@@ -176,58 +214,16 @@ int UninstallFontByName(const char* fontName) {
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
-
-    // Try different registry name formats
-    std::vector<std::string> nameVariants = {
-        std::string(fontName) + " (TrueType)",
-        std::string(fontName) + " (OpenType)",
-        std::string(fontName)
-    };
-
-    bool found = false;
-    std::string fontFile;
-    std::string matchedName;
-
-    for (const auto& variant : nameVariants) {
-        if (SysUtils::RegReadFontEntry(variant.c_str(), fontFile)) {
-            found = true;
-            matchedName = variant;
-            break;
-        }
-    }
-
-    if (!found) {
+    std::string fontFile, matchedName;
+    if (!FindFontInRegistry(fontName, fontFile, matchedName)) {
         std::cerr << "Error: Font not found in registry: " << fontName << "\n";
         return EXIT_ERROR;
     }
-
-    // Validate font file path from registry
     if (!SysUtils::IsValidFontPath(fontFile.c_str())) {
         std::cerr << "Error: Invalid font path in registry: " << fontFile << "\n";
         return EXIT_ERROR;
     }
-
-    // Remove font resource from system
-    std::string fontsDir = SysUtils::GetFontsDirectory();
-    std::string fullPath = fontsDir + "\\" + fontFile;
-
-    if (RemoveFontResourceExA(fullPath.c_str(), FR_PRIVATE, 0) == 0) {
-        std::cerr << "Warning: Failed to unload font resource\n";
-    }
-
-    // Remove from registry
-    if (!SysUtils::RegDeleteFontEntry(matchedName.c_str())) {
-        std::cerr << "Error: Failed to remove font from registry\n";
-        return EXIT_ERROR;
-    }
-
-    // Notify system
-    SysUtils::NotifyFontChange();
-
-    std::cout << "Successfully uninstalled: " << fontName << "\n";
-    std::cout << "Font file remains at: " << fullPath << "\n";
-
-    return EXIT_SUCCESS_CODE;
+    return UnloadAndCleanupFont(fontFile, matchedName, fontName, false);
 }
 
 int RemoveFontByPath(const char* fontPath) {
@@ -253,66 +249,16 @@ int RemoveFontByName(const char* fontName) {
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
     }
-
-    // Try different registry name formats
-    std::vector<std::string> nameVariants = {
-        std::string(fontName) + " (TrueType)",
-        std::string(fontName) + " (OpenType)",
-        std::string(fontName)
-    };
-
-    bool found = false;
-    std::string fontFile;
-    std::string matchedName;
-
-    for (const auto& variant : nameVariants) {
-        if (SysUtils::RegReadFontEntry(variant.c_str(), fontFile)) {
-            found = true;
-            matchedName = variant;
-            break;
-        }
-    }
-
-    if (!found) {
+    std::string fontFile, matchedName;
+    if (!FindFontInRegistry(fontName, fontFile, matchedName)) {
         std::cerr << "Error: Font not found in registry: " << fontName << "\n";
         return EXIT_ERROR;
     }
-
-    // Validate font file path from registry
     if (!SysUtils::IsValidFontPath(fontFile.c_str())) {
         std::cerr << "Error: Invalid font path in registry: " << fontFile << "\n";
         return EXIT_ERROR;
     }
-
-    // Remove font resource from system
-    std::string fontsDir = SysUtils::GetFontsDirectory();
-    std::string fullPath = fontsDir + "\\" + fontFile;
-
-    if (RemoveFontResourceExA(fullPath.c_str(), FR_PRIVATE, 0) == 0) {
-        std::cerr << "Warning: Failed to unload font resource\n";
-    }
-
-    // Remove from registry
-    if (!SysUtils::RegDeleteFontEntry(matchedName.c_str())) {
-        std::cerr << "Error: Failed to remove font from registry\n";
-        return EXIT_ERROR;
-    }
-
-    // Delete file
-    if (!SysUtils::DeleteFromFontsFolder(fontFile.c_str())) {
-        std::cerr << "Error: Failed to delete font file: " << fullPath << "\n";
-        std::cerr << "Font has been uninstalled but file remains\n";
-        SysUtils::NotifyFontChange();
-        return EXIT_ERROR;
-    }
-
-    // Notify system
-    SysUtils::NotifyFontChange();
-
-    std::cout << "Successfully removed: " << fontName << "\n";
-    std::cout << "File deleted: " << fullPath << "\n";
-
-    return EXIT_SUCCESS_CODE;
+    return UnloadAndCleanupFont(fontFile, matchedName, fontName, true);
 }
 
 } // namespace FontOps

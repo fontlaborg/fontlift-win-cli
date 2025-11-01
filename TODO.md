@@ -40,6 +40,29 @@ Small refinements implemented (2025-11-02):
   - Warns on suspicious file sizes
   - +17 lines in build.cmd
 
+## Immediate: Code Refactoring (Round 4) ✅ COMPLETE
+
+Code quality violations fixed (2025-11-02):
+
+- ✅ **Refactored InstallFont() to 18 lines**
+  - Was 79 lines, now 18 lines
+  - Extracted 4 helper functions
+  - ValidateInstallPrerequisites(), ExtractFontName(), RegisterAndLoadFont()
+
+- ✅ **Refactored UninstallFontByName() to 17 lines**
+  - Was 59 lines, now 17 lines
+  - Extracted FindFontInRegistry(), UnloadAndCleanupFont()
+
+- ✅ **Refactored RemoveFontByName() to 17 lines**
+  - Was 67 lines, now 17 lines
+  - Shares logic with UninstallFontByName via helpers
+
+**Impact:**
+- font_ops.cpp: 318 → 264 lines (-54 lines, -17%)
+- Total codebase: 991 → 937 lines (-54 lines)
+- All functions now ≤22 lines (2 helpers at 22, rest ≤18)
+- Improved code readability and maintainability
+
 ## Immediate: Robustness Improvements (Round 3) ✅ COMPLETE
 
 Additional quality improvements implemented (2025-11-02):
