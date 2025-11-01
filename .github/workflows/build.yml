@@ -69,8 +69,14 @@ jobs:
     - name: Test executable runs
       shell: cmd
       run: |
+        REM Running without args shows usage (exit code 1), which is expected
         build\fontlift.exe
-        if %ERRORLEVEL% NEQ 0 exit /b 1
+        if %ERRORLEVEL% EQU 1 (
+          echo Executable runs correctly - showed usage message
+        ) else (
+          echo ERROR: Unexpected exit code %ERRORLEVEL%
+          exit /b 1
+        )
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
