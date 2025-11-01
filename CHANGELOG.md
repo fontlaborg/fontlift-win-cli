@@ -5,6 +5,26 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
+### Code Refactoring (Round 5) (2025-11-02) ✅ COMPLETE
+- **Refactored 3 oversized functions to reduce complexity**
+  - main(): 136 → 32 lines (-76% reduction)
+  - GetFontName(): 33 → 19 lines (-42% reduction)
+  - IsValidFontPath(): 30 → 6 lines (-80% reduction)
+- **Extracted 7 new helper functions:**
+  - HandleVersionCommand() - version display logic (23 lines)
+  - HandleListCommand() - list command with flags (11 lines)
+  - HandleInstallCommand() - install command parsing (18 lines)
+  - HandleUninstallOrRemove() - shared uninstall/remove handler (17 lines)
+  - ExtractFilenameWithoutExtension() - filename fallback (13 lines)
+  - HasPathTraversal() - path traversal detection (2 lines)
+  - IsAbsolutePathInFontsDir() - directory validation (11 lines)
+- **Impact:**
+  - Total codebase: 937 → 904 lines (-33 lines, -3.5%)
+  - Functions >20 lines: 6 → 5 (main() was 136, now 32)
+  - Dramatically improved readability and maintainability
+  - All core logic preserved, Windows API calls unchanged
+- **CI/CD Status: ✅ PASSING** (Run #18997732386)
+
 ### Robustness Improvements (Round 3) (2025-11-02)
 - **Added file size validation to font_parser.cpp**
   - Rejects files <100 bytes or >50MB (clearly corrupt/invalid)
