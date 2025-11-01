@@ -1,0 +1,99 @@
+﻿2025-11-01T01:28:37.5350754Z ##[group]Run actions/checkout@v4
+2025-11-01T01:28:37.5352584Z with:
+2025-11-01T01:28:37.5353650Z   fetch-depth: 0
+2025-11-01T01:28:37.5354971Z   repository: fontlaborg/fontlift-win-cli
+2025-11-01T01:28:37.5356898Z   token: ***
+2025-11-01T01:28:37.5357994Z   ssh-strict: true
+2025-11-01T01:28:37.5359116Z   ssh-user: git
+2025-11-01T01:28:37.5360333Z   persist-credentials: true
+2025-11-01T01:28:37.5361628Z   clean: true
+2025-11-01T01:28:37.5362822Z   sparse-checkout-cone-mode: true
+2025-11-01T01:28:37.5364362Z   fetch-tags: false
+2025-11-01T01:28:37.5365738Z   show-progress: true
+2025-11-01T01:28:37.5366518Z   lfs: false
+2025-11-01T01:28:37.5367218Z   submodules: false
+2025-11-01T01:28:37.5368009Z   set-safe-directory: true
+2025-11-01T01:28:37.5369180Z ##[endgroup]
+2025-11-01T01:28:37.7559671Z Syncing repository: fontlaborg/fontlift-win-cli
+2025-11-01T01:28:37.7562103Z ##[group]Getting Git version info
+2025-11-01T01:28:37.7563307Z Working directory is 'D:\a\fontlift-win-cli\fontlift-win-cli'
+2025-11-01T01:28:37.8581928Z [command]"C:\Program Files\Git\bin\git.exe" version
+2025-11-01T01:28:38.3869746Z git version 2.51.1.windows.1
+2025-11-01T01:28:38.3922869Z ##[endgroup]
+2025-11-01T01:28:38.3943188Z Temporarily overriding HOME='D:\a\_temp\3d634c27-5028-4984-ad8a-691f2c12be93' before making global git config changes
+2025-11-01T01:28:38.3944331Z Adding repository directory to the temporary git global config as a safe directory
+2025-11-01T01:28:38.3955024Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\fontlift-win-cli\fontlift-win-cli
+2025-11-01T01:28:38.4249769Z Deleting the contents of 'D:\a\fontlift-win-cli\fontlift-win-cli'
+2025-11-01T01:28:38.4256122Z ##[group]Initializing the repository
+2025-11-01T01:28:38.4265707Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\fontlift-win-cli\fontlift-win-cli
+2025-11-01T01:28:38.5698323Z Initialized empty Git repository in D:/a/fontlift-win-cli/fontlift-win-cli/.git/
+2025-11-01T01:28:38.5742819Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/fontlaborg/fontlift-win-cli
+2025-11-01T01:28:38.6045552Z ##[endgroup]
+2025-11-01T01:28:38.6046043Z ##[group]Disabling automatic garbage collection
+2025-11-01T01:28:38.6055170Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2025-11-01T01:28:38.6334559Z ##[endgroup]
+2025-11-01T01:28:38.6335033Z ##[group]Setting up auth
+2025-11-01T01:28:38.6348051Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2025-11-01T01:28:38.6632761Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2025-11-01T01:28:40.6685012Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2025-11-01T01:28:40.6970221Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2025-11-01T01:28:41.2250458Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2025-11-01T01:28:41.2573426Z ##[endgroup]
+2025-11-01T01:28:41.2574640Z ##[group]Fetching the repository
+2025-11-01T01:28:41.2593425Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2025-11-01T01:28:42.9088065Z From https://github.com/fontlaborg/fontlift-win-cli
+2025-11-01T01:28:42.9088548Z  * [new branch]      main       -> origin/main
+2025-11-01T01:28:42.9088808Z  * [new tag]         v0.1.0     -> v0.1.0
+2025-11-01T01:28:42.9089065Z  * [new tag]         v1.0.0     -> v1.0.0
+2025-11-01T01:28:42.9089348Z  * [new tag]         v1.1.0     -> v1.1.0
+2025-11-01T01:28:42.9092184Z  * [new tag]         v1.1.1     -> v1.1.1
+2025-11-01T01:28:42.9092462Z  * [new tag]         v1.1.10    -> v1.1.10
+2025-11-01T01:28:42.9092705Z  * [new tag]         v1.1.11    -> v1.1.11
+2025-11-01T01:28:42.9092932Z  * [new tag]         v1.1.12    -> v1.1.12
+2025-11-01T01:28:42.9093196Z  * [new tag]         v1.1.13    -> v1.1.13
+2025-11-01T01:28:42.9093435Z  * [new tag]         v1.1.14    -> v1.1.14
+2025-11-01T01:28:42.9093671Z  * [new tag]         v1.1.15    -> v1.1.15
+2025-11-01T01:28:42.9093907Z  * [new tag]         v1.1.16    -> v1.1.16
+2025-11-01T01:28:42.9094130Z  * [new tag]         v1.1.17    -> v1.1.17
+2025-11-01T01:28:42.9094383Z  * [new tag]         v1.1.18    -> v1.1.18
+2025-11-01T01:28:42.9094637Z  * [new tag]         v1.1.19    -> v1.1.19
+2025-11-01T01:28:42.9094878Z  * [new tag]         v1.1.2     -> v1.1.2
+2025-11-01T01:28:42.9095106Z  * [new tag]         v1.1.3     -> v1.1.3
+2025-11-01T01:28:42.9095344Z  * [new tag]         v1.1.4     -> v1.1.4
+2025-11-01T01:28:42.9095582Z  * [new tag]         v1.1.5     -> v1.1.5
+2025-11-01T01:28:42.9095812Z  * [new tag]         v1.1.6     -> v1.1.6
+2025-11-01T01:28:42.9096037Z  * [new tag]         v1.1.7     -> v1.1.7
+2025-11-01T01:28:42.9096252Z  * [new tag]         v1.1.8     -> v1.1.8
+2025-11-01T01:28:42.9096521Z  * [new tag]         v1.1.9     -> v1.1.9
+2025-11-01T01:28:42.9295126Z [command]"C:\Program Files\Git\bin\git.exe" tag --list v1.1.19
+2025-11-01T01:28:42.9560328Z v1.1.19
+2025-11-01T01:28:42.9600544Z [command]"C:\Program Files\Git\bin\git.exe" rev-parse refs/tags/v1.1.19
+2025-11-01T01:28:42.9842036Z 9b1794c04c83b9a1d7b6d2ec04669e6d4d9f2beb
+2025-11-01T01:28:42.9872363Z ##[endgroup]
+2025-11-01T01:28:42.9872949Z ##[group]Determining the checkout info
+2025-11-01T01:28:42.9873723Z ##[endgroup]
+2025-11-01T01:28:42.9883108Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2025-11-01T01:28:43.0192699Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2025-11-01T01:28:43.0478230Z ##[group]Checking out the ref
+2025-11-01T01:28:43.0478648Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force refs/tags/v1.1.19
+2025-11-01T01:28:43.0997648Z Note: switching to 'refs/tags/v1.1.19'.
+2025-11-01T01:28:43.0998005Z 
+2025-11-01T01:28:43.0998266Z You are in 'detached HEAD' state. You can look around, make experimental
+2025-11-01T01:28:43.0998963Z changes and commit them, and you can discard any commits you make in this
+2025-11-01T01:28:43.0999766Z state without impacting any branches by switching back to a branch.
+2025-11-01T01:28:43.1000043Z 
+2025-11-01T01:28:43.1000209Z If you want to create a new branch to retain commits you create, you may
+2025-11-01T01:28:43.1000584Z do so (now or later) by using -c with the switch command. Example:
+2025-11-01T01:28:43.1000803Z 
+2025-11-01T01:28:43.1000911Z   git switch -c <new-branch-name>
+2025-11-01T01:28:43.1001071Z 
+2025-11-01T01:28:43.1001159Z Or undo this operation with:
+2025-11-01T01:28:43.1001358Z 
+2025-11-01T01:28:43.1001436Z   git switch -
+2025-11-01T01:28:43.1001541Z 
+2025-11-01T01:28:43.1001729Z Turn off this advice by setting config variable advice.detachedHead to false
+2025-11-01T01:28:43.1001996Z 
+2025-11-01T01:28:43.1002076Z HEAD is now at 9b1794c v1.1.19
+2025-11-01T01:28:43.1033455Z ##[endgroup]
+2025-11-01T01:28:43.1347119Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2025-11-01T01:28:43.1669090Z 9b1794c04c83b9a1d7b6d2ec04669e6d4d9f2beb

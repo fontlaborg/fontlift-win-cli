@@ -1,0 +1,5 @@
+2025-11-01T01:28:31.4460000Z Requested labels: windows-latest
+2025-11-01T01:28:31.4460000Z Job defined at: fontlaborg/fontlift-win-cli/.github/workflows/release.yml@refs/tags/v1.1.19
+2025-11-01T01:28:31.4460000Z Waiting for a runner to pick up this job...
+2025-11-01T01:28:31.4500000Z Job is waiting for a hosted runner to come online.
+2025-11-01T01:28:31.4500000Z Job is about to start running on the hosted runner: GitHub Actions 1000000611
