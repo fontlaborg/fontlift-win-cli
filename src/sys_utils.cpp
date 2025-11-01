@@ -9,6 +9,25 @@
 
 namespace SysUtils {
 
+std::string GetLastErrorMessage() {
+    DWORD error = GetLastError();
+    if (error == 0) return "";
+
+    char* msgBuf = nullptr;
+    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+                   NULL, error, 0, (LPSTR)&msgBuf, 0, NULL);
+
+    std::string message = msgBuf ? msgBuf : "";
+    if (msgBuf) LocalFree(msgBuf);
+
+    // Remove trailing newlines
+    while (!message.empty() && (message.back() == '\n' || message.back() == '\r')) {
+        message.pop_back();
+    }
+
+    return " (Error " + std::to_string(error) + ": " + message + ")";
+}
+
 bool IsAdmin() {
     BOOL isAdmin = FALSE;
     PSID adminGroup = NULL;

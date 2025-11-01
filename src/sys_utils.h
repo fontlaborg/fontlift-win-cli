@@ -8,6 +8,9 @@
 #include <string>
 
 namespace SysUtils {
+    // Get Windows error message from GetLastError()
+    std::string GetLastErrorMessage();
+
     // Check if running with administrator privileges
     bool IsAdmin();
 

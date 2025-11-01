@@ -111,7 +111,7 @@ int InstallFont(const char* fontPath) {
     // Copy to fonts folder
     std::string destPath;
     if (!SysUtils::CopyToFontsFolder(fontPath, destPath)) {
-        std::cerr << "Error: Failed to copy font file\n";
+        std::cerr << "Error: Failed to copy font file" << SysUtils::GetLastErrorMessage() << "\n";
         return EXIT_ERROR;
     }
 
@@ -120,16 +120,24 @@ int InstallFont(const char* fontPath) {
     // Determine font type and registry value name
     std::string regName = fontName + " (TrueType)";
 
+    // Check if font already installed
+    std::string existingFile;
+    if (SysUtils::RegReadFontEntry(regName.c_str(), existingFile)) {
+        std::cerr << "Warning: Font already installed: " << fontName << "\n";
+        std::cerr << "Existing location: " << SysUtils::GetFontsDirectory() << "\\" << existingFile << "\n";
+        std::cerr << "Overwriting with new installation...\n";
+    }
+
     // Add to registry
     if (!SysUtils::RegWriteFontEntry(regName.c_str(), filename.c_str())) {
-        std::cerr << "Error: Failed to register font in registry\n";
+        std::cerr << "Error: Failed to register font in registry" << SysUtils::GetLastErrorMessage() << "\n";
         SysUtils::DeleteFromFontsFolder(filename.c_str());  // Cleanup
         return EXIT_ERROR;
     }
 
     // Load font into system
     if (AddFontResourceExA(destPath.c_str(), FR_PRIVATE, 0) == 0) {
-        std::cerr << "Error: Failed to load font resource\n";
+        std::cerr << "Error: Failed to load font resource" << SysUtils::GetLastErrorMessage() << "\n";
         // Rollback: remove registry entry and delete copied file
         SysUtils::RegDeleteFontEntry(regName.c_str());
         SysUtils::DeleteFromFontsFolder(filename.c_str());

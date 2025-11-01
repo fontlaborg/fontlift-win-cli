@@ -40,6 +40,28 @@ Small refinements implemented (2025-11-02):
   - Warns on suspicious file sizes
   - +17 lines in build.cmd
 
+## Immediate: Robustness Improvements (Round 3) ✅ COMPLETE
+
+Additional quality improvements implemented (2025-11-02):
+
+- ✅ **Add file size validation to font_parser.cpp**
+  - Rejects files <100 bytes or >50MB (clearly corrupt/invalid)
+  - Early validation before attempting to parse
+  - Prevents crashes from malformed font files
+  - +14 lines in font_parser.cpp (2 validation blocks)
+
+- ✅ **Add Windows API error codes to error messages**
+  - Includes GetLastError() codes with FormatMessage
+  - Helps diagnose CopyFile, Registry, AddFontResource failures
+  - New GetLastErrorMessage() helper in sys_utils
+  - +18 lines in sys_utils.cpp, +3 lines in font_ops.cpp
+
+- ✅ **Add duplicate installation detection**
+  - Checks if font already registered before installing
+  - Warns user with existing location
+  - Proceeds with overwrite (avoids accidental duplicates)
+  - +6 lines in font_ops.cpp InstallFont()
+
 ## Week 1: Documentation Cleanup
 
 - [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)
@@ -78,11 +100,12 @@ Small refinements implemented (2025-11-02):
 
 ## Completed ✅
 
-- ✅ Core implementation (1,407 lines, zero bloat)
-- ✅ CI/CD passing on Windows runners (2/2 builds)
+- ✅ Core implementation (1,443 lines, zero bloat)
+- ✅ CI/CD passing on Windows runners (4/4 builds, 100% success rate)
 - ✅ Initial documentation cleanup (removed 4 LLM files)
 - ✅ Created streamlining plan (docs/STREAMLINING_PLAN.md)
 - ✅ Created package distribution plan (docs/PACKAGE_DISTRIBUTION.md)
-- ✅ /test - Comprehensive code verification
+- ✅ /test - Comprehensive code verification (2 rounds)
 - ✅ /report - Updated WORK.md and CHANGELOG.md with test results
-- ✅ Quality improvements - Fixed 1 MEDIUM + 2 LOW severity issues
+- ✅ Quality improvements Round 1 - Fixed 1 MEDIUM + 2 LOW severity issues
+- ✅ Quality improvements Round 2 - Added 3 UX improvements

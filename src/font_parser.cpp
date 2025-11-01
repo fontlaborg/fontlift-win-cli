@@ -119,6 +119,15 @@ std::string GetFontName(const char* fontPath) {
     std::ifstream file(fontPath, std::ios::binary);
     if (!file) return "";
 
+    // Validate file size: must be between 100 bytes and 50MB
+    file.seekg(0, std::ios::end);
+    std::streampos fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    if (fileSize < 100 || fileSize > 50 * 1024 * 1024) {
+        return "";  // File too small or too large to be valid font
+    }
+
     std::string name = ParseFontAtOffset(file, 0);
 
     // If parsing failed, use filename without extension as fallback
@@ -144,6 +153,15 @@ std::vector<std::string> GetFontsInCollection(const char* fontPath) {
     std::vector<std::string> names;
     std::ifstream file(fontPath, std::ios::binary);
     if (!file) return names;
+
+    // Validate file size: must be between 100 bytes and 50MB
+    file.seekg(0, std::ios::end);
+    std::streampos fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    if (fileSize < 100 || fileSize > 50 * 1024 * 1024) {
+        return names;  // File too small or too large to be valid font
+    }
 
     uint8_t header[12];
     if (!file.read((char*)header, 12)) return names;
