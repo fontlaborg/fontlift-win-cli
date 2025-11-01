@@ -247,18 +247,32 @@ echo Generated version.rc with version %VERSION_STRING%
 REM Accept optional version parameter
 set BUILD_VERSION=%~1
 
-REM Get version
-if "%BUILD_VERSION%"=="" (
-    for /f %%i in ('scripts\get-version.cmd') do set BUILD_VERSION=%%i
+set "SCRIPT_ROOT=%~dp0"
+if "%SCRIPT_ROOT%"=="" set "SCRIPT_ROOT=."
+pushd "%SCRIPT_ROOT%" >nul 2>&1
+
+set "VERSION_BASE="
+set "VERSION_SEMVER="
+set "REQUESTED_VERSION=%~1"
+
+if "%REQUESTED_VERSION%"=="" (
+    call scripts\get-version.cmd >nul
+) else (
+    call scripts\get-version.cmd "%REQUESTED_VERSION%" >nul
 )
+set "BUILD_VERSION=%VERSION_BASE%"
+if "%BUILD_VERSION%"=="" exit /b 1
+set "BUILD_SEMVER=%VERSION_SEMVER%"
+if "%BUILD_SEMVER%"=="" set "BUILD_SEMVER=%BUILD_VERSION%"
 
-echo Building fontlift v%BUILD_VERSION%...
+echo Building fontlift %BUILD_SEMVER%...
 
-REM Generate version.rc
-call scripts\generate-version-rc.cmd %BUILD_VERSION%
+call scripts\generate-version-rc.cmd "%BUILD_SEMVER%" >nul
 
-REM Compile (add version.rc to compilation)
-cl.exe /std:c++17 /EHsc /W4 /O2 /Fobuild\ src\main.cpp src\version.rc /link /OUT:build\fontlift.exe Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
+cl.exe /std:c++17 /EHsc /W4 /O2 ^
+    /Fobuild\ ^
+    src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp src\version.rc ^
+    /link /OUT:build\fontlift.exe Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
 ```
 
 **GitHub Actions CI Build** (`.github/workflows/build.yml`):
@@ -284,11 +298,15 @@ jobs:
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Get version
+    - name: Resolve version
       id: version
-      shell: cmd
+      shell: pwsh
       run: |
-        for /f %%i in ('scripts\get-version.cmd') do echo VERSION=%%i >> %GITHUB_ENV%
+        $json = & scripts/get-version.ps1 -Format Json
+        $info = $json | ConvertFrom-Json
+        "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
     - name: Build
       shell: cmd
@@ -307,7 +325,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: fontlift-${{ env.VERSION }}
+        name: fontlift-${{ env.VERSION_TAG }}
         path: build/fontlift.exe
         retention-days: 7
 ```
@@ -336,13 +354,18 @@ jobs:
     - name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
 
-    - name: Extract version from tag
+    - name: Resolve version from tag
       id: version
-      shell: bash
+      shell: pwsh
       run: |
-        VERSION=${GITHUB_REF_NAME#v}
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-        echo "VERSION_TAG=$GITHUB_REF_NAME" >> $GITHUB_ENV
+        $ref = $env:GITHUB_REF_NAME
+        if ($ref.StartsWith('v')) { $ref = $ref.Substring(1) }
+        $json = & scripts/get-version.ps1 -Version $ref -Format Json
+        $info = $json | ConvertFrom-Json
+        "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        "VERSION_TAG=$($info.tag)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+        Write-Host "Building release for $($info.semver)"
 
     - name: Build release
       shell: cmd

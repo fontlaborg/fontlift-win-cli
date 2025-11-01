@@ -671,29 +671,31 @@ The v1.1.0 implementation is:
 **Date:** 2025-11-02
 
 ### Issue Discovered
-- GitHub release workflow failed with `not was unexpected at this time` despite previous delayed-expansion fixes.
-- Batch-only version extraction could not emit accurate SemVer for commits beyond the latest tag, limiting artifact traceability.
+- Release workflow still failed with `not was unexpected at this time`, and version metadata never reflected distance from latest tag.
+- Only raw tag values (`1.1.4`) were available to build scripts; no support for pre-release or build metadata.
 
 ### Root Cause Analysis
-- `scripts/generate-version-rc.cmd` still relied on fragile delayed expansion and token parsing; PowerShell invocation uncovered the syntax error.
-- `scripts/get-version.cmd` trimmed everything after `-`, preventing pre-release/build metadata and masking commit distance from tags.
+- `scripts/generate-version-rc.cmd` depended on fragile delayed-expansion substitutions which broke under PowerShell invocation.
+- `scripts/get-version.cmd` truncated everything after `-`, preventing SemVer pre-release/build suffixes and masking commit distance.
 
 ### Solution Implemented
 - Added PowerShell helpers:
-  - `scripts/get-version.ps1` derives SemVer from git (`git describe`) with fallback metadata and optional explicit override.
-  - `scripts/generate-version-rc.ps1` materialises `src/version.rc` from the template with validated numeric components.
-- Replaced batch logic with thin shims that call the new scripts and expose `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG`.
-- Refactored `build.cmd` / `publish.cmd` to:
-  - Resolve versions via the new helper (works from any working directory via `pushd`).
-  - Feed full SemVer into version.rc so resource strings reflect pre-release labels.
-  - Harden error handling and ensure directories restore on exit.
-- Updated GitHub Actions:
-  - Build workflow now records base/semver/tag to `$GITHUB_ENV` and invokes `build.cmd %VERSION_SEMVER%`.
-  - Release workflow trims the tag, resolves SemVer through the helper, and uses `%VERSION_SEMVER%` for build/publish, keeping `%VERSION_TAG%` for assets.
+  - `scripts/get-version.ps1` resolves SemVer from git (`git describe --tags --long --dirty`) with fallback commit count/sha and optional explicit overrides.
+  - `scripts/generate-version-rc.ps1` validates numeric segments, injects version data into template, and writes `src/version.rc`.
+- Simplified batch shims:
+  - `scripts/get-version.cmd` now delegates to PowerShell, surfaces `VERSION_BASE`, `VERSION_SEMVER`, and `VERSION_TAG`, and echoes the base for legacy callers.
+  - `scripts/generate-version-rc.cmd` is a thin wrapper over the PowerShell generator.
+- Hardened `build.cmd` / `publish.cmd`:
+  - Resolve versions via helper regardless of invocation directory (`pushd` to script root).
+  - Feed full SemVer into version resource strings while keeping numeric components clean.
+  - Improved error handling and cleanup paths.
+- Updated GitHub Actions workflows:
+  - CI build writes base/semver/tag to `$GITHUB_ENV`, invokes `build.cmd %VERSION_SEMVER%`, and names artifacts with `VERSION_TAG`.
+  - Release workflow trims the `v` prefix, resolves SemVer via helper, and reuses the shared metadata for build/publish/checksum/release steps.
 
 ### Verification & Next Steps
-- Local PowerShell execution unavailable on macOS environment; unable to run Windows build/tests here.
-- `git describe --tags --long` sanity-checked manually to confirm helper logic paths.
-- **Wait, but:** Need an actual Windows runner cycle to confirm PowerShell scripts behave as expected under CI and that release artifacts include the new metadata.
+- Cannot run Windows build/tests locally; PowerShell executor unavailable on macOS host.
+- Sanity-checked helper logic with `git describe --tags --long` outputs to ensure pre-release/build metadata paths behave.
+- **Wait, but:** Need real GitHub Actions runs (CI + tag release) to confirm PowerShell scripts behave as expected on hosted Windows runners and that produced artifacts include updated metadata.
 
 ---
