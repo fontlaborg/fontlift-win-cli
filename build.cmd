@@ -89,10 +89,18 @@ if !ERRORLEVEL! NEQ 0 (
     goto :cleanup
 )
 
+echo Compiling version resource...
+rc.exe /nologo /fo build\version.res src\version.rc
+if !ERRORLEVEL! NEQ 0 (
+    echo ERROR: Failed to compile version resource
+    set "EXIT_CODE=1"
+    goto :cleanup
+)
+
 cl.exe /std:c++17 /EHsc /W4 /O2 ^
     /Fobuild\ ^
-    src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp src\version.rc ^
-    /link /OUT:build\fontlift.exe Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
+    src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp ^
+    /link /OUT:build\fontlift.exe build\version.res Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
 
 if !ERRORLEVEL! EQU 0 (
     echo.
