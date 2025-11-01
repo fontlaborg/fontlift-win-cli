@@ -27,11 +27,18 @@ jobs:
       id: version
       shell: pwsh
       run: |
-        $ref = $env:GITHUB_REF_NAME
-        if ($ref.StartsWith('v')) {
-          $ref = $ref.Substring(1)
+        $ref = $env:GITHUB_REF
+        Write-Host "GITHUB_REF = $ref"
+
+        # Extract tag name from refs/tags/vX.Y.Z
+        if ($ref -match '^refs/tags/v?(.+)$') {
+          $version = $matches[1]
+          Write-Host "Extracted version: $version"
+        } else {
+          throw "Unable to extract version from ref: $ref"
         }
-        $json = & scripts/get-version.ps1 -TargetVersion $ref -Format Json
+
+        $json = & scripts/get-version.ps1 -TargetVersion $version -Format Json
         $info = $json | ConvertFrom-Json
         "VERSION_BASE=$($info.base)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
         "VERSION_SEMVER=$($info.semver)" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8

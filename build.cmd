@@ -56,7 +56,7 @@ if %ERRORLEVEL% NEQ 0 (
     goto :cleanup
 )
 
-if not exist "build" mkdir "build"
+if not exist build mkdir build
 
 echo Generating version resource...
 powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\generate-version-rc.ps1" -TargetVersion "%BUILD_SEMVER%" >nul

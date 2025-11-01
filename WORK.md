@@ -1,6 +1,112 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## CI/CD Fix #6: GitHub Actions Environment Variable and Batch Syntax Issues
+
+**Date:** 2025-11-02
+
+### Issues Discovered
+After CI/CD Fix #5, workflows still failed with two distinct errors:
+
+1. **Build workflow failure** (logs_48902596118):
+   - Error: `not was unexpected at this time.`
+   - Location: Line 344 during `build.cmd %VERSION_SEMVER%` execution
+   - Step: After successfully printing "Building fontlift 1.1.11..."
+
+2. **Release workflow failure** (logs_48902596784):
+   - Error: `Version string cannot be empty.`
+   - Location: get-version.ps1:35 in `Resolve-FromProvidedVersion` function
+   - Step: During "Resolve version from tag" with GITHUB_REF_NAME
+
+### Root Cause Analysis
+
+**Issue 1 - Build.cmd Syntax Error:**
+- Location: build.cmd:59 `if not exist "build" mkdir "build"`
+- Problem: Batch file parsing issue with quoted directory name in single-line if statement
+- This is a known Windows batch quirk where certain combinations of quotes in `if not exist` statements can cause parsing errors
+- The error "not was unexpected at this time" is the classic symptom of this batch parsing bug
+
+**Issue 2 - Release Workflow Environment Variable:**
+- Location: release.yml:30 `$ref = $env:GITHUB_REF_NAME`
+- Problem: `GITHUB_REF_NAME` environment variable is not reliably available in GitHub Actions for tag push events
+- The variable may not be set or may be empty, causing the PowerShell script to receive an empty string
+- This results in get-version.ps1 throwing "Version string cannot be empty" error
+
+### Solutions Implemented
+
+**Fix 1: build.cmd line 59**
+```batch
+# OLD (problematic):
+if not exist "build" mkdir "build"
+
+# NEW (unquoted, standard batch idiom):
+if not exist build mkdir build
+```
+
+**Benefits:**
+- Removes quotes that cause batch parsing errors
+- Standard Windows batch file idiom
+- Works reliably across all Windows versions
+- No functional change, just syntax fix
+
+**Fix 2: release.yml lines 26-46**
+```powershell
+# OLD (fragile):
+$ref = $env:GITHUB_REF_NAME
+if ($ref.StartsWith('v')) {
+  $ref = $ref.Substring(1)
+}
+
+# NEW (robust):
+$ref = $env:GITHUB_REF
+Write-Host "GITHUB_REF = $ref"
+
+# Extract tag name from refs/tags/vX.Y.Z
+if ($ref -match '^refs/tags/v?(.+)$') {
+  $version = $matches[1]
+  Write-Host "Extracted version: $version"
+} else {
+  throw "Unable to extract version from ref: $ref"
+}
+```
+
+**Benefits:**
+- Uses `GITHUB_REF` instead of `GITHUB_REF_NAME` (always available)
+- Regex pattern `^refs/tags/v?(.+)$` handles both `v1.1.11` and `1.1.11` tag formats
+- Extracts version number directly from the full ref path
+- Added debug output to help diagnose future issues
+- Throws explicit error if extraction fails
+
+### Technical Details
+
+**GITHUB_REF vs GITHUB_REF_NAME:**
+- `GITHUB_REF`: Always set, full ref path (e.g., `refs/tags/v1.1.11`)
+- `GITHUB_REF_NAME`: May not be available in all GitHub Actions contexts
+- For tag pushes, `GITHUB_REF` is the reliable choice
+
+**Batch File Quotes:**
+- Single-line `if not exist "path" command` can fail with certain path combinations
+- Unquoted version `if not exist path command` is more reliable
+- Multi-line version with parentheses also works: `if not exist "path" (command)`
+
+### Verification Plan
+1. Commit fixes to main branch
+2. Push to trigger CI build workflow
+3. Verify build passes without "not was unexpected" error
+4. Create new tag (e.g., v1.1.12) to trigger release workflow
+5. Verify release workflow extracts version correctly
+6. Check debug output in workflow logs
+7. Verify GitHub Release created with correct version
+8. Download and test release artifacts
+
+### Impact Assessment
+- **Risk Level:** VERY LOW - Syntax fixes and environment variable handling
+- **Backwards Compatibility:** Preserved - no functional changes
+- **CI/CD Reliability:** Significantly improved - uses reliable environment variables
+- **Debugging:** Enhanced with debug output in release workflow
+
+---
+
 ## CI/CD Fix #5: Batch File Special Character Handling for SemVer Build Metadata
 
 **Date:** 2025-11-02

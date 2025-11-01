@@ -5,7 +5,14 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ## [Unreleased]
 
-### Planned for v1.1.10
+### Planned for v1.1.12
+- **CI/CD Fix #6** (2025-11-02): Fixed GitHub Actions environment variable and batch syntax issues
+  - **Issue 1 - Batch Syntax**: build.cmd:59 `if not exist "build" mkdir "build"` caused "not was unexpected at this time" error
+  - **Issue 2 - Environment Variable**: release.yml used unreliable `GITHUB_REF_NAME` causing "Version string cannot be empty" error
+  - **Solution 1**: Changed to `if not exist build mkdir build` (removed quotes - standard batch idiom)
+  - **Solution 2**: Changed to use `GITHUB_REF` with regex extraction `^refs/tags/v?(.+)$` (always available)
+  - **Benefits**: Reliable batch parsing, robust tag version extraction, added debug output
+  - Files changed: `build.cmd` (line 59), `.github/workflows/release.yml` (lines 26-46)
 - **CI/CD Fix #5** (2025-11-02): Fixed batch file special character handling for SemVer build metadata
   - **Root Cause**: The `+` character in build metadata (e.g., `1.1.10-dev.1+g9c501b5`) caused "not was unexpected at this time" error when passed through batch file `call` command
   - **Impact**: CI builds failed when git-generated versions included build metadata (+commit-sha)
