@@ -133,6 +133,25 @@ Quality polish completed (2025-11-02):
 - Improved code readability
 - CI/CD passing (Run #18997822459)
 
+## Immediate: Code Excellence (Round 7)
+
+Final quality refinements (2025-11-02):
+
+- [ ] **Add input validation for empty/whitespace font names**
+  - Check for empty or whitespace-only names in UninstallFontByName/RemoveFontByName
+  - Prevents registry enumeration with invalid inputs
+  - Improves error messages for user
+
+- [ ] **Add file extension validation in InstallFont**
+  - Verify file has valid font extension (.ttf, .otf, .ttc, .otc)
+  - Early fail with clear error message for invalid files
+  - Prevents wasting time on non-font files
+
+- [ ] **Optimize duplicate warning in RegisterAndLoadFont**
+  - Currently shows 3 lines of warning output
+  - Consolidate to single clear warning line
+  - Reduces noise, improves UX
+
 ## Week 1: Documentation Cleanup
 
 - [ ] Delete unnecessary MD files (9 files: CLAUDE.md, CODE_OF_CONDUCT.md, PRINCIPLES.md, WORK.md, TODO.md, PLAN.md, etc.)

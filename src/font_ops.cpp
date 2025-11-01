@@ -74,11 +74,29 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
 }
 
 // Helper: Validate prerequisites for font installation
+static bool HasValidFontExtension(const char* path) {
+    const char* validExts[] = {".ttf", ".otf", ".ttc", ".otc"};
+    std::string pathStr(path);
+    for (auto& c : pathStr) c = tolower(c);
+    for (const char* ext : validExts) {
+        if (pathStr.length() >= strlen(ext) &&
+            pathStr.compare(pathStr.length() - strlen(ext), strlen(ext), ext) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 static int ValidateInstallPrerequisites(const char* fontPath) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
+    }
+    if (!HasValidFontExtension(fontPath)) {
+        std::cerr << "Error: Invalid font file extension\n";
+        std::cerr << "Solution: Use a valid font file (.ttf, .otf, .ttc, .otc)\n";
+        return EXIT_ERROR;
     }
     if (!SysUtils::FileExists(fontPath)) {
         std::cerr << "Error: Font file not found: " << fontPath << "\n";
@@ -130,9 +148,7 @@ static int RegisterAndLoadFont(const std::string& destPath, const std::string& f
     std::string regName = fontName + " (TrueType)";
     std::string existingFile;
     if (SysUtils::RegReadFontEntry(regName.c_str(), existingFile)) {
-        std::cerr << "Warning: Font already installed: " << fontName << "\n";
-        std::cerr << "Existing location: " << SysUtils::GetFontsDirectory() << "\\" << existingFile << "\n";
-        std::cerr << "Overwriting with new installation...\n";
+        std::cerr << "Warning: Font '" << fontName << "' already installed, overwriting...\n";
     }
     if (!SysUtils::RegWriteFontEntry(regName.c_str(), filename.c_str())) {
         std::cerr << "Error: Failed to register font in registry" << SysUtils::GetLastErrorMessage() << "\n";
@@ -208,11 +224,23 @@ int UninstallFontByPath(const char* fontPath) {
     return UninstallFontByName(fontName.c_str());
 }
 
+static bool IsEmptyOrWhitespace(const char* str) {
+    if (!str || *str == '\0') return true;
+    for (const char* p = str; *p; ++p) {
+        if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') return false;
+    }
+    return true;
+}
+
 int UninstallFontByName(const char* fontName) {
     if (!SysUtils::IsAdmin()) {
         std::cerr << "Error: Administrator privileges required\n";
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
+    }
+    if (IsEmptyOrWhitespace(fontName)) {
+        std::cerr << "Error: Font name cannot be empty\n";
+        return EXIT_ERROR;
     }
     std::string fontFile, matchedName;
     if (!FindFontInRegistry(fontName, fontFile, matchedName)) {
@@ -248,6 +276,10 @@ int RemoveFontByName(const char* fontName) {
         std::cerr << "Error: Administrator privileges required\n";
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'\n";
         return EXIT_PERMISSION_DENIED;
+    }
+    if (IsEmptyOrWhitespace(fontName)) {
+        std::cerr << "Error: Font name cannot be empty\n";
+        return EXIT_ERROR;
     }
     std::string fontFile, matchedName;
     if (!FindFontInRegistry(fontName, fontFile, matchedName)) {
