@@ -5,6 +5,12 @@ REM Requires Visual Studio 2017 or later with MSVC compiler
 REM Usage: build.cmd [version]
 REM   version: Optional semantic version (e.g., "1.2.3" or "1.2.3-dev.1")
 
+REM ULTIMATE FALLBACK - This version is used if ALL other resolution methods fail
+REM This ensures the build NEVER fails due to version resolution issues
+set "ULTIMATE_FALLBACK_VERSION=0.0.0"
+set "ULTIMATE_FALLBACK_SEMVER=0.0.0-unknown"
+set "ULTIMATE_FALLBACK_TAG=v0.0.0-unknown"
+
 set "EXIT_CODE=0"
 set "SCRIPT_ROOT=%~dp0"
 if "%SCRIPT_ROOT%"=="" set "SCRIPT_ROOT=."
@@ -45,10 +51,20 @@ if not "%REQUESTED_VERSION%"=="" (
     )
 )
 
-REM Final safety check - ensure variables are set
-if "%BUILD_VERSION%"=="" set "BUILD_VERSION=0.0.0"
-if "%BUILD_SEMVER%"=="" set "BUILD_SEMVER=0.0.0-fallback"
-if "%BUILD_TAG%"=="" set "BUILD_TAG=v0.0.0-fallback"
+REM ULTIMATE SAFETY CHECK - ensure variables are ALWAYS set
+REM This is the absolute last line of defense against version resolution failures
+if "%BUILD_VERSION%"=="" (
+    echo WARNING: BUILD_VERSION is empty, using ULTIMATE_FALLBACK
+    set "BUILD_VERSION=%ULTIMATE_FALLBACK_VERSION%"
+)
+if "%BUILD_SEMVER%"=="" (
+    echo WARNING: BUILD_SEMVER is empty, using ULTIMATE_FALLBACK
+    set "BUILD_SEMVER=%ULTIMATE_FALLBACK_SEMVER%"
+)
+if "%BUILD_TAG%"=="" (
+    echo WARNING: BUILD_TAG is empty, using ULTIMATE_FALLBACK
+    set "BUILD_TAG=%ULTIMATE_FALLBACK_TAG%"
+)
 
 echo Building fontlift %BUILD_SEMVER%...
 
@@ -61,7 +77,9 @@ if %ERRORLEVEL% NEQ 0 (
     goto :cleanup
 )
 
-if not exist build mkdir build
+if not exist build (
+    mkdir build
+)
 
 echo Generating version resource...
 powershell -NoProfile -ExecutionPolicy Bypass -File "scripts\generate-version-rc.ps1" -TargetVersion "%BUILD_SEMVER%" >nul

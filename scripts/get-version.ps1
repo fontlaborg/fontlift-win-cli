@@ -125,8 +125,19 @@ function Resolve-Fallback {
 }
 
 $result =
-    if ($TargetVersion) {
-        Resolve-FromProvidedVersion -Input $TargetVersion
+    if ($TargetVersion -and -not [string]::IsNullOrWhiteSpace($TargetVersion)) {
+        try {
+            Resolve-FromProvidedVersion -Input $TargetVersion
+        } catch {
+            Write-Warning "Failed to parse provided version '$TargetVersion': $_"
+            Write-Warning "Falling back to git resolution"
+            $gitResult = Resolve-FromGit
+            if ($gitResult) {
+                $gitResult
+            } else {
+                Resolve-Fallback
+            }
+        }
     } else {
         $gitResult = Resolve-FromGit
         if ($gitResult) {

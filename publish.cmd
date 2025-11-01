@@ -4,6 +4,12 @@ REM Package fontlift for distribution
 REM Usage: publish.cmd [version]
 REM   version: Optional semantic version string.
 
+REM ULTIMATE FALLBACK - This version is used if ALL other resolution methods fail
+REM This ensures the package NEVER fails due to version resolution issues
+set "ULTIMATE_FALLBACK_VERSION=0.0.0"
+set "ULTIMATE_FALLBACK_SEMVER=0.0.0-unknown"
+set "ULTIMATE_FALLBACK_TAG=v0.0.0-unknown"
+
 set "EXIT_CODE=0"
 set "SCRIPT_ROOT=%~dp0"
 if "%SCRIPT_ROOT%"=="" set "SCRIPT_ROOT=."
@@ -44,10 +50,20 @@ if not "%REQUESTED_VERSION%"=="" (
     )
 )
 
-REM Final safety check - ensure variables are set
-if "%PUBLISH_VERSION%"=="" set "PUBLISH_VERSION=0.0.0"
-if "%PUBLISH_SEMVER%"=="" set "PUBLISH_SEMVER=0.0.0-fallback"
-if "%VERSION_TAG%"=="" set "VERSION_TAG=v0.0.0-fallback"
+REM ULTIMATE SAFETY CHECK - ensure variables are ALWAYS set
+REM This is the absolute last line of defense against version resolution failures
+if "%PUBLISH_VERSION%"=="" (
+    echo WARNING: PUBLISH_VERSION is empty, using ULTIMATE_FALLBACK
+    set "PUBLISH_VERSION=%ULTIMATE_FALLBACK_VERSION%"
+)
+if "%PUBLISH_SEMVER%"=="" (
+    echo WARNING: PUBLISH_SEMVER is empty, using ULTIMATE_FALLBACK
+    set "PUBLISH_SEMVER=%ULTIMATE_FALLBACK_SEMVER%"
+)
+if "%VERSION_TAG%"=="" (
+    echo WARNING: VERSION_TAG is empty, using ULTIMATE_FALLBACK
+    set "VERSION_TAG=%ULTIMATE_FALLBACK_TAG%"
+)
 
 echo Creating distribution package for version %VERSION_TAG%...
 
@@ -58,7 +74,9 @@ if not exist build\fontlift.exe (
     goto :cleanup
 )
 
-if not exist dist mkdir dist
+if not exist dist (
+    mkdir dist
+)
 if exist dist\*.* del /Q dist\*.*
 
 copy build\fontlift.exe dist\ >nul
