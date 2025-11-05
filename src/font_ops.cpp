@@ -271,6 +271,9 @@ static int RegisterAndLoadFont(const std::string& destPath, const std::string& f
     return EXIT_SUCCESS_CODE;
 }
 
+// Forward declaration: shared uninstall/remove logic
+static int UnloadAndCleanupFont(const std::string& fontFile, const std::string& matchedName, const std::string& fontName, bool deleteFile, bool perUser);
+
 // Helper: Best-effort removal of existing font with matching family name before installation
 static void TryUninstallExistingFont(const std::string& fontName, bool forceAdmin) {
     for (unsigned int attempt = 0; attempt < 4; ++attempt) {

@@ -1,6 +1,19 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## Build Fix Follow-up - 2025-11-07
+
+### Summary
+- Investigated build failure complaining about missing `UnloadAndCleanupFont` in `font_ops.cpp`.
+- Added a forward declaration for `UnloadAndCleanupFont` before its first usage so automatic uninstall helper compiles.
+
+### Testing
+- Not run (requires Windows MSVC toolchain; current environment lacks `cl.exe` support).
+
+### Risk & Follow-up
+- Low risk: change only introduces a prototype to expose an existing implementation.
+- Once on Windows, rerun `build.cmd 1.1.27` to confirm the linker completes successfully.
+
 ## Cleanup Scope Update - 2025-11-07
 
 ### Summary

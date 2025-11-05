@@ -12,6 +12,9 @@ All notable changes to fontlift-win-cli will be documented in this file.
 - The `install` command now finds and removes any existing font entries that share the same family name before copying the new file, preventing duplicate installations.
 - `cleanup` now defaults to user-level cleanup; pass `--admin` to extend the sweep to system font caches.
 
+### Fixed
+- Restored the Windows build by forward declaring `UnloadAndCleanupFont` so automatic uninstall logic compiles cleanly; build rerun pending access to a Windows toolchain.
+
 ### Final Comprehensive Test & Report (2025-11-05) ✅ PROJECT COMPLETE
 
 **Complete Verification After Rounds 27 & 28:**
