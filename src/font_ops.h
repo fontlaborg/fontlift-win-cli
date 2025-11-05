@@ -1,6 +1,7 @@
 // this_file: src/font_ops.h
 // Font operations for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
+// Public API for font installation, uninstallation, removal, and registry enumeration
 
 #ifndef FONT_OPS_H
 #define FONT_OPS_H
@@ -32,6 +33,9 @@ namespace FontOps {
     // Remove font by name (deletes file)
     // forceAdmin: if true, only remove from system registry
     int RemoveFontByName(const char* fontName, bool forceAdmin = false);
+
+    // Cleanup system font registry and caches (requires admin)
+    int CleanupSystem();
 }
 
 #endif // FONT_OPS_H

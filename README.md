@@ -43,6 +43,7 @@ fontlift i myfont.ttf -a           # Same as --admin
 ```
 
 **Note:** By default, fonts are installed system-wide with admin privileges, or per-user without admin. Use `--admin` / `-a` to force system-level installation.
+Existing installations with the same font family name are removed automatically.
 
 ### Uninstall Fonts (Keep Files)
 ```cmd
@@ -60,6 +61,13 @@ fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
 
 **Warning:** Files permanently deleted
 
+### System Cleanup (Requires Admin)
+```cmd
+fontlift cleanup
+fontlift c
+```
+Removes registry entries pointing to missing font files and resets system font caches.
+
 ## Commands
 
 | Command | Alias | Description |
@@ -68,6 +76,7 @@ fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
 | `install` | `i` | Install font from file |
 | `uninstall` | `u` | Uninstall, keep file |
 | `remove` | `rm` | Uninstall, delete file |
+| `cleanup` | `c` | Remove broken registry entries and clear system font caches (requires admin) |
 
 **Options:**
 - `-p <path>` - Font file path
@@ -94,6 +103,9 @@ Verify format (.ttf, .otf, .ttc, .otc) and file integrity
 
 **Font doesn't appear**
 Check exit code, verify with `fontlift list -n`, restart application
+
+**Font cache issues or rendering glitches**
+Run `fontlift cleanup` as administrator to purge font caches and broken registry entries.
 
 ## Technical Details
 

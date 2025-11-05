@@ -1,6 +1,7 @@
 // this_file: src/exit_codes.h
 // Exit code constants for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
+// Defines standard exit codes for CLI operations (success, error, permission denied)
 
 #ifndef EXIT_CODES_H
 #define EXIT_CODES_H

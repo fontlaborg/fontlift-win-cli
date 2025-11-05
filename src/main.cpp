@@ -4,9 +4,10 @@
 
 #include "exit_codes.h"
 #include "font_ops.h"
-#include <iostream>
-#include <cstring>
+#include "sys_utils.h"
 #include <windows.h>
+#include <cstring>
+#include <iostream>
 #include <vector>
 
 #pragma comment(lib, "version.lib")
@@ -19,7 +20,7 @@ void ShowUsage(const char* programName) {
     std::cout << "  list, l              List installed fonts\n";
     std::cout << "    -p                 Show paths (default)\n";
     std::cout << "    -n                 Show internal font names\n";
-    std::cout << "    -n -p              Show both (path;name format)\n";
+    std::cout << "    -n -p              Show both (path::name format)\n";
     std::cout << "    -s                 Sort output and remove duplicates\n\n";
     std::cout << "  install, i <path>    Install font from filepath\n";
     std::cout << "    -p <filepath>      Specify font file path\n";
@@ -32,9 +33,12 @@ void ShowUsage(const char* programName) {
     std::cout << "    -p <filepath>      Remove by path\n";
     std::cout << "    -n <fontname>      Remove by internal name\n";
     std::cout << "    --admin, -a        Force system-level removal (requires admin)\n\n";
+    std::cout << "  cleanup, c           Cleanup registry entries and font caches (requires admin)\n";
+    std::cout << "                      - Removes registry entries pointing to missing files\n";
+    std::cout << "                      - Clears system font caches to fix rendering issues\n\n";
 }
 
-static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) {
+static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) noexcept {
     char filename[MAX_PATH];
     DWORD result = GetModuleFileNameA(NULL, filename, MAX_PATH);
     if (result == 0 || result >= MAX_PATH) return false;  // Failed or path truncated
@@ -48,7 +52,7 @@ static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) {
 
     VS_FIXEDFILEINFO* fileInfo;
     UINT len;
-    if (!VerQueryValueA(buffer.data(), "\\", (LPVOID*)&fileInfo, &len)) return false;
+    if (!VerQueryValueA(buffer.data(), "\\", reinterpret_cast<LPVOID*>(&fileInfo), &len)) return false;
 
     major = HIWORD(fileInfo->dwFileVersionMS);
     minor = LOWORD(fileInfo->dwFileVersionMS);
@@ -136,6 +140,21 @@ static int HandleUninstallOrRemove(int argc, char* argv[], const char* progName,
     }
 }
 
+static int HandleCleanupCommand() {
+    if (!SysUtils::IsAdmin()) {
+        std::cerr << "Error: Administrator privileges are required for the cleanup command.\n";
+        std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'.\n";
+        return EXIT_PERMISSION_DENIED;
+    }
+
+    std::cout << "Starting system cleanup...\n";
+    int result = FontOps::CleanupSystem();
+    if (result == EXIT_SUCCESS_CODE) {
+        std::cout << "System cleanup completed successfully.\n";
+    }
+    return result;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         ShowUsage(argv[0]);
@@ -144,6 +163,7 @@ int main(int argc, char* argv[]) {
 
     const char* command = argv[1];
 
+    // Version command: Failure to extract version returns "unknown" gracefully (no error handling needed)
     if (strcmp(command, "--version") == 0 || strcmp(command, "-v") == 0) {
         return HandleVersionCommand();
     }
@@ -162,6 +182,10 @@ int main(int argc, char* argv[]) {
 
     if (strcmp(command, "remove") == 0 || strcmp(command, "rm") == 0) {
         return HandleUninstallOrRemove(argc, argv, argv[0], true);
+    }
+
+    if (strcmp(command, "cleanup") == 0 || strcmp(command, "c") == 0) {
+        return HandleCleanupCommand();
     }
 
     std::cerr << "Error: Unknown command '" << command << "'\n";

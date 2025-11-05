@@ -14,9 +14,17 @@
 #include <set>
 #include <algorithm>
 
-namespace FontOps {
+// Font registry suffix constants (per Windows font registry naming convention)
+constexpr const char* FONT_SUFFIX_TRUETYPE = " (TrueType)";
+constexpr const char* FONT_SUFFIX_OPENTYPE = " (OpenType)";
 
-// Helper: global context for registry enumeration callback
+namespace FontOps {
+// Font installation, uninstallation, and registry management operations
+
+// Global context for registry enumeration callback
+// Windows RegEnumValueA requires a C-style callback function that cannot capture state.
+// This global struct holds the configuration and output destination for the ListCallback function,
+// enabling stateful enumeration of registry font entries across both system and user registries.
 static struct {
     bool showPaths;
     bool showNames;
@@ -26,21 +34,36 @@ static struct {
     std::set<std::string>* outputSet;  // For sorted/unique output
 } g_listContext;
 
-static std::string ResolveFullPath(const char* file) {
+static struct {
+    int removedCount;
+    bool changed;
+    std::string fontsDir;
+    std::string userFontsDir;
+} g_cleanupContext;
+
+// Helper: Resolve relative or absolute font file path
+static std::string ResolveFullPath(const char* file, bool perUser) {
     size_t fileLen = strlen(file);
-    bool isAbsolute = (fileLen > 0 && file[0] == '\\') || (fileLen > 1 && file[1] == ':');
+    bool isAbsolute = (fileLen > 0 && (file[0] == '\\' || file[0] == '/')) || (fileLen > 1 && file[1] == ':');
     // Absolute paths are used for per-user fonts, relative paths for system fonts
-    return isAbsolute ? file : g_listContext.fontsDir + "\\" + file;
+    if (isAbsolute) return file;
+    const std::string& baseDir = perUser ? g_listContext.userFontsDir : g_listContext.fontsDir;
+    if (baseDir.empty()) return file;
+    return baseDir + "\\" + file;
 }
 
+// Helper: Format font output based on display flags (path/name/both)
 static std::string FormatOutput(const std::string& path, const char* name) {
-    if (g_listContext.showPaths && g_listContext.showNames) return path + ";" + name;
+    if (g_listContext.showPaths && g_listContext.showNames) return path + "::" + name;
     if (g_listContext.showNames) return name;
     return path;
 }
 
-static void ListCallback(const char* name, const char* file) {
-    std::string fullPath = ResolveFullPath(file);
+// Windows registry enumeration callback (C-style function pointer required by RegEnumValueA API)
+// Called once for each font entry found in the registry (system or user fonts)
+// Processes each entry according to g_listContext configuration (sorted, paths, names)
+static void ListCallback(const char* name, const char* file, bool perUser) {
+    std::string fullPath = ResolveFullPath(file, perUser);
     std::string output = FormatOutput(fullPath, name);
 
     if (g_listContext.sorted) {
@@ -50,10 +73,60 @@ static void ListCallback(const char* name, const char* file) {
     }
 }
 
+// Helper: Output sorted and deduplicated font list
 static void OutputSorted(const std::set<std::string>& outputSet) {
     for (const auto& line : outputSet) {
         std::cout << line << "\n";
     }
+}
+
+// Registry cleanup callback: remove entries pointing to missing files
+static void CleanupCallback(const char* name, const char* file, bool perUser) {
+    if (!file || file[0] == '\0') return;
+    size_t len = strlen(file);
+    bool isAbsolute = (len > 1 && file[1] == ':') || (len > 0 && (file[0] == '\\' || file[0] == '/'));
+    const std::string& baseDir = perUser ? g_cleanupContext.userFontsDir : g_cleanupContext.fontsDir;
+    if (!isAbsolute && baseDir.empty()) {
+        std::cerr << "    Warning: Skipping registry entry '" << name << "' (unknown base directory).\n";
+        return;
+    }
+    std::string fullPath = isAbsolute ? std::string(file) : baseDir + "\\" + file;
+    if (SysUtils::FileExists(fullPath.c_str())) return;
+
+    std::cout << "  - Removing broken entry: " << name << "\n";
+    std::cout << "    File not found: " << fullPath << "\n";
+    if (SysUtils::RegDeleteFontEntry(name, perUser)) {
+        g_cleanupContext.removedCount++;
+        g_cleanupContext.changed = true;
+    } else {
+        std::cerr << "    Warning: Failed to remove registry entry.\n";
+    }
+}
+
+// Registry cleanup orchestrator: enumerate system and user fonts
+static int CleanupRegistry() {
+    g_cleanupContext.removedCount = 0;
+    g_cleanupContext.changed = false;
+    g_cleanupContext.fontsDir = SysUtils::GetFontsDirectory();
+    g_cleanupContext.userFontsDir = SysUtils::GetUserFontsDirectory();
+
+    if (g_cleanupContext.fontsDir.empty()) {
+        std::cerr << "Error: Could not determine system fonts directory.\n";
+        return -1;
+    }
+
+    if (!SysUtils::RegEnumerateFonts(CleanupCallback, false)) {
+        std::cerr << "Error: Failed to enumerate system fonts.\n";
+        return -1;
+    }
+
+    SysUtils::RegEnumerateFonts(CleanupCallback, true);
+
+    if (g_cleanupContext.changed) {
+        SysUtils::NotifyFontChange();
+    }
+
+    return g_cleanupContext.removedCount;
 }
 
 int ListFonts(bool showPaths, bool showNames, bool sorted) {
@@ -82,11 +155,14 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
     return EXIT_SUCCESS_CODE;
 }
 
-// Helper: Validate prerequisites for font installation
-static bool HasValidFontExtension(const char* path) {
-    const char* validExts[] = {".ttf", ".otf", ".ttc", ".otc"};
+// Helper: Check if file has valid font extension (.ttf, .otf, .ttc, .otc)
+static bool HasValidFontExtension(const char* path) noexcept {
+    constexpr const char* validExts[] = {".ttf", ".otf", ".ttc", ".otc"};
     std::string pathStr(path);
-    for (auto& c : pathStr) c = tolower(c);
+    // Locale-independent ASCII lowercase conversion
+    for (auto& c : pathStr) {
+        if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+    }
     for (const char* ext : validExts) {
         if (pathStr.length() >= strlen(ext) &&
             pathStr.compare(pathStr.length() - strlen(ext), strlen(ext), ext) == 0) {
@@ -96,6 +172,7 @@ static bool HasValidFontExtension(const char* path) {
     return false;
 }
 
+// Helper: Validate font file exists and has valid extension before installation
 static int ValidateInstallPrerequisites(const char* fontPath) {
     if (!HasValidFontExtension(fontPath)) {
         std::cerr << "Error: Invalid font file extension\n";
@@ -130,11 +207,11 @@ static int ExtractFontName(const char* fontPath, std::string& outName) {
     return EXIT_SUCCESS_CODE;
 }
 
-// Helper: Find font entry in registry with name variant matching
+// Helper: Search registry for font by name with automatic suffix matching (TrueType/OpenType)
 static bool FindFontInRegistry(const char* fontName, std::string& outFile, std::string& outRegName, bool& outPerUser, bool forceSystemOnly = false) {
     std::vector<std::string> variants = {
-        std::string(fontName) + " (TrueType)",
-        std::string(fontName) + " (OpenType)",
+        std::string(fontName) + FONT_SUFFIX_TRUETYPE,
+        std::string(fontName) + FONT_SUFFIX_OPENTYPE,
         std::string(fontName)
     };
 
@@ -160,21 +237,21 @@ static bool FindFontInRegistry(const char* fontName, std::string& outFile, std::
     return false;
 }
 
-// Helper: Register font and load into system
+// Helper: Write font to registry and load into system via AddFontResourceEx
 static int RegisterAndLoadFont(const std::string& destPath, const std::string& fontName, bool perUser) {
     std::string regValue = perUser ? destPath : SysUtils::GetFileName(destPath.c_str());
-    std::string regName = fontName + " (TrueType)";
+    std::string regName = fontName + FONT_SUFFIX_TRUETYPE;
     std::string existingFile;
     if (SysUtils::RegReadFontEntry(regName.c_str(), existingFile, perUser)) {
         std::cerr << "Warning: Font '" << fontName << "' already installed, overwriting...\n";
     }
     if (!SysUtils::RegWriteFontEntry(regName.c_str(), regValue.c_str(), perUser)) {
-        std::cerr << "Error: Failed to register font in registry" << SysUtils::GetLastErrorMessage() << "\n";
+        std::cerr << "Error: Failed to register font in registry: " << SysUtils::GetLastErrorMessage() << "\n";
         SysUtils::DeleteFromFontsFolder(SysUtils::GetFileName(destPath.c_str()).c_str());
         return EXIT_ERROR;
     }
     if (AddFontResourceExA(destPath.c_str(), FR_PRIVATE, 0) == 0) {
-        std::cerr << "Error: Failed to load font resource" << SysUtils::GetLastErrorMessage() << "\n";
+        std::cerr << "Error: Failed to load font resource: " << SysUtils::GetLastErrorMessage() << "\n";
         SysUtils::RegDeleteFontEntry(regName.c_str(), perUser);
         SysUtils::DeleteFromFontsFolder(SysUtils::GetFileName(destPath.c_str()).c_str());
         return EXIT_ERROR;
@@ -182,7 +259,31 @@ static int RegisterAndLoadFont(const std::string& destPath, const std::string& f
     return EXIT_SUCCESS_CODE;
 }
 
-// Helper: Unload font and cleanup registry (shared by Uninstall and Remove)
+// Helper: Best-effort removal of existing font with matching family name before installation
+static void TryUninstallExistingFont(const std::string& fontName, bool forceAdmin) {
+    for (unsigned int attempt = 0; attempt < 4; ++attempt) {
+        std::string fontFile;
+        std::string matchedName;
+        bool perUser = false;
+        if (!FindFontInRegistry(fontName.c_str(), fontFile, matchedName, perUser, forceAdmin)) return;
+        if (!perUser && !SysUtils::IsAdmin()) {
+            std::cerr << "Warning: Found older font '" << fontName << "' but cannot remove it without admin privileges.\n";
+            return;
+        }
+        if (!SysUtils::IsValidFontPath(fontFile.c_str())) {
+            std::cerr << "Warning: Found invalid registry path for '" << fontName << "', skipping automatic uninstall.\n";
+            return;
+        }
+        if (UnloadAndCleanupFont(fontFile, matchedName, fontName, false, perUser) != EXIT_SUCCESS_CODE) {
+            std::cerr << "Warning: Failed to remove existing font '" << fontName << "' before installation.\n";
+            return;
+        }
+        std::cout << "Note: Automatically uninstalled older version of: " << fontName << "\n";
+    }
+    std::cerr << "Warning: Stopping automatic uninstall for '" << fontName << "' after multiple attempts.\n";
+}
+
+// Helper: Remove font from system memory and registry, optionally delete file
 static int UnloadAndCleanupFont(const std::string& fontFile, const std::string& matchedName, const std::string& fontName, bool deleteFile, bool perUser) {
     // For per-user fonts, fontFile is already an absolute path
     // For system fonts, fontFile is relative and needs to be combined with system fonts dir
@@ -195,6 +296,8 @@ static int UnloadAndCleanupFont(const std::string& fontFile, const std::string& 
         fullPath = fontsDir + "\\" + fontFile;
     }
 
+    // RemoveFontResourceExA failure is non-fatal: font may not be loaded in current process
+    // Warning message informs user, but we proceed with registry/file cleanup
     if (RemoveFontResourceExA(fullPath.c_str(), FR_PRIVATE, 0) == 0) {
         std::cerr << "Warning: Failed to unload font resource\n";
     }
@@ -253,9 +356,10 @@ int InstallFont(const char* fontPath, bool forceAdmin) {
     std::string fontName;
     result = ExtractFontName(fontPath, fontName);
     if (result != EXIT_SUCCESS_CODE) return result;
+    TryUninstallExistingFont(fontName, forceAdmin);
     std::string destPath;
     if (!SysUtils::CopyToFontsFolder(fontPath, destPath, perUser)) {
-        std::cerr << "Error: Failed to copy font file" << SysUtils::GetLastErrorMessage() << "\n";
+        std::cerr << "Error: Failed to copy font file: " << SysUtils::GetLastErrorMessage() << "\n";
         return EXIT_ERROR;
     }
     result = RegisterAndLoadFont(destPath, fontName, perUser);
@@ -280,7 +384,8 @@ int UninstallFontByPath(const char* fontPath, bool forceAdmin) {
     return UninstallFontByName(fontName.c_str(), forceAdmin);
 }
 
-static bool IsEmptyOrWhitespace(const char* str) {
+// Helper: Check if string is empty or contains only whitespace characters
+static bool IsEmptyOrWhitespace(const char* str) noexcept {
     if (!str || *str == '\0') return true;
     for (const char* p = str; *p; ++p) {
         if (*p != ' ' && *p != '\t' && *p != '\n' && *p != '\r') return false;
@@ -371,6 +476,25 @@ int RemoveFontByName(const char* fontName, bool forceAdmin) {
         return EXIT_ERROR;
     }
     return UnloadAndCleanupFont(fontFile, matchedName, fontName, true, perUser);
+}
+
+int CleanupSystem() {
+    std::cout << "Scanning font registry for broken entries...\n";
+    int brokenEntries = CleanupRegistry();
+    if (brokenEntries < 0) {
+        std::cerr << "Error: Failed to scan font registry.\n";
+    } else {
+        std::cout << "Found and removed " << brokenEntries << " broken font entries.\n";
+    }
+
+    std::cout << "Clearing system font caches...\n";
+    if (!SysUtils::ClearFontCaches()) {
+        std::cerr << "Error: Failed to clear one or more font caches.\n";
+        return EXIT_ERROR;
+    }
+
+    std::cout << "Font caches cleared successfully.\n";
+    return EXIT_SUCCESS_CODE;
 }
 
 } // namespace FontOps
