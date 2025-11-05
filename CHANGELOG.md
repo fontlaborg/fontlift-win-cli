@@ -6,10 +6,11 @@ All notable changes to fontlift-win-cli will be documented in this file.
 ## [Unreleased]
 
 ### Added
-- New `cleanup` (`c`) command that removes registry entries pointing to missing font files and clears Windows font caches. The command requires administrator privileges and restarts the `FontCache` service automatically.
+- New `cleanup` (`c`) command that removes registry entries pointing to missing font files, clears user-level and third-party (Adobe) caches, and optionally restarts the Windows `FontCache` service when `--admin` is supplied.
 
 ### Changed
 - The `install` command now finds and removes any existing font entries that share the same family name before copying the new file, preventing duplicate installations.
+- `cleanup` now defaults to user-level cleanup; pass `--admin` to extend the sweep to system font caches.
 
 ### Final Comprehensive Test & Report (2025-11-05) ✅ PROJECT COMPLETE
 

@@ -33,9 +33,11 @@ void ShowUsage(const char* programName) {
     std::cout << "    -p <filepath>      Remove by path\n";
     std::cout << "    -n <fontname>      Remove by internal name\n";
     std::cout << "    --admin, -a        Force system-level removal (requires admin)\n\n";
-    std::cout << "  cleanup, c           Cleanup registry entries and font caches (requires admin)\n";
+    std::cout << "  cleanup, c           Cleanup registry entries and font caches\n";
+    std::cout << "    --admin, -a        Include system-wide cleanup (requires admin)\n";
     std::cout << "                      - Removes registry entries pointing to missing files\n";
-    std::cout << "                      - Clears system font caches to fix rendering issues\n\n";
+    std::cout << "                      - Clears user and third-party font caches\n";
+    std::cout << "                      - With --admin: clears system font caches\n\n";
 }
 
 static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) noexcept {
@@ -140,17 +142,26 @@ static int HandleUninstallOrRemove(int argc, char* argv[], const char* progName,
     }
 }
 
-static int HandleCleanupCommand() {
-    if (!SysUtils::IsAdmin()) {
-        std::cerr << "Error: Administrator privileges are required for the cleanup command.\n";
+static int HandleCleanupCommand(int argc, char* argv[]) {
+    bool includeSystem = false;
+    for (int i = 2; i < argc; ++i) {
+        if (strcmp(argv[i], "--admin") == 0 || strcmp(argv[i], "-a") == 0) {
+            includeSystem = true;
+        } else if (argv[i][0] == '-') {
+            std::cerr << "Warning: Unknown option for cleanup command: " << argv[i] << "\n";
+        }
+    }
+
+    if (includeSystem && !SysUtils::IsAdmin()) {
+        std::cerr << "Error: Administrator privileges are required for --admin cleanup.\n";
         std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'.\n";
         return EXIT_PERMISSION_DENIED;
     }
 
-    std::cout << "Starting system cleanup...\n";
-    int result = FontOps::CleanupSystem();
+    std::cout << "Starting " << (includeSystem ? "system" : "user") << " cleanup...\n";
+    int result = FontOps::Cleanup(includeSystem);
     if (result == EXIT_SUCCESS_CODE) {
-        std::cout << "System cleanup completed successfully.\n";
+        std::cout << (includeSystem ? "System" : "User") << " cleanup completed successfully.\n";
     }
     return result;
 }
@@ -185,7 +196,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (strcmp(command, "cleanup") == 0 || strcmp(command, "c") == 0) {
-        return HandleCleanupCommand();
+        return HandleCleanupCommand(argc, argv);
     }
 
     std::cerr << "Error: Unknown command '" << command << "'\n";

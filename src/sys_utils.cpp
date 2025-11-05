@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <system_error>
 #include <iostream>
+#include <string>
 
 namespace fs = std::filesystem;
 
@@ -18,6 +19,8 @@ constexpr DWORD SERVICE_POLL_INTERVAL_MS = 500;
 constexpr const wchar_t* FONT_CACHE_SERVICE_NAME = L"FontCache";
 constexpr const char* SYSTEM_CACHE_FILE = "C:\\Windows\\System32\\FNTCACHE.DAT";
 constexpr const char* SERVICE_CACHE_DIR = "C:\\Windows\\ServiceProfiles\\LocalService\\AppData\\Local\\FontCache";
+constexpr const char* ADOBE_CACHE_PREFIX = "AdobeFnt";
+constexpr const char* ADOBE_CACHE_EXTENSION = ".lst";
 
 struct ScopedServiceHandles {
     SC_HANDLE manager{nullptr};
@@ -30,6 +33,16 @@ struct ScopedServiceHandles {
 } // namespace
 
 namespace {
+std::string GetEnvVariable(const char* name) {
+    DWORD required = GetEnvironmentVariableA(name, nullptr, 0);
+    if (required == 0) return "";
+    std::string value(required, '\0');
+    DWORD written = GetEnvironmentVariableA(name, value.data(), required);
+    if (written == 0 || written >= required) return "";
+    value.resize(written);
+    return value;
+}
+
 bool OpenFontCacheService(DWORD desiredAccess, ScopedServiceHandles& handles) {
     handles.manager = OpenSCManagerW(nullptr, nullptr, SC_MANAGER_CONNECT);
     if (!handles.manager) {
@@ -104,7 +117,7 @@ bool StartFontCacheService() {
     return WaitForServiceState(handles.service, SERVICE_RUNNING, FONT_CACHE_TIMEOUT_MS);
 }
 
-bool DeleteCacheFiles() {
+bool DeleteSystemCacheFiles() {
     bool success = true;
     if (DeleteFileA(SYSTEM_CACHE_FILE) == 0) {
         DWORD error = GetLastError();
@@ -118,6 +131,73 @@ bool DeleteCacheFiles() {
     if (ec) {
         std::cerr << "    Warning: Failed to clean cache directory: " << SERVICE_CACHE_DIR << " (" << ec.message() << ")\n";
         success = false;
+    }
+    return success;
+}
+
+bool DeleteDirectoryTree(const fs::path& path, const char* description) {
+    std::error_code ec;
+    if (!fs::exists(path, ec)) {
+        if (ec) {
+            std::cerr << "    Warning: Unable to access " << description << ": " << path.string() << " (" << ec.message() << ")\n";
+            return false;
+        }
+        return true;
+    }
+
+    fs::remove_all(path, ec);
+    if (ec) {
+        std::cerr << "    Warning: Failed to delete " << description << ": " << path.string() << " (" << ec.message() << ")\n";
+        return false;
+    }
+    return true;
+}
+
+bool ClearAdobeCachesIn(const fs::path& root) {
+    if (root.empty()) return true;
+    std::error_code ec;
+    if (!fs::exists(root, ec)) {
+        if (ec) {
+            std::cerr << "    Warning: Unable to access Adobe cache directory: " << root.string() << " (" << ec.message() << ")\n";
+            return false;
+        }
+        return true;
+    }
+
+    bool success = true;
+    const auto options = fs::directory_options::skip_permission_denied;
+    fs::recursive_directory_iterator it(root, options, ec);
+    if (ec) {
+        std::cerr << "    Warning: Failed to enumerate Adobe cache directory: " << root.string() << " (" << ec.message() << ")\n";
+        return false;
+    }
+
+    while (it != fs::recursive_directory_iterator()) {
+        const fs::path current = it->path();
+        std::error_code statusEc;
+        bool isFile = it->is_regular_file(statusEc);
+        if (statusEc) {
+            std::cerr << "    Warning: Failed to query entry in Adobe cache directory: " << current.string() << " (" << statusEc.message() << ")\n";
+            success = false;
+        } else if (isFile) {
+            std::string filename = current.filename().string();
+            if (filename.rfind(ADOBE_CACHE_PREFIX, 0) == 0 && current.extension() == ADOBE_CACHE_EXTENSION) {
+                std::error_code removeEc;
+                if (!fs::remove(current, removeEc)) {
+                    if (removeEc) {
+                        std::cerr << "    Warning: Failed to delete Adobe cache file: " << current.string() << " (" << removeEc.message() << ")\n";
+                        success = false;
+                    }
+                }
+            }
+        }
+
+        it.increment(ec);
+        if (ec) {
+            std::cerr << "    Warning: Failed to continue Adobe cache traversal: " << root.string() << " (" << ec.message() << ")\n";
+            success = false;
+            break;
+        }
     }
     return success;
 }
@@ -392,14 +472,40 @@ void NotifyFontChange() {
     SendMessage(HWND_BROADCAST, WM_FONTCHANGE, 0, 0);
 }
 
-bool ClearFontCaches() {
+bool ClearUserFontCaches() {
+    bool success = true;
+
+    std::string localAppData = GetEnvVariable("LOCALAPPDATA");
+    if (!localAppData.empty()) {
+        fs::path local(localAppData);
+        std::cout << "  - Clearing Windows user font cache directories...\n";
+        if (!DeleteDirectoryTree(local / "FontCache", "user font cache directory")) success = false;
+        if (!DeleteDirectoryTree(local / "Microsoft" / "Windows" / "FontCache", "user Microsoft font cache directory")) success = false;
+        std::cout << "  - Removing Adobe cache files (LocalAppData)...\n";
+        if (!ClearAdobeCachesIn(local / "Adobe")) success = false;
+    } else {
+        std::cerr << "    Warning: LOCALAPPDATA environment variable not set; skipping user font cache directories.\n";
+    }
+
+    std::string roamingAppData = GetEnvVariable("APPDATA");
+    if (!roamingAppData.empty()) {
+        std::cout << "  - Removing Adobe cache files (AppData)...\n";
+        if (!ClearAdobeCachesIn(fs::path(roamingAppData) / "Adobe")) success = false;
+    } else {
+        std::cerr << "    Warning: APPDATA environment variable not set; skipping roaming Adobe caches.\n";
+    }
+
+    return success;
+}
+
+bool ClearSystemFontCaches() {
     std::cout << "  - Stopping Windows Font Cache Service (FontCache)...\n";
     if (!StopFontCacheService()) {
         std::cerr << "    Error: Failed to stop font cache service.\n";
         return false;
     }
     std::cout << "  - Deleting cache files...\n";
-    bool deleted = DeleteCacheFiles();
+    bool deleted = DeleteSystemCacheFiles();
     if (!deleted) std::cerr << "    Warning: Could not delete all cache files.\n";
     std::cout << "  - Starting Windows Font Cache Service (FontCache)...\n";
     if (!StartFontCacheService()) {

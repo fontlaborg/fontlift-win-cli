@@ -45,8 +45,11 @@ namespace SysUtils {
     // Notify system of font changes
     void NotifyFontChange();
 
-    // Clear Windows font caches by stopping the FontCache service and deleting cache files
-    bool ClearFontCaches();
+    // Clear Windows font caches scoped to the current user
+    bool ClearUserFontCaches();
+
+    // Clear system-wide font caches by stopping the FontCache service and deleting cache files
+    bool ClearSystemFontCaches();
 }
 
 #endif // SYS_UTILS_H

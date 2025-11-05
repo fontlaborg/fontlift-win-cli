@@ -61,12 +61,13 @@ fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
 
 **Warning:** Files permanently deleted
 
-### System Cleanup (Requires Admin)
+### Cleanup Caches
 ```cmd
-fontlift cleanup
-fontlift c
+fontlift cleanup              # Clean registry + user/third-party caches
+fontlift cleanup --admin      # Include system font caches (requires admin)
+fontlift c                    # Alias for user cleanup
 ```
-Removes registry entries pointing to missing font files and resets system font caches.
+Removes registry entries pointing to missing font files, clears user-level font caches (including Adobe `.lst` caches), and optionally purges system font caches when `--admin` is supplied.
 
 ## Commands
 
@@ -76,7 +77,7 @@ Removes registry entries pointing to missing font files and resets system font c
 | `install` | `i` | Install font from file |
 | `uninstall` | `u` | Uninstall, keep file |
 | `remove` | `rm` | Uninstall, delete file |
-| `cleanup` | `c` | Remove broken registry entries and clear system font caches (requires admin) |
+| `cleanup` | `c` | Cleans registry + user/third-party caches; with `--admin` also clears system caches |
 
 **Options:**
 - `-p <path>` - Font file path

@@ -34,8 +34,8 @@ namespace FontOps {
     // forceAdmin: if true, only remove from system registry
     int RemoveFontByName(const char* fontName, bool forceAdmin = false);
 
-    // Cleanup system font registry and caches (requires admin)
-    int CleanupSystem();
+    // Cleanup font registry and caches. includeSystem toggles system-wide scope (requires admin when true)
+    int Cleanup(bool includeSystem);
 }
 
 #endif // FONT_OPS_H

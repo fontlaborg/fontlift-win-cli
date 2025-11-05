@@ -103,30 +103,42 @@ static void CleanupCallback(const char* name, const char* file, bool perUser) {
     }
 }
 
-// Registry cleanup orchestrator: enumerate system and user fonts
-static int CleanupRegistry() {
+// Registry cleanup orchestrator: enumerate system and/or user fonts
+static int CleanupRegistry(bool includeSystem, bool includeUser) {
     g_cleanupContext.removedCount = 0;
     g_cleanupContext.changed = false;
-    g_cleanupContext.fontsDir = SysUtils::GetFontsDirectory();
-    g_cleanupContext.userFontsDir = SysUtils::GetUserFontsDirectory();
+    g_cleanupContext.fontsDir.clear();
+    g_cleanupContext.userFontsDir.clear();
 
-    if (g_cleanupContext.fontsDir.empty()) {
-        std::cerr << "Error: Could not determine system fonts directory.\n";
-        return -1;
+    bool success = true;
+
+    if (includeSystem) {
+        g_cleanupContext.fontsDir = SysUtils::GetFontsDirectory();
+        if (g_cleanupContext.fontsDir.empty()) {
+            std::cerr << "Error: Could not determine system fonts directory.\n";
+            success = false;
+        } else if (!SysUtils::RegEnumerateFonts(CleanupCallback, false)) {
+            std::cerr << "Error: Failed to enumerate system fonts.\n";
+            success = false;
+        }
     }
 
-    if (!SysUtils::RegEnumerateFonts(CleanupCallback, false)) {
-        std::cerr << "Error: Failed to enumerate system fonts.\n";
-        return -1;
+    if (includeUser) {
+        g_cleanupContext.userFontsDir = SysUtils::GetUserFontsDirectory();
+        if (g_cleanupContext.userFontsDir.empty()) {
+            std::cerr << "    Warning: Could not determine user fonts directory.\n";
+            success = false;
+        } else if (!SysUtils::RegEnumerateFonts(CleanupCallback, true)) {
+            std::cerr << "    Warning: Failed to enumerate user fonts.\n";
+            success = false;
+        }
     }
-
-    SysUtils::RegEnumerateFonts(CleanupCallback, true);
 
     if (g_cleanupContext.changed) {
         SysUtils::NotifyFontChange();
     }
 
-    return g_cleanupContext.removedCount;
+    return success ? g_cleanupContext.removedCount : -1;
 }
 
 int ListFonts(bool showPaths, bool showNames, bool sorted) {
@@ -478,18 +490,31 @@ int RemoveFontByName(const char* fontName, bool forceAdmin) {
     return UnloadAndCleanupFont(fontFile, matchedName, fontName, true, perUser);
 }
 
-int CleanupSystem() {
+int Cleanup(bool includeSystem) {
     std::cout << "Scanning font registry for broken entries...\n";
-    int brokenEntries = CleanupRegistry();
-    if (brokenEntries < 0) {
-        std::cerr << "Error: Failed to scan font registry.\n";
-    } else {
+    int brokenEntries = CleanupRegistry(includeSystem, true);
+    bool registryOk = brokenEntries >= 0;
+    if (registryOk) {
         std::cout << "Found and removed " << brokenEntries << " broken font entries.\n";
+    } else {
+        std::cerr << "Error: Failed to scan font registry.\n";
     }
 
-    std::cout << "Clearing system font caches...\n";
-    if (!SysUtils::ClearFontCaches()) {
-        std::cerr << "Error: Failed to clear one or more font caches.\n";
+    std::cout << "Clearing font caches...\n";
+    bool cachesOk = true;
+    if (!SysUtils::ClearUserFontCaches()) {
+        std::cerr << "Error: Failed to clear one or more user/third-party caches.\n";
+        cachesOk = false;
+    }
+
+    if (includeSystem) {
+        if (!SysUtils::ClearSystemFontCaches()) {
+            std::cerr << "Error: Failed to clear one or more system caches.\n";
+            cachesOk = false;
+        }
+    }
+
+    if (!registryOk || !cachesOk) {
         return EXIT_ERROR;
     }
 

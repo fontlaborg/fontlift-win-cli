@@ -1,6 +1,20 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## Cleanup Scope Update - 2025-11-07
+
+### Summary
+- Added `cleanup --admin` flag handling in the CLI so system-level cleanup is opt-in while the default run targets the current user.
+- Extended font operations to split registry cleanup per scope and wired new user-level third-party cache removal (Adobe `.lst` files + Windows user FontCache directories).
+- Reworked system utilities to expose `ClearUserFontCaches` / `ClearSystemFontCaches`, covering Adobe caches and preserving existing service restart logic for system runs.
+
+### Testing
+- Not run (Windows-specific executable; no Windows environment available in CLI sandbox).
+
+### Risk & Follow-up
+- Need validation on a Windows machine to confirm Adobe cache traversal succeeds without permissions issues.
+- Review whether additional third-party cache locations should be added in future (e.g., Extensis, FontBase) once verified by users.
+
 ## Issue 201 - 2025-11-06
 
 ### Summary
