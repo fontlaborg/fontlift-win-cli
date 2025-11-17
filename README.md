@@ -127,6 +127,7 @@ publish.cmd    # Create distribution
 ## License
 
 Copyright 2025 by Fontlab Ltd.
+made by FontLab https://www.fontlab.com/
 Licensed under Apache License 2.0 - see [LICENSE](LICENSE)
 
 ## Links

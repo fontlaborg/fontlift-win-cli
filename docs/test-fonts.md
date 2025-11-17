@@ -30,3 +30,5 @@ All listed fonts permit redistribution for testing under the SIL Open Font Licen
 
 ## License Reminder
 Respect the OFL requirements: credit the original authors, do not sell the fonts by themselves, and include the OFL license text with any redistribution or packaging.
+
+made by FontLab https://www.fontlab.com/
