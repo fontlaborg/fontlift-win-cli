@@ -11,9 +11,17 @@ All notable changes to fontlift-win-cli will be documented in this file.
 ### Changed
 - The `install` command now finds and removes any existing font entries that share the same family name before copying the new file, preventing duplicate installations.
 - `cleanup` now defaults to user-level cleanup; pass `--admin` to extend the sweep to system font caches.
+- Binary renamed to `fontlift-win.exe` (invoke as `fontlift-win`) to avoid conflicts with other applications; build and packaging scripts now emit `fontlift-win-v{version}.zip`.
+- `list` output is always sorted; path-only mode now removes duplicate paths across system and user registries. The `-s` flag remains accepted for backward compatibility but is no longer required.
+- `uninstall`/`remove` now scan both user and system font registries; any copy the caller has permissions for is removed in one run, and system copies prompt a permission hint when elevation is missing.
 
 ### Fixed
 - Restored the Windows build by forward declaring `UnloadAndCleanupFont` so automatic uninstall logic compiles cleanly; build rerun pending access to a Windows toolchain.
+
+### Release highlights (draft)
+- Cleanup validation harness (`tools/cleanup-harness.ps1`) seeds orphaned registry entries and drives `fontlift-win cleanup` for repeatable VM tests.
+- New cleanup validation playbook (`docs/cleanup-validation.md`) documents transcripts, remediation steps, and release checklist additions.
+- Packaging checklist now requires duplicate-family install retest plus cleanup smoke tests on Windows 10 and Windows 11 before publishing.
 
 ### Final Comprehensive Test & Report (2025-11-05) ✅ PROJECT COMPLETE
 
@@ -679,14 +687,14 @@ The codebase has reached **maximum practical quality** for a C++ Windows CLI too
   - Old format: `path;name` (semicolon separator)
   - New format: `path::name` (double colon separator)
   - Rationale: Consistency with fontnome and fontlift-mac-cli
-  - Impact: Scripts parsing `fontlift list -n -p` output must be updated
+  - Impact: Scripts parsing `fontlift-win list -n -p` output must be updated
 - **Implementation details:**
   - src/font_ops.cpp:37 - Updated FormatOutput() function
   - src/main.cpp:22 - Updated help text
 - **Migration guide for existing scripts:**
   - If parsing output, change split from `;` to `::`
-  - Example (Bash): `fontlift list -n -p | while IFS='::' read -r path name; do ...`
-  - Example (PowerShell): `fontlift list -n -p | ForEach-Object { $parts = $_ -split '::'; ... }`
+  - Example (Bash): `fontlift-win list -n -p | while IFS='::' read -r path name; do ...`
+  - Example (PowerShell): `fontlift-win list -n -p | ForEach-Object { $parts = $_ -split '::'; ... }`
 - **Note:** This change only affects `list` command with both `-n` and `-p` flags
 - **Version:** Planned for v2.0.0 (major version bump for breaking change)
 - **Testing: ✅ CODE VERIFIED** (syntax, logic, and risk assessment complete)
@@ -860,7 +868,7 @@ The codebase has reached **maximum practical quality** for a C++ Windows CLI too
   - Applied to all 4 operations (install, uninstall, remove by path/name)
   - Added 7 "Solution:" lines across font_ops.cpp
 - **Added build output validation to build.cmd**
-  - Verifies fontlift.exe exists after successful compile
+  - Verifies fontlift-win.exe exists after successful compile
   - Warns if file size suspiciously small (<50KB) or large (>500KB)
   - Reports actual file size
   - Added 17 lines to build.cmd
@@ -869,7 +877,7 @@ The codebase has reached **maximum practical quality** for a C++ Windows CLI too
 ### Quality Improvements (2025-11-02)
 - **Fixed argv bounds checking bug** (MEDIUM severity)
   - Added `i + 1 < argc` check before accessing `argv[i+1]`
-  - Prevents crash with malformed arguments like `fontlift uninstall -p`
+  - Prevents crash with malformed arguments like `fontlift-win uninstall -p`
   - Fixed in main.cpp lines 66, 88-90, 114-116
 - **Added path validation for font files**
   - New IsValidFontPath() function checks for path traversal (..\\)
@@ -1029,7 +1037,7 @@ The codebase has reached **maximum practical quality** for a C++ Windows CLI too
 
 ### New Features (v1.1.1)
 - **List Command Enhancement**: Added `-s` flag for sorted and unique output
-  - `fontlift list -s` - Sort output alphabetically and remove duplicates
+  - `fontlift-win list -s` - Sort output alphabetically and remove duplicates
   - Works with all combinations: `-s`, `-p -s`, `-n -s`, `-n -p -s`
   - Uses std::set for automatic sorting and deduplication
   - Clean pipe-friendly output (no prolog/epilog)

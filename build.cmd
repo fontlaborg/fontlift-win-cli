@@ -67,7 +67,7 @@ if "!BUILD_TAG!"=="" (
     set "BUILD_TAG=!ULTIMATE_FALLBACK_TAG!"
 )
 
-echo Building fontlift !BUILD_SEMVER!...
+echo Building fontlift-win !BUILD_SEMVER!...
 
 where cl.exe >nul 2>&1
 if !ERRORLEVEL! NEQ 0 (
@@ -100,24 +100,24 @@ if !ERRORLEVEL! NEQ 0 (
 cl.exe /std:c++17 /EHsc /W4 /O2 ^
     /Fobuild\ ^
     src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp ^
-    /link /OUT:build\fontlift.exe build\version.res Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
+    /link /OUT:build\fontlift-win.exe build\version.res Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
 
 if !ERRORLEVEL! EQU 0 (
     echo.
     echo ===================================
     echo Build successful!
     echo Version: !BUILD_SEMVER!
-    echo Output: build\fontlift.exe
+    echo Output: build\fontlift-win.exe
 
     REM Validate build output
-    if not exist build\fontlift.exe (
-        echo ERROR: fontlift.exe not found!
+    if not exist build\fontlift-win.exe (
+        echo ERROR: fontlift-win.exe not found!
         set "EXIT_CODE=1"
         goto cleanup
     )
 
     REM Check file size (should be >50KB and <500KB)
-    for %%F in (build\fontlift.exe) do set "SIZE=%%~zF"
+    for %%F in (build\fontlift-win.exe) do set "SIZE=%%~zF"
     if !SIZE! LSS 51200 (
         echo WARNING: Executable suspiciously small ^(!SIZE! bytes^)
     )

@@ -130,14 +130,14 @@ All files <300 lines
 
 **Files to CREATE:**
 
-1. **fontlift.nuspec** (repository root)
+1. **fontlift-win.nuspec** (repository root)
 ```xml
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>$VERSION$</version>
-    <title>fontlift</title>
+    <title>fontlift-win</title>
     <authors>Fontlab Ltd</authors>
     <projectUrl>https://github.com/fontlaborg/fontlift-win-cli</projectUrl>
     <license type="expression">Apache-2.0</license>
@@ -147,7 +147,7 @@ All files <300 lines
     <tags>font fonts cli windows admin</tags>
   </metadata>
   <files>
-    <file src="build\fontlift.exe" target="tools\" />
+    <file src="build\fontlift-win.exe" target="tools\" />
     <file src="tools\chocolateyinstall.ps1" target="tools\" />
     <file src="LICENSE" target="tools\" />
   </files>
@@ -159,17 +159,17 @@ All files <300 lines
 $ErrorActionPreference = 'Stop'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Install-ChocolateyPath $toolsDir 'Machine'
-Write-Host "fontlift installed. Run 'fontlift' to get started."
+Write-Host "fontlift-win installed. Run 'fontlift-win' to get started."
 ```
 
 3. **Update .github/workflows/release.yml** - Add Chocolatey publish step
 
 **Testing:**
 ```powershell
-choco pack
-choco install fontlift -s . -y
-fontlift list
-choco uninstall fontlift -y
+choco pack fontlift-win.nuspec
+choco install fontlift-win -s . -y
+fontlift-win list
+choco uninstall fontlift-win -y
 ```
 
 **Submission:** Push to https://community.chocolatey.org/
@@ -180,38 +180,38 @@ choco uninstall fontlift -y
 
 **Files to CREATE in microsoft/winget-pkgs fork:**
 
-1. **manifests/f/Fontlaborg/fontlift/VERSION/Fontlaborg.fontlift.yaml**
+1. **manifests/f/Fontlaborg/fontlift-win/VERSION/Fontlaborg.fontlift-win.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 DefaultLocale: en-US
 ManifestType: version
 ManifestVersion: 1.6.0
 ```
 
-2. **Fontlaborg.fontlift.installer.yaml**
+2. **Fontlaborg.fontlift-win.installer.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 InstallerType: portable
 NestedInstallerType: exe
 Commands:
-  - fontlift
+  - fontlift-win
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.25/fontlift-v1.1.25.zip
+    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.25/fontlift-win-v1.1.25.zip
     InstallerSha256: <HASH>
 ManifestType: installer
 ManifestVersion: 1.6.0
 ```
 
-3. **Fontlaborg.fontlift.locale.en-US.yaml**
+3. **Fontlaborg.fontlift-win.locale.en-US.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 PackageLocale: en-US
 Publisher: Fontlab Ltd
-PackageName: fontlift
+PackageName: fontlift-win
 License: Apache-2.0
 ShortDescription: Windows font management CLI
 Tags:
@@ -224,9 +224,9 @@ ManifestVersion: 1.6.0
 
 **Testing:**
 ```powershell
-winget validate manifests/f/Fontlaborg/fontlift/1.1.25/
-winget install --manifest manifests/f/Fontlaborg/fontlift/1.1.25/
-fontlift list
+winget validate manifests/f/Fontlaborg/fontlift-win/1.1.25/
+winget install --manifest manifests/f/Fontlaborg/fontlift-win/1.1.25/
+fontlift-win list
 ```
 
 **Submission:** PR to microsoft/winget-pkgs
@@ -262,9 +262,9 @@ fontlift list
 - [ ] Commit: "Aggressive documentation cleanup"
 
 ### Week 2: Chocolatey Package
-- [ ] Create fontlift.nuspec
+- [ ] Create fontlift-win.nuspec
 - [ ] Create tools/chocolateyinstall.ps1
-- [ ] Test locally: `choco pack && choco install fontlift -s . -y`
+- [ ] Test locally: `choco pack && choco install fontlift-win -s . -y`
 - [ ] Update release.yml to publish to Chocolatey
 - [ ] Submit to Chocolatey community repo
 - [ ] Wait for approval (3-7 days)
@@ -278,8 +278,8 @@ fontlift list
 - [ ] Wait for merge (1-3 days)
 
 ### Week 4: Verification
-- [ ] Test Chocolatey installation: `choco install fontlift`
-- [ ] Test WinGet installation: `winget install Fontlaborg.fontlift`
+- [ ] Test Chocolatey installation: `choco install fontlift-win`
+- [ ] Test WinGet installation: `winget install Fontlaborg.fontlift-win`
 - [ ] Update README with installation methods
 - [ ] Create release tag v1.2.0
 - [ ] Verify automated publishing works
@@ -303,13 +303,13 @@ fontlift list
 **Installation commands:**
 ```powershell
 # Chocolatey
-choco install fontlift
+choco install fontlift-win
 
 # WinGet
-winget install Fontlaborg.fontlift
+winget install Fontlaborg.fontlift-win
 
 # Binary (manual)
-Expand-Archive fontlift-v1.1.25.zip
+Expand-Archive fontlift-win-v1.1.25.zip
 ```
 
 ---
@@ -319,7 +319,7 @@ Expand-Archive fontlift-v1.1.25.zip
 Before adding ANY file, ask:
 
 1. **Is this required for core font management?** → No? Don't add it.
-2. **Does this help users install/use fontlift?** → No? Don't add it.
+2. **Does this help users install/use fontlift-win?** → No? Don't add it.
 3. **Is this information already in another file?** → Yes? Don't duplicate it.
 4. **Can we use GitHub features instead?** (Issues, Wiki, Releases) → Yes? Use those.
 5. **Is this developer-facing only?** → Yes? Keep it local, not in repo.

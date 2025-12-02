@@ -1,6 +1,64 @@
 # WORK.md
 <!-- this_file: WORK.md -->
 
+## Sprint on PLAN/TODO gaps - 2025-12-02
+### Summary
+- Added `tools/collect-fontlift-transcripts.ps1` to record real console transcripts (auto-uninstall, cleanup user/system, missing-font guardrail).
+- Built a Windows 10/11 validation matrix and capture recipes directly in `docs/cleanup-validation.md`, including screenshot guidance for cache purge evidence.
+- Marked PLAN/TODO items as in-progress where scaffolding exists; left VM execution/screenshot tasks open.
+
+### Testing
+- Not run (Windows-only flows; recorder and matrix require Windows VMs).
+
+## Scope-aware Uninstall - 2025-12-02
+
+### Summary
+- Updated uninstall/remove flows to search both user and system registries and remove every copy permitted in one run; system entries now surface a single permission hint when elevation is missing.
+- Adjusted CLI help text and README option descriptions to clarify that `--admin` enables system removal while user copies are always removed when found.
+- Documented the behavior shift in CHANGELOG.md.
+
+### Testing
+- Not run (Windows-only binary; scope resolution changes require a Windows environment to verify end-to-end).
+
+## List Sorting Defaults - 2025-12-02
+
+### Summary
+- Routed `list` output through a sorted set by default so path-only output de-duplicates overlapping entries and every listing is ordered.
+- Kept `-s` as a compatibility no-op while updating CLI usage text and README to describe the sorted, de-duplicated default.
+- Recorded the behavior change in `CHANGELOG.md`.
+
+### Testing
+- Not run (Windows-specific binary; no Windows toolchain in this environment).
+
+## Cleanup Validation Assets - 2025-12-02
+
+### Summary
+- Added `tools/cleanup-harness.ps1` to seed orphaned registry entries (user/system) and optionally run `fontlift-win cleanup` for repeatable VM validation.
+- Created `docs/cleanup-validation.md` with representative transcripts, remediation steps for FontCache service failures, release checklist additions, and the decision to keep automatic uninstall enabled.
+- Updated `docs/PACKAGE_DISTRIBUTION.md` verification steps and drafted release highlights in `CHANGELOG.md`.
+
+### Testing
+- Not run (Windows-only functionality; harness and cleanup flows require Windows VMs).
+
+### Risk & Follow-up
+- Run harness + cleanup on Windows 10 and Windows 11 VMs to validate real output and exit codes.
+- Capture actual console transcripts and before/after screenshots to replace the representative examples in the new playbook.
+
+## Binary Rename - 2025-12-02
+
+### Summary
+- Renamed the executable and CLI branding to `fontlift-win(.exe)` to avoid conflicts, including version resource metadata and runtime banners.
+- Updated build/publish scripts, Chocolatey/WinGet packaging docs, and nuspec to emit `fontlift-win-v*.zip` and install `fontlift-win.exe`.
+- Added `tools/test-binary-name.sh` to guard against regressions in output naming across scripts and templates.
+
+### Testing
+- `bash tools/test-binary-name.sh` (pass)
+- Windows build/publish steps not run in this environment.
+
+### Risk & Follow-up
+- Validate `build.cmd` and `publish.cmd` on a Windows shell to confirm the new output path and package zip naming.
+- Refresh Chocolatey/WinGet manifests and download URLs on the next version bump to keep installers aligned with the renamed binary.
+
 ## Build Fix Follow-up - 2025-11-07
 
 ### Summary

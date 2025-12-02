@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 REM this_file: publish.cmd
-REM Package fontlift for distribution
+REM Package fontlift-win for distribution
 REM Usage: publish.cmd [version]
 REM   version: Optional semantic version string.
 
@@ -66,11 +66,11 @@ if "!VERSION_TAG!"=="" (
     set "VERSION_TAG=!ULTIMATE_FALLBACK_TAG!"
 )
 
-echo Creating distribution package for version !VERSION_TAG!...
+echo Creating distribution package for version !VERSION_TAG!... 
 
 REM Check if build output exists
-if not exist build\fontlift.exe (
-    echo ERROR: build\fontlift.exe not found
+if not exist build\fontlift-win.exe (
+    echo ERROR: build\fontlift-win.exe not found
     echo Please run build.cmd first
     set "EXIT_CODE=1"
     goto :cleanup
@@ -80,9 +80,9 @@ REM Create dist directory if it doesn't exist (using md 2>nul avoids "if not exi
 md dist 2>nul
 if exist dist\*.* del /Q dist\*.*
 
-copy build\fontlift.exe dist\ >nul
+copy build\fontlift-win.exe dist\ >nul
 if !ERRORLEVEL! NEQ 0 (
-    echo ERROR: Failed to copy fontlift.exe
+    echo ERROR: Failed to copy fontlift-win.exe
     set "EXIT_CODE=1"
     goto :cleanup
 )
@@ -92,18 +92,18 @@ echo. >> dist\README.txt
 echo Windows CLI tool for font installation/uninstallation >> dist\README.txt
 echo. >> dist\README.txt
 echo Usage: >> dist\README.txt
-echo   fontlift.exe list          List installed fonts >> dist\README.txt
-echo   fontlift.exe install font.ttf   Install font >> dist\README.txt
-echo   fontlift.exe uninstall -n Arial  Uninstall font >> dist\README.txt
-echo   fontlift.exe remove -p font.ttf  Remove font and file >> dist\README.txt
+echo   fontlift-win.exe list          List installed fonts >> dist\README.txt
+echo   fontlift-win.exe install font.ttf   Install font >> dist\README.txt
+echo   fontlift-win.exe uninstall -n Arial  Uninstall font >> dist\README.txt
+echo   fontlift-win.exe remove -p font.ttf  Remove font and file >> dist\README.txt
 echo. >> dist\README.txt
 echo See https://github.com/fontlaborg/fontlift-win-cli for documentation >> dist\README.txt
 
 if exist LICENSE copy LICENSE dist\ >nul
 
-set "ZIPFILE=fontlift-!VERSION_TAG!.zip"
+set "ZIPFILE=fontlift-win-!VERSION_TAG!.zip"
 
-echo Compressing to !ZIPFILE!...
+echo Compressing to !ZIPFILE!... 
 powershell -Command "Compress-Archive -Path dist\* -DestinationPath dist\!ZIPFILE! -Force"
 
 if !ERRORLEVEL! NEQ 0 (

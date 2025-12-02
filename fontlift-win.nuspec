@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>1.1.24</version>
-    <title>fontlift - Windows Font Management CLI</title>
+    <title>fontlift-win - Windows Font Management CLI</title>
     <authors>Fontlab Ltd</authors>
     <owners>fontlaborg</owners>
     <licenseUrl>https://github.com/fontlaborg/fontlift-win-cli/blob/main/LICENSE</licenseUrl>
     <projectUrl>https://github.com/fontlaborg/fontlift-win-cli</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Windows CLI tool for system font installation and management. Install fonts persistently, uninstall by path or name, list installed fonts. Supports TTF, OTF, TTC, OTC formats. No dependencies, single executable.</description>
-    <summary>CLI tool for Windows font management - install, uninstall, list fonts</summary>
+    <description>Windows CLI tool for system font installation and management. Install fonts persistently, uninstall by path or name, list installed fonts. Supports TTF, OTF, TTC, OTC formats. No dependencies, single executable. Invoke as fontlift-win to avoid conflicts with other tools.</description>
+    <summary>CLI tool for Windows font management - install, uninstall, list fonts (fontlift-win.exe)</summary>
     <releaseNotes>https://github.com/fontlaborg/fontlift-win-cli/blob/main/CHANGELOG.md</releaseNotes>
     <copyright>Copyright 2025 Fontlab Ltd</copyright>
     <tags>font fonts cli windows install management ttf otf admin</tags>
@@ -19,6 +19,7 @@
     <bugTrackerUrl>https://github.com/fontlaborg/fontlift-win-cli/issues</bugTrackerUrl>
   </metadata>
   <files>
-    <file src="tools\**" target="tools" />
+    <file src="build\fontlift-win.exe" target="tools\fontlift-win.exe" />
+    <file src="tools\chocolateyinstall.ps1" target="tools\chocolateyinstall.ps1" />
   </files>
 </package>

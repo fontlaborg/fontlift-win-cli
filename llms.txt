@@ -57,7 +57,7 @@ Project Structure:
 ├── 📄 CONTRIBUTING.md
 ├── 📄 DEPENDENCIES.md
 ├── 📄 FINAL_STATUS.txt
-├── 📄 fontlift.nuspec
+├── 📄 fontlift-win.nuspec
 ├── 📄 LICENSE
 ├── 📄 PLAN.md
 ├── 📄 publish.cmd
@@ -154,7 +154,7 @@ Keep it simple:
 - Single `build.bat` script calling cl.exe directly, or
 - Visual Studio solution with minimal configuration
 
-Output: Single executable `fontlift.exe` with no runtime dependencies beyond system DLLs.
+Output: Single executable `fontlift-win.exe` with no runtime dependencies beyond system DLLs.
 
 ## Documentation to maintain
 
@@ -622,7 +622,7 @@ indent_size = 2
 <document_content>
 ---
 name: Bug Report
-about: Report a problem with fontlift
+about: Report a problem with fontlift-win
 title: '[BUG] '
 labels: bug
 assignees: ''
@@ -633,12 +633,12 @@ A clear and concise description of what the bug is.
 
 ## Environment
 - **Windows Version:** (e.g., Windows 10 21H2, Windows 11)
-- **fontlift Version:** (e.g., v0.1.0)
+- **fontlift-win Version:** (e.g., v0.1.0)
 - **Installation Method:** (binary download / built from source)
 
 ## Command Used
 ```cmd
-fontlift [command here]
+fontlift-win [command here]
 ```
 
 ## Expected Behavior
@@ -653,7 +653,7 @@ What actually happened.
 ```
 
 ## Steps to Reproduce
-1. Run command `fontlift install font.ttf`
+1. Run command `fontlift-win install font.ttf`
 2. Observe error message
 3. ...
 
@@ -696,7 +696,7 @@ contact_links:
 <document_content>
 ---
 name: Feature Request
-about: Suggest an enhancement for fontlift
+about: Suggest an enhancement for fontlift-win
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
@@ -708,18 +708,18 @@ A clear and concise description of the feature you'd like.
 ## Problem Statement
 What problem does this feature solve? Why do you need it?
 
-**Example:** "I frequently need to install 50+ fonts at once, but running fontlift install for each one is tedious."
+**Example:** "I frequently need to install 50+ fonts at once, but running fontlift-win install for each one is tedious."
 
 ## Proposed Solution
 Describe how you envision the feature working.
 
-**Example:** "Add `fontlift install -d DIRECTORY` to install all fonts in a directory."
+**Example:** "Add `fontlift-win install -d DIRECTORY` to install all fonts in a directory."
 
 ## Alternative Solutions
 Have you considered any alternative approaches? List them here.
 
 ## Alignment with Project Scope
-fontlift is intentionally minimal and focused on core font management. Consider:
+fontlift-win is intentionally minimal and focused on core font management. Consider:
 - Does this fit the "simple CLI tool" philosophy?
 - Can existing features solve this with scripting?
 - Would this add significant complexity?
@@ -799,12 +799,12 @@ This directory contains automated CI/CD workflows for fontlift-win-cli.
 1. Checkout code with full git history
 2. Setup MSVC compiler environment
 3. Extract version from git tags (or use `v0.0.0-dev` if no tags exist)
-4. Build fontlift.exe with embedded version resource
+4. Build fontlift-win.exe with embedded version resource
 5. Test that executable was created
 6. Test that executable runs without errors
 7. Upload executable as build artifact (7-day retention)
 
-**Artifacts:** `fontlift-{version}` containing `fontlift.exe`
+**Artifacts:** `fontlift-{version}` containing `fontlift-win.exe`
 
 ### release.yml - Release Creation
 
@@ -816,14 +816,14 @@ This directory contains automated CI/CD workflows for fontlift-win-cli.
 1. Checkout code with full git history
 2. Setup MSVC compiler environment
 3. Extract version from tag name
-4. Build fontlift.exe with version embedded
-5. Package distribution zip: `fontlift-v{X.Y.Z}.zip`
+4. Build fontlift-win.exe with version embedded
+5. Package distribution zip: `fontlift-win-v{X.Y.Z}.zip`
 6. Generate SHA256 checksums
 7. Create GitHub Release with auto-generated release notes
 8. Upload zip and checksums as release assets
 
 **Release Assets:**
-- `fontlift-v{X.Y.Z}.zip` - Distribution package
+- `fontlift-win-v{X.Y.Z}.zip` - Distribution package
 - `checksums.txt` - SHA256 checksums for verification
 
 ## Version Management
@@ -852,7 +852,7 @@ To create a new release:
    ```
 4. GitHub Actions will automatically:
    - Build the executable with version v0.1.0
-   - Package fontlift-v0.1.0.zip
+   - Package fontlift-win-v0.1.0.zip
    - Create GitHub Release
    - Upload release artifacts
 
@@ -960,14 +960,14 @@ jobs:
     - name: Test executable exists
       shell: cmd
       run: |
-        if not exist build\fontlift.exe exit /b 1
-        echo Build successful - fontlift.exe created
+        if not exist build\fontlift-win.exe exit /b 1
+        echo Build successful - fontlift-win.exe created
 
     - name: Test executable runs
       shell: cmd
       run: |
         REM Running without args shows usage (exit code 1), which is expected
-        build\fontlift.exe
+        build\fontlift-win.exe
         if %ERRORLEVEL% EQU 1 (
           echo Executable runs correctly - showed usage message
           exit /b 0
@@ -979,8 +979,8 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: fontlift-${{ env.VERSION_TAG }}
-        path: build/fontlift.exe
+        name: fontlift-win-${{ env.VERSION_TAG }}
+        path: build/fontlift-win.exe
         retention-days: 7
 </document_content>
 </document>
@@ -1091,14 +1091,14 @@ jobs:
       shell: cmd
       run: |
         cd dist
-        certutil -hashfile fontlift-%VERSION_TAG%.zip SHA256 > checksums.txt
+        certutil -hashfile fontlift-win-%VERSION_TAG%.zip SHA256 > checksums.txt
         type checksums.txt
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          dist/fontlift-${{ env.VERSION_TAG }}.zip
+          dist/fontlift-win-${{ env.VERSION_TAG }}.zip
           dist/checksums.txt
         generate_release_notes: true
         draft: false
@@ -1109,17 +1109,17 @@ jobs:
           Windows CLI tool for font installation and management.
 
           ### Installation
-          1. Download `fontlift-${{ env.VERSION_TAG }}.zip`
+          1. Download `fontlift-win-${{ env.VERSION_TAG }}.zip`
           2. Verify checksum (see `checksums.txt`)
-          3. Extract `fontlift.exe` to a directory in your PATH
-          4. Run `fontlift.exe` from an elevated command prompt
+          3. Extract `fontlift-win.exe` to a directory in your PATH
+          4. Run `fontlift-win.exe` from an elevated command prompt
 
           ### Usage
           ```
-          fontlift list              List installed fonts
-          fontlift install font.ttf  Install a font
-          fontlift uninstall -n Arial  Uninstall a font
-          fontlift remove -p font.ttf  Remove font and delete file
+          fontlift-win list              List installed fonts
+          fontlift-win install font.ttf  Install a font
+          fontlift-win uninstall -n Arial  Uninstall a font
+          fontlift-win remove -p font.ttf  Remove font and delete file
           ```
 
           See [README.md](https://github.com/fontlaborg/fontlift-win-cli/blob/main/README.md) for full documentation.
@@ -1769,14 +1769,14 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Old format: `path;name` (semicolon separator)
   - New format: `path::name` (double colon separator)
   - Rationale: Consistency with fontnome and fontlift-mac-cli
-  - Impact: Scripts parsing `fontlift list -n -p` output must be updated
+  - Impact: Scripts parsing `fontlift-win list -n -p` output must be updated
 - **Implementation details:**
   - src/font_ops.cpp:37 - Updated FormatOutput() function
   - src/main.cpp:22 - Updated help text
 - **Migration guide for existing scripts:**
   - If parsing output, change split from `;` to `::`
-  - Example (Bash): `fontlift list -n -p | while IFS='::' read -r path name; do ...`
-  - Example (PowerShell): `fontlift list -n -p | ForEach-Object { $parts = $_ -split '::'; ... }`
+  - Example (Bash): `fontlift-win list -n -p | while IFS='::' read -r path name; do ...`
+  - Example (PowerShell): `fontlift-win list -n -p | ForEach-Object { $parts = $_ -split '::'; ... }`
 - **Note:** This change only affects `list` command with both `-n` and `-p` flags
 - **Version:** Planned for v2.0.0 (major version bump for breaking change)
 - **Testing: ✅ CODE VERIFIED** (syntax, logic, and risk assessment complete)
@@ -1950,7 +1950,7 @@ All notable changes to fontlift-win-cli will be documented in this file.
   - Applied to all 4 operations (install, uninstall, remove by path/name)
   - Added 7 "Solution:" lines across font_ops.cpp
 - **Added build output validation to build.cmd**
-  - Verifies fontlift.exe exists after successful compile
+  - Verifies fontlift-win.exe exists after successful compile
   - Warns if file size suspiciously small (<50KB) or large (>500KB)
   - Reports actual file size
   - Added 17 lines to build.cmd
@@ -1959,7 +1959,7 @@ All notable changes to fontlift-win-cli will be documented in this file.
 ### Quality Improvements (2025-11-02)
 - **Fixed argv bounds checking bug** (MEDIUM severity)
   - Added `i + 1 < argc` check before accessing `argv[i+1]`
-  - Prevents crash with malformed arguments like `fontlift uninstall -p`
+  - Prevents crash with malformed arguments like `fontlift-win uninstall -p`
   - Fixed in main.cpp lines 66, 88-90, 114-116
 - **Added path validation for font files**
   - New IsValidFontPath() function checks for path traversal (..\\)
@@ -2119,7 +2119,7 @@ All notable changes to fontlift-win-cli will be documented in this file.
 
 ### New Features (v1.1.1)
 - **List Command Enhancement**: Added `-s` flag for sorted and unique output
-  - `fontlift list -s` - Sort output alphabetically and remove duplicates
+  - `fontlift-win list` - Sorted output; duplicate paths removed when showing paths
   - Works with all combinations: `-s`, `-p -s`, `-n -s`, `-n -p -s`
   - Uses std::set for automatic sorting and deduplication
   - Clean pipe-friendly output (no prolog/epilog)
@@ -2214,7 +2214,7 @@ Before creating a bug report:
 
 When creating a bug report, include:
 - Windows version (e.g., Windows 10, Windows 11)
-- fontlift version
+- fontlift-win version
 - Exact command used
 - Expected behavior
 - Actual behavior
@@ -2224,7 +2224,7 @@ When creating a bug report, include:
 ### Suggesting Features
 
 Feature requests are welcome, but remember:
-- fontlift is intentionally minimal and focused
+- fontlift-win is intentionally minimal and focused
 - New features must align with the project's core purpose
 - Complex features may be rejected to maintain simplicity
 
@@ -2306,10 +2306,10 @@ See PRINCIPLES.md for complete design philosophy.
 Before submitting:
 1. Build successfully with no warnings
 2. Test all commands manually:
-   - `fontlift list` with various flags
-   - `fontlift install` with .ttf, .otf, .ttc files
-   - `fontlift uninstall` by path and name
-   - `fontlift remove` by path and name
+   - `fontlift-win list` with various flags
+   - `fontlift-win install` with .ttf, .otf, .ttc files
+   - `fontlift-win uninstall` by path and name
+   - `fontlift-win remove` by path and name
 3. Test edge cases:
    - Filenames with spaces
    - Invalid font files
@@ -2545,7 +2545,7 @@ However, all future dependencies must be:
 
 To verify dependencies of the compiled executable:
 ```cmd
-dumpbin /DEPENDENTS fontlift.exe
+dumpbin /DEPENDENTS fontlift-win.exe
 ```
 
 Should show only:
@@ -2933,19 +2933,19 @@ PROJECT HEALTH: EXCELLENT
   - `-s`: Sort output and remove duplicates
 
 - **`install`** (`i`) - Install fonts
-  - By path: `fontlift install font.ttf`
-  - System-wide: `fontlift install font.ttf --admin` (requires admin)
+  - By path: `fontlift-win install font.ttf`
+  - System-wide: `fontlift-win install font.ttf --admin` (requires admin)
   - Registers fonts with Windows Registry
 
 - **`uninstall`** (`u`) - Uninstall fonts (keep files)
-  - By path: `fontlift uninstall font.ttf`
-  - By name: `fontlift uninstall -n "Font Name"`
-  - System-wide: `fontlift uninstall --admin font.ttf`
+  - By path: `fontlift-win uninstall font.ttf`
+  - By name: `fontlift-win uninstall -n "Font Name"`
+  - System-wide: `fontlift-win uninstall --admin font.ttf`
 
 - **`remove`** (`rm`) - Remove fonts (delete files)
-  - By path: `fontlift remove font.ttf`
-  - By name: `fontlift remove -n "Font Name"`
-  - System-wide: `fontlift remove --admin font.ttf`
+  - By path: `fontlift-win remove font.ttf`
+  - By name: `fontlift-win remove -n "Font Name"`
+  - System-wide: `fontlift-win remove --admin font.ttf`
 
 ### Command Flags
 - `-a` or `--admin` - System-level operations (requires admin privileges)
@@ -3019,7 +3019,7 @@ Windows CLI tool for system font installation and management. Install fonts pers
 ## Installation
 
 ### Download Binary
-1. Download `fontlift-v*.zip` from [Releases](https://github.com/fontlaborg/fontlift-win-cli/releases)
+1. Download `fontlift-win-v*.zip` from [Releases](https://github.com/fontlaborg/fontlift-win-cli/releases)
 2. Extract and add to PATH
 
 ### Build from Source
@@ -3033,34 +3033,34 @@ build.cmd
 
 ### List Fonts
 ```cmd
-fontlift list          # Show paths (default)
-fontlift list -n       # Show names
-fontlift list -n -p    # Show both
-fontlift list -s       # Sorted output
+fontlift-win list          # Show paths (default)
+fontlift-win list -n       # Show names
+fontlift-win list -n -p    # Show both
+fontlift-win list          # Sorted output (path-only output deduplicated)
 ```
 
 ### Install Fonts
 ```cmd
-fontlift install myfont.ttf
-fontlift i -p C:\Downloads\font.otf
-fontlift i myfont.ttf --admin      # Force system-level (requires admin)
-fontlift i myfont.ttf -a           # Same as --admin
+fontlift-win install myfont.ttf
+fontlift-win i -p C:\Downloads\font.otf
+fontlift-win i myfont.ttf --admin      # Force system-level (requires admin)
+fontlift-win i myfont.ttf -a           # Same as --admin
 ```
 
 **Note:** By default, fonts are installed system-wide with admin privileges, or per-user without admin. Use `--admin` / `-a` to force system-level installation.
 
 ### Uninstall Fonts (Keep Files)
 ```cmd
-fontlift uninstall myfont.ttf
-fontlift u -n "Font Name"
-fontlift u -n "Font Name" --admin  # Force system-level (requires admin)
+fontlift-win uninstall myfont.ttf
+fontlift-win u -n "Font Name"
+fontlift-win u -n "Font Name" --admin  # Force system-level (requires admin)
 ```
 
 ### Remove Fonts (Delete Files)
 ```cmd
-fontlift remove myfont.ttf
-fontlift rm -n "Font Name"
-fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
+fontlift-win remove myfont.ttf
+fontlift-win rm -n "Font Name"
+fontlift-win rm -n "Font Name" --admin  # Force system-level (requires admin)
 ```
 
 **Warning:** Files permanently deleted
@@ -3092,13 +3092,13 @@ fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
 When uninstalling/removing system fonts, run Command Prompt as Administrator. Per-user fonts don't require admin.
 
 **Font already installed**
-Uninstall existing font first: `fontlift u -n "Name"`
+Uninstall existing font first: `fontlift-win u -n "Name"`
 
 **Invalid font file**
 Verify format (.ttf, .otf, .ttc, .otc) and file integrity
 
 **Font doesn't appear**
-Check exit code, verify with `fontlift list -n`, restart application
+Check exit code, verify with `fontlift-win list -n`, restart application
 
 ## Technical Details
 
@@ -3867,7 +3867,7 @@ Small refinements implemented (2025-11-02):
   - +7 "Solution:" lines in font_ops.cpp
 
 - ✅ **Added build output validation to build.cmd**
-  - Verifies fontlift.exe exists
+  - Verifies fontlift-win.exe exists
   - Warns on suspicious file sizes
   - +17 lines in build.cmd
 
@@ -4069,9 +4069,9 @@ Micro-improvements for edge case handling (2025-11-01):
 
 Completed (2025-11-02):
 
-- ✅ Created fontlift.nuspec (repository root)
+- ✅ Created fontlift-win.nuspec (repository root)
 - ✅ Created tools/chocolateyinstall.ps1
-- [ ] Test locally: `choco pack && choco install fontlift -s . -y` (requires Windows with Chocolatey installed)
+- [ ] Test locally: `choco pack && choco install fontlift-win -s . -y` (requires Windows with Chocolatey installed)
 - [ ] Update .github/workflows/release.yml (add Chocolatey publish - requires API key)
 - [ ] Submit to https://community.chocolatey.org/ (requires account and approval)
 - [ ] Wait for approval (3-7 days)
@@ -4081,16 +4081,16 @@ Completed (2025-11-02):
 ## Week 3: WinGet Package
 
 - [ ] Fork microsoft/winget-pkgs
-- [ ] Create manifests/f/Fontlaborg/fontlift/VERSION/*.yaml (3 files)
-- [ ] Validate: `winget validate manifests/f/Fontlaborg/fontlift/VERSION/`
-- [ ] Test: `winget install --manifest manifests/f/Fontlaborg/fontlift/VERSION/`
+- [ ] Create manifests/f/Fontlaborg/fontlift-win/VERSION/*.yaml (3 files)
+- [ ] Validate: `winget validate manifests/f/Fontlaborg/fontlift-win/VERSION/`
+- [ ] Test: `winget install --manifest manifests/f/Fontlaborg/fontlift-win/VERSION/`
 - [ ] Submit PR to microsoft/winget-pkgs
 - [ ] Wait for merge (1-3 days)
 
 ## Week 4: Verification
 
-- [ ] Test: `choco install fontlift`
-- [ ] Test: `winget install Fontlaborg.fontlift`
+- [ ] Test: `choco install fontlift-win`
+- [ ] Test: `winget install Fontlaborg.fontlift-win`
 - [ ] Update README with 3 installation methods
 - [ ] Create release tag v1.2.0
 - [ ] Verify automated publishing works
@@ -4175,14 +4175,14 @@ This checklist should be executed when Windows environment is available for thor
 
 **Build Verification:**
 - [ ] Run `build.cmd` - verify compilation succeeds without warnings
-- [ ] Check fontlift.exe exists and is ~100-150KB in size
-- [ ] Run `fontlift --version` - verify version displays correctly
-- [ ] Run `fontlift` without arguments - verify help text displays
+- [ ] Check fontlift-win.exe exists and is ~100-150KB in size
+- [ ] Run `fontlift-win --version` - verify version displays correctly
+- [ ] Run `fontlift-win` without arguments - verify help text displays
 
 **Installation Methods:**
-- [ ] Direct executable: Run fontlift.exe from download location
-- [ ] Chocolatey: `choco install fontlift` (after package approval)
-- [ ] WinGet: `winget install Fontlaborg.fontlift` (after manifest merge)
+- [ ] Direct executable: Run fontlift-win.exe from download location
+- [ ] Chocolatey: `choco install fontlift-win` (after package approval)
+- [ ] WinGet: `winget install Fontlaborg.fontlift-win` (after manifest merge)
 
 ### Font Parsing Testing
 
@@ -4202,13 +4202,13 @@ This checklist should be executed when Windows environment is available for thor
 ### Font Installation Testing
 
 **System-Level Installation (requires admin):**
-- [ ] `fontlift install -p Arial.ttf --admin` - verify installs to system
+- [ ] `fontlift-win install -p Arial.ttf --admin` - verify installs to system
 - [ ] Check HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts
 - [ ] Verify font appears in C:\\Windows\\Fonts
 - [ ] Open Word/Notepad - verify font available system-wide
 
 **User-Level Installation:**
-- [ ] `fontlift install -p CustomFont.ttf` - verify installs for current user
+- [ ] `fontlift-win install -p CustomFont.ttf` - verify installs for current user
 - [ ] Check HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts
 - [ ] Verify font appears in %LocalAppData%\\Microsoft\\Windows\\Fonts
 - [ ] Open Word/Notepad - verify font available for current user only
@@ -4222,13 +4222,13 @@ This checklist should be executed when Windows environment is available for thor
 ### Font Uninstallation Testing
 
 **By Path:**
-- [ ] `fontlift uninstall -p C:\\Windows\\Fonts\\Arial.ttf` - verify uninstalls
+- [ ] `fontlift-win uninstall -p C:\\Windows\\Fonts\\Arial.ttf` - verify uninstalls
 - [ ] Verify registry entry removed
 - [ ] Verify file remains in filesystem
 - [ ] Verify font no longer available in applications
 
 **By Name:**
-- [ ] `fontlift uninstall -n "Arial"` - verify uninstalls
+- [ ] `fontlift-win uninstall -n "Arial"` - verify uninstalls
 - [ ] Test with exact font name
 - [ ] Test with name+suffix (e.g., "Arial (TrueType)")
 - [ ] Test with non-existent name - verify "not found" error
@@ -4236,28 +4236,28 @@ This checklist should be executed when Windows environment is available for thor
 ### Font Removal Testing
 
 **By Path:**
-- [ ] `fontlift remove -p C:\\Windows\\Fonts\\TestFont.ttf` - verify removes
+- [ ] `fontlift-win remove -p C:\\Windows\\Fonts\\TestFont.ttf` - verify removes
 - [ ] Verify registry entry removed
 - [ ] Verify file deleted from filesystem
 - [ ] Verify font no longer available
 
 **By Name:**
-- [ ] `fontlift remove -n "TestFont"` - verify removes
+- [ ] `fontlift-win remove -n "TestFont"` - verify removes
 - [ ] Verify complete cleanup (registry + file)
 
 ### Font Listing Testing
 
 **Default behavior:**
-- [ ] `fontlift list` - verify shows paths only
+- [ ] `fontlift-win list` - verify shows paths only
 - [ ] Verify lists both system and user fonts
 - [ ] Verify output is readable
 
 **With flags:**
-- [ ] `fontlift list -n` - verify shows font names only
-- [ ] `fontlift list -p` - verify shows paths (same as default)
-- [ ] `fontlift list -n -p` - verify shows "path::name" format
-- [ ] `fontlift list -s` - verify sorted and deduplicated output
-- [ ] `fontlift list -n -p -s` - verify all flags work together
+- [ ] `fontlift-win list -n` - verify shows font names only
+- [ ] `fontlift-win list -p` - verify shows paths (same as default)
+- [ ] `fontlift-win list -n -p` - verify shows "path::name" format
+- [ ] `fontlift-win list` - verify sorted and deduplicated path output
+- [ ] `fontlift-win list -n -p -s` - verify all flags work together
 
 ### Admin Privileges Testing
 
@@ -5739,7 +5739,7 @@ Standardize `list -n -p` output format to use double colon separator (`::`) inst
 2. **Updated help text in src/main.cpp**
    - Changed line 22: `"path;name format"` → `"path::name format"`
    - Ensures help text accurately reflects actual output format
-   - Users will see correct format in `fontlift --help`
+   - Users will see correct format in `fontlift-win --help`
 
 3. **Updated CHANGELOG.md**
    - Added comprehensive breaking change entry at top of [Unreleased] section
@@ -5803,23 +5803,23 @@ Standardize `list -n -p` output format to use double colon separator (`::`) inst
 
 **Manual Testing Required (Windows):**
 1. Compile test: `build.cmd` should succeed
-2. Output test: `fontlift list -n -p` should show `path::name` format
-3. Help test: `fontlift list` should display updated help text
+2. Output test: `fontlift-win list -n -p` should show `path::name` format
+3. Help test: `fontlift-win list` should display updated help text
 4. Regression test: Other commands should work unchanged
 
 ### Migration Guide
 
-**For users with scripts parsing `fontlift list -n -p` output:**
+**For users with scripts parsing `fontlift-win list -n -p` output:**
 
 **Bash example:**
 ```bash
 # Old format (semicolon)
-fontlift list -n -p | while IFS=';' read -r path name; do
+fontlift-win list -n -p | while IFS=';' read -r path name; do
     echo "Path: $path, Name: $name"
 done
 
 # New format (double colon)
-fontlift list -n -p | while IFS='::' read -r path name; do
+fontlift-win list -n -p | while IFS='::' read -r path name; do
     echo "Path: $path, Name: $name"
 done
 ```
@@ -5827,13 +5827,13 @@ done
 **PowerShell example:**
 ```powershell
 # Old format (semicolon)
-fontlift list -n -p | ForEach-Object {
+fontlift-win list -n -p | ForEach-Object {
     $parts = $_ -split ';'
     Write-Host "Path: $($parts[0]), Name: $($parts[1])"
 }
 
 # New format (double colon)
-fontlift list -n -p | ForEach-Object {
+fontlift-win list -n -p | ForEach-Object {
     $parts = $_ -split '::'
     Write-Host "Path: $($parts[0]), Name: $($parts[1])"
 }
@@ -5989,14 +5989,14 @@ Add `--admin` / `-a` CLI switch to force system-level font operations, giving us
 
 ```cmd
 # Force system-level installation (requires admin)
-fontlift i myfont.ttf --admin
-fontlift i myfont.ttf -a
+fontlift-win i myfont.ttf --admin
+fontlift-win i myfont.ttf -a
 
 # Force system-level uninstallation (requires admin)
-fontlift u -n "Font Name" --admin
+fontlift-win u -n "Font Name" --admin
 
 # Force system-level removal (requires admin)
-fontlift rm -n "Font Name" -a
+fontlift-win rm -n "Font Name" -a
 ```
 
 ### Testing Status
@@ -6033,12 +6033,12 @@ fontlift rm -n "Font Name" -a
 - Needs compilation on Windows to verify binary
 
 **Expected Behavior:**
-1. `fontlift i font.ttf` (no admin) → installs to user directory
-2. `fontlift i font.ttf` (with admin) → installs to system directory
-3. `fontlift i font.ttf --admin` (no admin) → error: requires admin
-4. `fontlift i font.ttf --admin` (with admin) → installs to system directory
-5. `fontlift u -n "Font"` → searches both user and system fonts
-6. `fontlift u -n "Font" --admin` → only searches system fonts, requires admin
+1. `fontlift-win i font.ttf` (no admin) → installs to user directory
+2. `fontlift-win i font.ttf` (with admin) → installs to system directory
+3. `fontlift-win i font.ttf --admin` (no admin) → error: requires admin
+4. `fontlift-win i font.ttf --admin` (with admin) → installs to system directory
+5. `fontlift-win u -n "Font"` → searches both user and system fonts
+6. `fontlift-win u -n "Font" --admin` → only searches system fonts, requires admin
 
 ### Files Modified
 - `src/font_ops.h` - Added forceAdmin parameter to function declarations (lines 16, 18, 22, 26, 30, 34)
@@ -6120,10 +6120,10 @@ Enable font installation without administrator privileges by supporting per-user
 - Needs compilation on Windows to verify
 
 **Expected Behavior:**
-1. Without admin: `fontlift i font.ttf` → installs to user directory
-2. With admin: `fontlift i font.ttf` → installs to system directory
-3. `fontlift list` → shows both system and user fonts
-4. `fontlift u -n "Font"` → removes user fonts without admin, requires admin for system fonts
+1. Without admin: `fontlift-win i font.ttf` → installs to user directory
+2. With admin: `fontlift-win i font.ttf` → installs to system directory
+3. `fontlift-win list` → shows both system and user fonts
+4. `fontlift-win u -n "Font"` → removes user fonts without admin, requires admin for system fonts
 
 ### Files Modified
 - `src/sys_utils.h` - Added function declarations
@@ -6214,7 +6214,7 @@ if "!BUILD_TAG!"=="" (
     set "BUILD_TAG=!ULTIMATE_FALLBACK_TAG!"
 )
 
-echo Building fontlift !BUILD_SEMVER!...
+echo Building fontlift-win !BUILD_SEMVER!...
 
 where cl.exe >nul 2>&1
 if !ERRORLEVEL! NEQ 0 (
@@ -6247,24 +6247,24 @@ if !ERRORLEVEL! NEQ 0 (
 cl.exe /std:c++17 /EHsc /W4 /O2 ^
     /Fobuild\ ^
     src\main.cpp src\sys_utils.cpp src\font_parser.cpp src\font_ops.cpp ^
-    /link /OUT:build\fontlift.exe build\version.res Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
+    /link /OUT:build\fontlift-win.exe build\version.res Advapi32.lib Shlwapi.lib User32.lib Gdi32.lib
 
 if !ERRORLEVEL! EQU 0 (
     echo.
     echo ===================================
     echo Build successful!
     echo Version: !BUILD_SEMVER!
-    echo Output: build\fontlift.exe
+    echo Output: build\fontlift-win.exe
 
     REM Validate build output
-    if not exist build\fontlift.exe (
-        echo ERROR: fontlift.exe not found!
+    if not exist build\fontlift-win.exe (
+        echo ERROR: fontlift-win.exe not found!
         set "EXIT_CODE=1"
         goto cleanup
     )
 
     REM Check file size (should be >50KB and <500KB)
-    for %%F in (build\fontlift.exe) do set "SIZE=%%~zF"
+    for %%F in (build\fontlift-win.exe) do set "SIZE=%%~zF"
     if !SIZE! LSS 51200 (
         echo WARNING: Executable suspiciously small ^(!SIZE! bytes^)
     )
@@ -6302,15 +6302,15 @@ Make fontlift-win-cli available via Chocolatey and WinGet for easy installation 
 
 ### Package Structure
 
-Create `fontlift.nuspec` in repository root:
+Create `fontlift-win.nuspec` in repository root:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>1.1.24</version>
-    <title>fontlift - Windows Font Management CLI</title>
+    <title>fontlift-win - Windows Font Management CLI</title>
     <authors>Fontlab Ltd</authors>
     <projectUrl>https://github.com/fontlaborg/fontlift-win-cli</projectUrl>
     <license type="expression">Apache-2.0</license>
@@ -6321,7 +6321,7 @@ Create `fontlift.nuspec` in repository root:
     <releaseNotes>https://github.com/fontlaborg/fontlift-win-cli/releases</releaseNotes>
   </metadata>
   <files>
-    <file src="build\fontlift.exe" target="tools\fontlift.exe" />
+    <file src="build\fontlift-win.exe" target="tools\fontlift-win.exe" />
   </files>
 </package>
 ```
@@ -6332,15 +6332,15 @@ Create `tools/chocolateyinstall.ps1`:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$exePath = Join-Path $toolsDir 'fontlift.exe'
+$exePath = Join-Path $toolsDir 'fontlift-win.exe'
 
 # Add to PATH
 Install-ChocolateyPath $toolsDir 'Machine'
 
-Write-Host "fontlift installed to $exePath"
-Write-Host "Run 'fontlift' to get started"
+Write-Host "fontlift-win installed to $exePath"
+Write-Host "Run 'fontlift-win' to get started"
 ```
 
 ### Uninstallation Script
@@ -6349,7 +6349,7 @@ Create `tools/chocolateyuninstall.ps1`:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 # Remove from PATH
@@ -6360,16 +6360,16 @@ Uninstall-ChocolateyPath $toolsDir 'Machine'
 
 ```powershell
 # Build package
-choco pack fontlift.nuspec
+choco pack fontlift-win.nuspec
 
 # Test installation
-choco install fontlift -s . -y
+choco install fontlift-win -s . -y
 
 # Test executable
-fontlift --help
+fontlift-win --help
 
 # Uninstall
-choco uninstall fontlift -y
+choco uninstall fontlift-win -y
 ```
 
 ### Submission Process
@@ -6377,7 +6377,7 @@ choco uninstall fontlift -y
 1. Create account at https://community.chocolatey.org/
 2. Generate API key from account settings
 3. Set API key: `choco apikey -k [API_KEY] -s https://push.chocolatey.org/`
-4. Push package: `choco push fontlift.1.1.24.nupkg -s https://push.chocolatey.org/`
+4. Push package: `choco push fontlift-win.1.1.24.nupkg -s https://push.chocolatey.org/`
 5. Package enters moderation queue (~2-7 days for first package)
 6. Once approved, updates are automatic
 
@@ -6389,7 +6389,7 @@ Add to `.github/workflows/release.yml` after creating GitHub Release:
 - name: Build Chocolatey package
   shell: pwsh
   run: |
-    choco pack fontlift.nuspec --version ${{ env.VERSION_SEMVER }}
+    choco pack fontlift-win.nuspec --version ${{ env.VERSION_SEMVER }}
 
 - name: Push to Chocolatey
   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
@@ -6398,7 +6398,7 @@ Add to `.github/workflows/release.yml` after creating GitHub Release:
     CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
   run: |
     choco apikey -k $env:CHOCO_API_KEY -s https://push.chocolatey.org/
-    choco push fontlift.${{ env.VERSION_SEMVER }}.nupkg -s https://push.chocolatey.org/
+    choco push fontlift-win.${{ env.VERSION_SEMVER }}.nupkg -s https://push.chocolatey.org/
 ```
 
 ---
@@ -6411,26 +6411,26 @@ WinGet uses a separate repository: https://github.com/microsoft/winget-pkgs
 
 Create manifest directory structure:
 ```
-manifests/f/Fontlaborg/fontlift/1.1.24/
-  ├── Fontlaborg.fontlift.installer.yaml
-  ├── Fontlaborg.fontlift.locale.en-US.yaml
-  └── Fontlaborg.fontlift.yaml
+manifests/f/Fontlaborg/fontlift-win/1.1.24/
+  ├── Fontlaborg.fontlift-win.installer.yaml
+  ├── Fontlaborg.fontlift-win.locale.en-US.yaml
+  └── Fontlaborg.fontlift-win.yaml
 ```
 
 ### Manifest Files
 
-**`Fontlaborg.fontlift.yaml`** (version manifest):
+**`Fontlaborg.fontlift-win.yaml`** (version manifest):
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 DefaultLocale: en-US
 ManifestType: version
 ManifestVersion: 1.6.0
 ```
 
-**`Fontlaborg.fontlift.installer.yaml`**:
+**`Fontlaborg.fontlift-win.installer.yaml`**:
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 InstallerType: zip
 InstallerSwitches:
@@ -6438,29 +6438,29 @@ InstallerSwitches:
   SilentWithProgress: ""
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip
+    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip
     InstallerSha256: <SHA256_HASH>
     NestedInstallerFiles:
-      - RelativeFilePath: fontlift.exe
-        PortableCommandAlias: fontlift
+      - RelativeFilePath: fontlift-win.exe
+        PortableCommandAlias: fontlift-win
 ManifestType: installer
 ManifestVersion: 1.6.0
 ```
 
-**`Fontlaborg.fontlift.locale.en-US.yaml`**:
+**`Fontlaborg.fontlift-win.locale.en-US.yaml`**:
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 PackageLocale: en-US
 Publisher: Fontlab Ltd
 PublisherUrl: https://github.com/fontlaborg
-PackageName: fontlift
+PackageName: fontlift-win
 PackageUrl: https://github.com/fontlaborg/fontlift-win-cli
 License: Apache-2.0
 LicenseUrl: https://github.com/fontlaborg/fontlift-win-cli/blob/main/LICENSE
 ShortDescription: Windows CLI tool for font management
 Description: Minimal Windows CLI tool for system font management. Install, uninstall, remove, and list fonts from the command line.
-Moniker: fontlift
+Moniker: fontlift-win
 Tags:
   - font
   - fonts
@@ -6477,15 +6477,15 @@ ManifestVersion: 1.6.0
 2. Create manifests using `wingetcreate` tool:
    ```powershell
    winget install wingetcreate
-   wingetcreate new --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip
+   wingetcreate new --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip
    ```
 3. Validate manifests:
    ```powershell
-   winget validate manifests/f/Fontlaborg/fontlift/1.1.24/
+   winget validate manifests/f/Fontlaborg/fontlift-win/1.1.24/
    ```
 4. Test installation locally:
    ```powershell
-   winget install --manifest manifests/f/Fontlaborg/fontlift/1.1.24/
+   winget install --manifest manifests/f/Fontlaborg/fontlift-win/1.1.24/
    ```
 5. Commit and push to fork
 6. Create pull request to microsoft/winget-pkgs
@@ -6504,9 +6504,9 @@ Add to `.github/workflows/release.yml`:
     Invoke-WebRequest -Uri https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
 
     # Generate manifests
-    .\wingetcreate.exe update Fontlaborg.fontlift `
+    .\wingetcreate.exe update Fontlaborg.fontlift-win `
       --version ${{ env.VERSION_SEMVER }} `
-      --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v${{ env.VERSION_TAG }}/fontlift-v${{ env.VERSION_TAG }}.zip `
+      --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v${{ env.VERSION_TAG }}/fontlift-win-v${{ env.VERSION_TAG }}.zip `
       --token ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -6520,12 +6520,12 @@ Once published:
 
 **Chocolatey:**
 ```powershell
-choco install fontlift
+choco install fontlift-win
 ```
 
 **WinGet:**
 ```powershell
-winget install Fontlaborg.fontlift
+winget install Fontlaborg.fontlift-win
 ```
 
 ---
@@ -6546,7 +6546,7 @@ Both package managers pull from GitHub Releases. To update:
 After each release:
 - [ ] Verify Chocolatey package installs correctly
 - [ ] Verify WinGet package installs correctly
-- [ ] Test fontlift.exe runs and shows correct version
+- [ ] Test fontlift-win.exe runs and shows correct version
 - [ ] Verify uninstall removes executable and PATH entry
 
 ---
@@ -6695,14 +6695,14 @@ All files <300 lines
 
 **Files to CREATE:**
 
-1. **fontlift.nuspec** (repository root)
+1. **fontlift-win.nuspec** (repository root)
 ```xml
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>$VERSION$</version>
-    <title>fontlift</title>
+    <title>fontlift-win</title>
     <authors>Fontlab Ltd</authors>
     <projectUrl>https://github.com/fontlaborg/fontlift-win-cli</projectUrl>
     <license type="expression">Apache-2.0</license>
@@ -6712,7 +6712,7 @@ All files <300 lines
     <tags>font fonts cli windows admin</tags>
   </metadata>
   <files>
-    <file src="build\fontlift.exe" target="tools\" />
+    <file src="build\fontlift-win.exe" target="tools\" />
     <file src="tools\chocolateyinstall.ps1" target="tools\" />
     <file src="LICENSE" target="tools\" />
   </files>
@@ -6724,7 +6724,7 @@ All files <300 lines
 $ErrorActionPreference = 'Stop'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 Install-ChocolateyPath $toolsDir 'Machine'
-Write-Host "fontlift installed. Run 'fontlift' to get started."
+Write-Host "fontlift-win installed. Run 'fontlift-win' to get started."
 ```
 
 3. **Update .github/workflows/release.yml** - Add Chocolatey publish step
@@ -6732,9 +6732,9 @@ Write-Host "fontlift installed. Run 'fontlift' to get started."
 **Testing:**
 ```powershell
 choco pack
-choco install fontlift -s . -y
-fontlift list
-choco uninstall fontlift -y
+choco install fontlift-win -s . -y
+fontlift-win list
+choco uninstall fontlift-win -y
 ```
 
 **Submission:** Push to https://community.chocolatey.org/
@@ -6745,38 +6745,38 @@ choco uninstall fontlift -y
 
 **Files to CREATE in microsoft/winget-pkgs fork:**
 
-1. **manifests/f/Fontlaborg/fontlift/VERSION/Fontlaborg.fontlift.yaml**
+1. **manifests/f/Fontlaborg/fontlift-win/VERSION/Fontlaborg.fontlift-win.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 DefaultLocale: en-US
 ManifestType: version
 ManifestVersion: 1.6.0
 ```
 
-2. **Fontlaborg.fontlift.installer.yaml**
+2. **Fontlaborg.fontlift-win.installer.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 InstallerType: portable
 NestedInstallerType: exe
 Commands:
-  - fontlift
+  - fontlift-win
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.25/fontlift-v1.1.25.zip
+    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.25/fontlift-win-v1.1.25.zip
     InstallerSha256: <HASH>
 ManifestType: installer
 ManifestVersion: 1.6.0
 ```
 
-3. **Fontlaborg.fontlift.locale.en-US.yaml**
+3. **Fontlaborg.fontlift-win.locale.en-US.yaml**
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.25
 PackageLocale: en-US
 Publisher: Fontlab Ltd
-PackageName: fontlift
+PackageName: fontlift-win
 License: Apache-2.0
 ShortDescription: Windows font management CLI
 Tags:
@@ -6789,9 +6789,9 @@ ManifestVersion: 1.6.0
 
 **Testing:**
 ```powershell
-winget validate manifests/f/Fontlaborg/fontlift/1.1.25/
-winget install --manifest manifests/f/Fontlaborg/fontlift/1.1.25/
-fontlift list
+winget validate manifests/f/Fontlaborg/fontlift-win/1.1.25/
+winget install --manifest manifests/f/Fontlaborg/fontlift-win/1.1.25/
+fontlift-win list
 ```
 
 **Submission:** PR to microsoft/winget-pkgs
@@ -6827,9 +6827,9 @@ fontlift list
 - [ ] Commit: "Aggressive documentation cleanup"
 
 ### Week 2: Chocolatey Package
-- [ ] Create fontlift.nuspec
+- [ ] Create fontlift-win.nuspec
 - [ ] Create tools/chocolateyinstall.ps1
-- [ ] Test locally: `choco pack && choco install fontlift -s . -y`
+- [ ] Test locally: `choco pack && choco install fontlift-win -s . -y`
 - [ ] Update release.yml to publish to Chocolatey
 - [ ] Submit to Chocolatey community repo
 - [ ] Wait for approval (3-7 days)
@@ -6843,8 +6843,8 @@ fontlift list
 - [ ] Wait for merge (1-3 days)
 
 ### Week 4: Verification
-- [ ] Test Chocolatey installation: `choco install fontlift`
-- [ ] Test WinGet installation: `winget install Fontlaborg.fontlift`
+- [ ] Test Chocolatey installation: `choco install fontlift-win`
+- [ ] Test WinGet installation: `winget install Fontlaborg.fontlift-win`
 - [ ] Update README with installation methods
 - [ ] Create release tag v1.2.0
 - [ ] Verify automated publishing works
@@ -6868,13 +6868,13 @@ fontlift list
 **Installation commands:**
 ```powershell
 # Chocolatey
-choco install fontlift
+choco install fontlift-win
 
 # WinGet
-winget install Fontlaborg.fontlift
+winget install Fontlaborg.fontlift-win
 
 # Binary (manual)
-Expand-Archive fontlift-v1.1.25.zip
+Expand-Archive fontlift-win-v1.1.25.zip
 ```
 
 ---
@@ -6884,7 +6884,7 @@ Expand-Archive fontlift-v1.1.25.zip
 Before adding ANY file, ask:
 
 1. **Is this required for core font management?** → No? Don't add it.
-2. **Does this help users install/use fontlift?** → No? Don't add it.
+2. **Does this help users install/use fontlift-win?** → No? Don't add it.
 3. **Is this information already in another file?** → Yes? Don't duplicate it.
 4. **Can we use GitHub features instead?** (Issues, Wiki, Releases) → Yes? Use those.
 5. **Is this developer-facing only?** → Yes? Keep it local, not in repo.
@@ -6922,7 +6922,7 @@ All listed fonts permit redistribution for testing under the SIL Open Font Licen
 
 ## Usage Checklist
 - Confirm SHA256 checksums before committing fonts to avoid corruption.
-- Install each font manually with `fontlift install` once to validate Windows integration.
+- Install each font manually with `fontlift-win install` once to validate Windows integration.
 - Keep font archives outside the repository; store only extracted `.ttf/.otf/.ttc/.otc` files required for tests.
 - When adding new fonts, update this document and reference the change in `CHANGELOG.md`.
 
@@ -6932,14 +6932,14 @@ Respect the OFL requirements: credit the original authors, do not sell the fonts
 </document>
 
 <document index="24">
-<source>fontlift.nuspec</source>
+<source>fontlift-win.nuspec</source>
 <document_content>
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>1.1.24</version>
-    <title>fontlift - Windows Font Management CLI</title>
+    <title>fontlift-win - Windows Font Management CLI</title>
     <authors>Fontlab Ltd</authors>
     <owners>fontlaborg</owners>
     <licenseUrl>https://github.com/fontlaborg/fontlift-win-cli/blob/main/LICENSE</licenseUrl>
@@ -7362,7 +7362,7 @@ Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.
 2025-11-01T01:28:54.7729192Z   VERSION_TAG: v1.1.19
 2025-11-01T01:28:54.7729382Z ##[endgroup]
 2025-11-01T01:28:54.7928209Z Using provided version: 
-2025-11-01T01:28:54.7942387Z Building fontlift 1.1.19...
+2025-11-01T01:28:54.7942387Z Building fontlift-win 1.1.19...
 2025-11-01T01:28:56.2687883Z not was unexpected at this time.
 2025-11-01T01:28:56.2717494Z ##[error]Process completed with exit code 255.
 2025-11-01T01:28:56.2918710Z Post job cleanup.
@@ -7742,7 +7742,7 @@ Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.
 2025-11-01T01:29:00.0525028Z   VERSION_TAG: v1.1.19
 2025-11-01T01:29:00.0525201Z ##[endgroup]
 2025-11-01T01:29:00.0731988Z Using provided version: 
-2025-11-01T01:29:00.0745029Z Building fontlift 1.1.19...
+2025-11-01T01:29:00.0745029Z Building fontlift-win 1.1.19...
 2025-11-01T01:29:00.1783375Z not was unexpected at this time.
 2025-11-01T01:29:00.1813220Z ##[error]Process completed with exit code 255.
 2025-11-01T01:29:00.2018907Z Post job cleanup.
@@ -8171,7 +8171,7 @@ Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.
 2025-11-01T01:29:00.0525026Z   VERSION_TAG: v1.1.19
 2025-11-01T01:29:00.0525198Z ##[endgroup]
 2025-11-01T01:29:00.0731956Z Using provided version: 
-2025-11-01T01:29:00.0745017Z Building fontlift 1.1.19...
+2025-11-01T01:29:00.0745017Z Building fontlift-win 1.1.19...
 2025-11-01T01:29:00.1783333Z not was unexpected at this time.
 2025-11-01T01:29:00.1813206Z ##[error]Process completed with exit code 255.
 </document_content>
@@ -8194,7 +8194,7 @@ Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.
 @echo off
 setlocal enabledelayedexpansion
 REM this_file: publish.cmd
-REM Package fontlift for distribution
+REM Package fontlift-win for distribution
 REM Usage: publish.cmd [version]
 REM   version: Optional semantic version string.
 
@@ -8262,8 +8262,8 @@ if "!VERSION_TAG!"=="" (
 echo Creating distribution package for version !VERSION_TAG!...
 
 REM Check if build output exists
-if not exist build\fontlift.exe (
-    echo ERROR: build\fontlift.exe not found
+if not exist build\fontlift-win.exe (
+    echo ERROR: build\fontlift-win.exe not found
     echo Please run build.cmd first
     set "EXIT_CODE=1"
     goto :cleanup
@@ -8273,9 +8273,9 @@ REM Create dist directory if it doesn't exist (using md 2>nul avoids "if not exi
 md dist 2>nul
 if exist dist\*.* del /Q dist\*.*
 
-copy build\fontlift.exe dist\ >nul
+copy build\fontlift-win.exe dist\ >nul
 if !ERRORLEVEL! NEQ 0 (
-    echo ERROR: Failed to copy fontlift.exe
+    echo ERROR: Failed to copy fontlift-win.exe
     set "EXIT_CODE=1"
     goto :cleanup
 )
@@ -8285,16 +8285,16 @@ echo. >> dist\README.txt
 echo Windows CLI tool for font installation/uninstallation >> dist\README.txt
 echo. >> dist\README.txt
 echo Usage: >> dist\README.txt
-echo   fontlift.exe list          List installed fonts >> dist\README.txt
-echo   fontlift.exe install font.ttf   Install font >> dist\README.txt
-echo   fontlift.exe uninstall -n Arial  Uninstall font >> dist\README.txt
-echo   fontlift.exe remove -p font.ttf  Remove font and file >> dist\README.txt
+echo   fontlift-win.exe list          List installed fonts >> dist\README.txt
+echo   fontlift-win.exe install font.ttf   Install font >> dist\README.txt
+echo   fontlift-win.exe uninstall -n Arial  Uninstall font >> dist\README.txt
+echo   fontlift-win.exe remove -p font.ttf  Remove font and file >> dist\README.txt
 echo. >> dist\README.txt
 echo See https://github.com/fontlaborg/fontlift-win-cli for documentation >> dist\README.txt
 
 if exist LICENSE copy LICENSE dist\ >nul
 
-set "ZIPFILE=fontlift-!VERSION_TAG!.zip"
+set "ZIPFILE=fontlift-win-!VERSION_TAG!.zip"
 
 echo Compressing to !ZIPFILE!...
 powershell -Command "Compress-Archive -Path dist\* -DestinationPath dist\!ZIPFILE! -Force"
@@ -8672,10 +8672,9 @@ static void OutputSorted(const std::set<std::string>& outputSet) {
     }
 }
 
-int ListFonts(bool showPaths, bool showNames, bool sorted) {
+int ListFonts(bool showPaths, bool showNames) {
     g_listContext.showPaths = showPaths;
     g_listContext.showNames = showNames;
-    g_listContext.sorted = sorted;
     g_listContext.fontsDir = SysUtils::GetFontsDirectory();
     g_listContext.userFontsDir = SysUtils::GetUserFontsDirectory();
     if (g_listContext.fontsDir.empty()) {
@@ -8683,7 +8682,7 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
         return EXIT_ERROR;
     }
     std::set<std::string> outputSet;
-    if (sorted) g_listContext.outputSet = &outputSet;
+    g_listContext.outputSet = &outputSet;
 
     // Enumerate system fonts (HKEY_LOCAL_MACHINE)
     if (!SysUtils::RegEnumerateFonts(ListCallback, false)) {
@@ -8694,7 +8693,7 @@ int ListFonts(bool showPaths, bool showNames, bool sorted) {
     // Enumerate user fonts (HKEY_CURRENT_USER)
     SysUtils::RegEnumerateFonts(ListCallback, true);  // Don't fail if user fonts missing
 
-    if (sorted) OutputSorted(outputSet);
+    OutputSorted(outputSet);
     return EXIT_SUCCESS_CODE;
 }
 
@@ -9011,8 +9010,8 @@ namespace FontOps {
     // List installed fonts
     // showPaths: display file paths
     // showNames: display font names
-    // sorted: sort output and remove duplicates
-    int ListFonts(bool showPaths, bool showNames, bool sorted);
+    // Output is always sorted; path-only mode removes duplicate paths
+    int ListFonts(bool showPaths, bool showNames);
 
     // Install font from file path
     // forceAdmin: if true, force system-level installation (requires admin)
@@ -9379,7 +9378,7 @@ namespace FontParser {
 #pragma comment(lib, "version.lib")
 
 void ShowUsage(const char* programName) {
-    std::cout << "fontlift - Windows Font Management CLI\n\n";
+    std::cout << "fontlift-win - Windows Font Management CLI\n\n";
     std::cout << "Usage:\n";
     std::cout << "  " << programName << " <command> [options]\n\n";
     std::cout << "Commands:\n";
@@ -9426,9 +9425,9 @@ static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) {
 static int HandleVersionCommand() {
     WORD major, minor, patch;
     if (ExtractVersionInfo(major, minor, patch)) {
-        std::cout << "fontlift version " << major << "." << minor << "." << patch << "\n";
+        std::cout << "fontlift-win version " << major << "." << minor << "." << patch << "\n";
     } else {
-        std::cout << "fontlift version unknown\n";
+        std::cout << "fontlift-win version unknown\n";
     }
     return EXIT_SUCCESS_CODE;
 }
@@ -9910,9 +9909,9 @@ BEGIN
             VALUE "CompanyName", "fontlaborg"
             VALUE "FileDescription", "Windows CLI tool for font installation"
             VALUE "FileVersion", VER_FILEVERSION_STR
-            VALUE "InternalName", "fontlift"
+            VALUE "InternalName", "fontlift-win"
             VALUE "LegalCopyright", "Copyright (c) 2025 fontlaborg"
-            VALUE "OriginalFilename", "fontlift.exe"
+            VALUE "OriginalFilename", "fontlift-win.exe"
             VALUE "ProductName", "fontlift-win-cli"
             VALUE "ProductVersion", VER_PRODUCTVERSION_STR
         END
@@ -9930,9 +9929,9 @@ END
 <document_content>
 $ErrorActionPreference = 'Stop'
 
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$url64 = 'https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip'
+$url64 = 'https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip'
 
 $packageArgs = @{
   packageName   = $packageName

@@ -20,7 +20,7 @@ Before creating a bug report:
 
 When creating a bug report, include:
 - Windows version (e.g., Windows 10, Windows 11)
-- fontlift version
+- fontlift-win version
 - Exact command used
 - Expected behavior
 - Actual behavior
@@ -30,7 +30,7 @@ When creating a bug report, include:
 ### Suggesting Features
 
 Feature requests are welcome, but remember:
-- fontlift is intentionally minimal and focused
+- fontlift-win is intentionally minimal and focused
 - New features must align with the project's core purpose
 - Complex features may be rejected to maintain simplicity
 
@@ -112,10 +112,10 @@ See PRINCIPLES.md for complete design philosophy.
 Before submitting:
 1. Build successfully with no warnings
 2. Test all commands manually:
-   - `fontlift list` with various flags
-   - `fontlift install` with .ttf, .otf, .ttc files
-   - `fontlift uninstall` by path and name
-   - `fontlift remove` by path and name
+   - `fontlift-win list` with various flags
+   - `fontlift-win install` with .ttf, .otf, .ttc files
+   - `fontlift-win uninstall` by path and name
+   - `fontlift-win remove` by path and name
 3. Test edge cases:
    - Filenames with spaces
    - Invalid font files

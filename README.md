@@ -14,7 +14,7 @@ Windows CLI tool for system font installation and management. Install fonts pers
 ## Installation
 
 ### Download Binary
-1. Download `fontlift-v*.zip` from [Releases](https://github.com/fontlaborg/fontlift-win-cli/releases)
+1. Download `fontlift-win-v*.zip` from [Releases](https://github.com/fontlaborg/fontlift-win-cli/releases)
 2. Extract and add to PATH
 
 ### Build from Source
@@ -28,18 +28,18 @@ build.cmd
 
 ### List Fonts
 ```cmd
-fontlift list          # Show paths (default)
-fontlift list -n       # Show names
-fontlift list -n -p    # Show both
-fontlift list -s       # Sorted output
+fontlift-win list          # Show paths (sorted; duplicate paths removed)
+fontlift-win list -n       # Show names (sorted)
+fontlift-win list -n -p    # Show both (sorted)
+# -s is accepted for compatibility but output is always sorted
 ```
 
 ### Install Fonts
 ```cmd
-fontlift install myfont.ttf
-fontlift i -p C:\Downloads\font.otf
-fontlift i myfont.ttf --admin      # Force system-level (requires admin)
-fontlift i myfont.ttf -a           # Same as --admin
+fontlift-win install myfont.ttf
+fontlift-win i -p C:\Downloads\font.otf
+fontlift-win i myfont.ttf --admin      # Force system-level (requires admin)
+fontlift-win i myfont.ttf -a           # Same as --admin
 ```
 
 **Note:** By default, fonts are installed system-wide with admin privileges, or per-user without admin. Use `--admin` / `-a` to force system-level installation.
@@ -47,25 +47,27 @@ Existing installations with the same font family name are removed automatically.
 
 ### Uninstall Fonts (Keep Files)
 ```cmd
-fontlift uninstall myfont.ttf
-fontlift u -n "Font Name"
-fontlift u -n "Font Name" --admin  # Force system-level (requires admin)
+fontlift-win uninstall myfont.ttf
+fontlift-win u -n "Font Name"
+fontlift-win u -n "Font Name" --admin  # Include system-level removal when running as admin
 ```
+
+`uninstall` searches both user and system font registries. It removes every matching entry it has permissions for; if a system copy remains, rerun elevated with `--admin`.
 
 ### Remove Fonts (Delete Files)
 ```cmd
-fontlift remove myfont.ttf
-fontlift rm -n "Font Name"
-fontlift rm -n "Font Name" --admin  # Force system-level (requires admin)
+fontlift-win remove myfont.ttf
+fontlift-win rm -n "Font Name"
+fontlift-win rm -n "Font Name" --admin  # Include system-level removal when running as admin
 ```
 
 **Warning:** Files permanently deleted
 
 ### Cleanup Caches
 ```cmd
-fontlift cleanup              # Clean registry + user/third-party caches
-fontlift cleanup --admin      # Include system font caches (requires admin)
-fontlift c                    # Alias for user cleanup
+fontlift-win cleanup              # Clean registry + user/third-party caches
+fontlift-win cleanup --admin      # Include system font caches (requires admin)
+fontlift-win c                    # Alias for user cleanup
 ```
 Removes registry entries pointing to missing font files, clears user-level font caches (including Adobe `.lst` caches), and optionally purges system font caches when `--admin` is supplied.
 
@@ -83,7 +85,7 @@ Removes registry entries pointing to missing font files, clears user-level font 
 - `-p <path>` - Font file path
 - `-n <name>` - Font internal name
 - `-s` - Sort output (list only)
-- `--admin`, `-a` - Force system-level operation (requires admin)
+- `--admin`, `-a` - Include system-level operation (requires admin); user fonts are always removed when found
 
 ## Exit Codes
 
@@ -97,16 +99,16 @@ Removes registry entries pointing to missing font files, clears user-level font 
 When uninstalling/removing system fonts, run Command Prompt as Administrator. Per-user fonts don't require admin.
 
 **Font already installed**
-Uninstall existing font first: `fontlift u -n "Name"`
+Uninstall existing font first: `fontlift-win u -n "Name"`
 
 **Invalid font file**
 Verify format (.ttf, .otf, .ttc, .otc) and file integrity
 
 **Font doesn't appear**
-Check exit code, verify with `fontlift list -n`, restart application
+Check exit code, verify with `fontlift-win list -n`, restart application
 
 **Font cache issues or rendering glitches**
-Run `fontlift cleanup` as administrator to purge font caches and broken registry entries.
+Run `fontlift-win cleanup` as administrator to purge font caches and broken registry entries.
 
 ## Technical Details
 

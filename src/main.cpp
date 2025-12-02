@@ -13,31 +13,33 @@
 #pragma comment(lib, "version.lib")
 
 void ShowUsage(const char* programName) {
-    std::cout << "fontlift - Windows Font Management CLI\n\n";
+    std::cout << "fontlift-win - Windows Font Management CLI\n\n";
     std::cout << "Usage:\n";
     std::cout << "  " << programName << " <command> [options]\n\n";
     std::cout << "Commands:\n";
     std::cout << "  list, l              List installed fonts\n";
-    std::cout << "    -p                 Show paths (default)\n";
-    std::cout << "    -n                 Show internal font names\n";
-    std::cout << "    -n -p              Show both (path::name format)\n";
-    std::cout << "    -s                 Sort output and remove duplicates\n\n";
+    std::cout << "    -p                 Show paths (default, sorted)\n";
+    std::cout << "    -n                 Show internal font names (sorted)\n";
+    std::cout << "    -n -p              Show both (path::name format, sorted)\n";
+    std::cout << "                       Path-only output removes duplicate paths\n";
+    std::cout << "    -s                 (Optional) Kept for compatibility; output is always sorted\n\n";
     std::cout << "  install, i <path>    Install font from filepath\n";
     std::cout << "    -p <filepath>      Specify font file path\n";
     std::cout << "    --admin, -a        Force system-level installation (requires admin)\n\n";
     std::cout << "  uninstall, u         Uninstall font (keep file)\n";
     std::cout << "    -p <filepath>      Uninstall by path\n";
     std::cout << "    -n <fontname>      Uninstall by internal name\n";
-    std::cout << "    --admin, -a        Force system-level uninstallation (requires admin)\n\n";
+    std::cout << "    --admin, -a        Include system-level uninstallation (requires admin)\n\n";
     std::cout << "  remove, rm           Uninstall font (delete file)\n";
     std::cout << "    -p <filepath>      Remove by path\n";
     std::cout << "    -n <fontname>      Remove by internal name\n";
-    std::cout << "    --admin, -a        Force system-level removal (requires admin)\n\n";
+    std::cout << "    --admin, -a        Include system-level removal (requires admin)\n\n";
     std::cout << "  cleanup, c           Cleanup registry entries and font caches\n";
     std::cout << "    --admin, -a        Include system-wide cleanup (requires admin)\n";
     std::cout << "                      - Removes registry entries pointing to missing files\n";
     std::cout << "                      - Clears user and third-party font caches\n";
     std::cout << "                      - With --admin: clears system font caches\n\n";
+    std::cout << "made by FontLab https://www.fontlab.com/\n";
 }
 
 static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) noexcept {
@@ -65,23 +67,24 @@ static bool ExtractVersionInfo(WORD& major, WORD& minor, WORD& patch) noexcept {
 static int HandleVersionCommand() {
     WORD major, minor, patch;
     if (ExtractVersionInfo(major, minor, patch)) {
-        std::cout << "fontlift version " << major << "." << minor << "." << patch << "\n";
+        std::cout << "fontlift-win version " << major << "." << minor << "." << patch << "\n";
     } else {
-        std::cout << "fontlift version unknown\n";
+        std::cout << "fontlift-win version unknown\n";
     }
     return EXIT_SUCCESS_CODE;
 }
 
 static int HandleListCommand(int argc, char* argv[]) {
-    bool hasPathFlag = false, hasNameFlag = false, hasSortFlag = false;
+    bool hasPathFlag = false, hasNameFlag = false, sawSortFlag = false;
     for (int i = 2; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0) hasPathFlag = true;
         if (strcmp(argv[i], "-n") == 0) hasNameFlag = true;
-        if (strcmp(argv[i], "-s") == 0) hasSortFlag = true;
+        if (strcmp(argv[i], "-s") == 0) sawSortFlag = true;  // Backward compatibility; always sorted
     }
     bool showPaths = hasPathFlag || !hasNameFlag;
     bool showNames = hasNameFlag;
-    return FontOps::ListFonts(showPaths, showNames, hasSortFlag);
+    (void)sawSortFlag;  // Suppress unused warning; sorting is now default
+    return FontOps::ListFonts(showPaths, showNames);
 }
 
 static int HandleInstallCommand(int argc, char* argv[], const char* progName) {

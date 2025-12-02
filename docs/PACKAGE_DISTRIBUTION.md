@@ -10,15 +10,15 @@ Make fontlift-win-cli available via Chocolatey and WinGet for easy installation 
 
 ### Package Structure
 
-Create `fontlift.nuspec` in repository root:
+Create `fontlift-win.nuspec` in repository root:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fontlift</id>
+    <id>fontlift-win</id>
     <version>1.1.24</version>
-    <title>fontlift - Windows Font Management CLI</title>
+    <title>fontlift-win - Windows Font Management CLI</title>
     <authors>Fontlab Ltd</authors>
     <projectUrl>https://github.com/fontlaborg/fontlift-win-cli</projectUrl>
     <license type="expression">Apache-2.0</license>
@@ -29,7 +29,7 @@ Create `fontlift.nuspec` in repository root:
     <releaseNotes>https://github.com/fontlaborg/fontlift-win-cli/releases</releaseNotes>
   </metadata>
   <files>
-    <file src="build\fontlift.exe" target="tools\fontlift.exe" />
+    <file src="build\fontlift-win.exe" target="tools\fontlift-win.exe" />
   </files>
 </package>
 ```
@@ -40,15 +40,15 @@ Create `tools/chocolateyinstall.ps1`:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$exePath = Join-Path $toolsDir 'fontlift.exe'
+$exePath = Join-Path $toolsDir 'fontlift-win.exe'
 
 # Add to PATH
 Install-ChocolateyPath $toolsDir 'Machine'
 
-Write-Host "fontlift installed to $exePath"
-Write-Host "Run 'fontlift' to get started"
+Write-Host "fontlift-win installed to $exePath"
+Write-Host "Run 'fontlift-win' to get started"
 ```
 
 ### Uninstallation Script
@@ -57,7 +57,7 @@ Create `tools/chocolateyuninstall.ps1`:
 
 ```powershell
 $ErrorActionPreference = 'Stop'
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 # Remove from PATH
@@ -68,16 +68,16 @@ Uninstall-ChocolateyPath $toolsDir 'Machine'
 
 ```powershell
 # Build package
-choco pack fontlift.nuspec
+choco pack fontlift-win.nuspec
 
 # Test installation
-choco install fontlift -s . -y
+choco install fontlift-win -s . -y
 
 # Test executable
-fontlift --help
+fontlift-win --help
 
 # Uninstall
-choco uninstall fontlift -y
+choco uninstall fontlift-win -y
 ```
 
 ### Submission Process
@@ -85,7 +85,7 @@ choco uninstall fontlift -y
 1. Create account at https://community.chocolatey.org/
 2. Generate API key from account settings
 3. Set API key: `choco apikey -k [API_KEY] -s https://push.chocolatey.org/`
-4. Push package: `choco push fontlift.1.1.24.nupkg -s https://push.chocolatey.org/`
+4. Push package: `choco push fontlift-win.1.1.24.nupkg -s https://push.chocolatey.org/`
 5. Package enters moderation queue (~2-7 days for first package)
 6. Once approved, updates are automatic
 
@@ -97,7 +97,7 @@ Add to `.github/workflows/release.yml` after creating GitHub Release:
 - name: Build Chocolatey package
   shell: pwsh
   run: |
-    choco pack fontlift.nuspec --version ${{ env.VERSION_SEMVER }}
+    choco pack fontlift-win.nuspec --version ${{ env.VERSION_SEMVER }}
 
 - name: Push to Chocolatey
   if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
@@ -106,7 +106,7 @@ Add to `.github/workflows/release.yml` after creating GitHub Release:
     CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
   run: |
     choco apikey -k $env:CHOCO_API_KEY -s https://push.chocolatey.org/
-    choco push fontlift.${{ env.VERSION_SEMVER }}.nupkg -s https://push.chocolatey.org/
+    choco push fontlift-win.${{ env.VERSION_SEMVER }}.nupkg -s https://push.chocolatey.org/
 ```
 
 ---
@@ -119,26 +119,26 @@ WinGet uses a separate repository: https://github.com/microsoft/winget-pkgs
 
 Create manifest directory structure:
 ```
-manifests/f/Fontlaborg/fontlift/1.1.24/
-  ├── Fontlaborg.fontlift.installer.yaml
-  ├── Fontlaborg.fontlift.locale.en-US.yaml
-  └── Fontlaborg.fontlift.yaml
+manifests/f/Fontlaborg/fontlift-win/1.1.24/
+  ├── Fontlaborg.fontlift-win.installer.yaml
+  ├── Fontlaborg.fontlift-win.locale.en-US.yaml
+  └── Fontlaborg.fontlift-win.yaml
 ```
 
 ### Manifest Files
 
-**`Fontlaborg.fontlift.yaml`** (version manifest):
+**`Fontlaborg.fontlift-win.yaml`** (version manifest):
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 DefaultLocale: en-US
 ManifestType: version
 ManifestVersion: 1.6.0
 ```
 
-**`Fontlaborg.fontlift.installer.yaml`**:
+**`Fontlaborg.fontlift-win.installer.yaml`**:
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 InstallerType: zip
 InstallerSwitches:
@@ -146,29 +146,29 @@ InstallerSwitches:
   SilentWithProgress: ""
 Installers:
   - Architecture: x64
-    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip
+    InstallerUrl: https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip
     InstallerSha256: <SHA256_HASH>
     NestedInstallerFiles:
-      - RelativeFilePath: fontlift.exe
-        PortableCommandAlias: fontlift
+      - RelativeFilePath: fontlift-win.exe
+        PortableCommandAlias: fontlift-win
 ManifestType: installer
 ManifestVersion: 1.6.0
 ```
 
-**`Fontlaborg.fontlift.locale.en-US.yaml`**:
+**`Fontlaborg.fontlift-win.locale.en-US.yaml`**:
 ```yaml
-PackageIdentifier: Fontlaborg.fontlift
+PackageIdentifier: Fontlaborg.fontlift-win
 PackageVersion: 1.1.24
 PackageLocale: en-US
 Publisher: Fontlab Ltd
 PublisherUrl: https://github.com/fontlaborg
-PackageName: fontlift
+PackageName: fontlift-win
 PackageUrl: https://github.com/fontlaborg/fontlift-win-cli
 License: Apache-2.0
 LicenseUrl: https://github.com/fontlaborg/fontlift-win-cli/blob/main/LICENSE
 ShortDescription: Windows CLI tool for font management
 Description: Minimal Windows CLI tool for system font management. Install, uninstall, remove, and list fonts from the command line.
-Moniker: fontlift
+Moniker: fontlift-win
 Tags:
   - font
   - fonts
@@ -185,15 +185,15 @@ ManifestVersion: 1.6.0
 2. Create manifests using `wingetcreate` tool:
    ```powershell
    winget install wingetcreate
-   wingetcreate new --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip
+   wingetcreate new --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip
    ```
 3. Validate manifests:
    ```powershell
-   winget validate manifests/f/Fontlaborg/fontlift/1.1.24/
+   winget validate manifests/f/Fontlaborg/fontlift-win/1.1.24/
    ```
 4. Test installation locally:
    ```powershell
-   winget install --manifest manifests/f/Fontlaborg/fontlift/1.1.24/
+   winget install --manifest manifests/f/Fontlaborg/fontlift-win/1.1.24/
    ```
 5. Commit and push to fork
 6. Create pull request to microsoft/winget-pkgs
@@ -212,9 +212,9 @@ Add to `.github/workflows/release.yml`:
     Invoke-WebRequest -Uri https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
 
     # Generate manifests
-    .\wingetcreate.exe update Fontlaborg.fontlift `
+    .\wingetcreate.exe update Fontlaborg.fontlift-win `
       --version ${{ env.VERSION_SEMVER }} `
-      --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v${{ env.VERSION_TAG }}/fontlift-v${{ env.VERSION_TAG }}.zip `
+      --urls https://github.com/fontlaborg/fontlift-win-cli/releases/download/v${{ env.VERSION_TAG }}/fontlift-win-v${{ env.VERSION_TAG }}.zip `
       --token ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -228,12 +228,12 @@ Once published:
 
 **Chocolatey:**
 ```powershell
-choco install fontlift
+choco install fontlift-win
 ```
 
 **WinGet:**
 ```powershell
-winget install Fontlaborg.fontlift
+winget install Fontlaborg.fontlift-win
 ```
 
 ---
@@ -254,8 +254,10 @@ Both package managers pull from GitHub Releases. To update:
 After each release:
 - [ ] Verify Chocolatey package installs correctly
 - [ ] Verify WinGet package installs correctly
-- [ ] Test fontlift.exe runs and shows correct version
+- [ ] Test fontlift-win.exe runs and shows correct version
 - [ ] Verify uninstall removes executable and PATH entry
+- [ ] Run duplicate-family install twice; confirm second run auto-uninstalls the first copy (no duplicate registry entries)
+- [ ] On Windows 10 and Windows 11 VMs, seed orphaned entries with `tools/cleanup-harness.ps1 -Scope Both -EntryCount 2 -RunCleanup` and expect cleanup exit code 0
 
 ---
 

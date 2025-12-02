@@ -108,7 +108,7 @@ However, all future dependencies must be:
 
 To verify dependencies of the compiled executable:
 ```cmd
-dumpbin /DEPENDENTS fontlift.exe
+dumpbin /DEPENDENTS fontlift-win.exe
 ```
 
 Should show only:

@@ -24,7 +24,7 @@ All listed fonts permit redistribution for testing under the SIL Open Font Licen
 
 ## Usage Checklist
 - Confirm SHA256 checksums before committing fonts to avoid corruption.
-- Install each font manually with `fontlift install` once to validate Windows integration.
+- Install each font manually with `fontlift-win install` once to validate Windows integration.
 - Keep font archives outside the repository; store only extracted `.ttf/.otf/.ttc/.otc` files required for tests.
 - When adding new fonts, update this document and reference the change in `CHANGELOG.md`.
 

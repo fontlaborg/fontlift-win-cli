@@ -31,9 +31,9 @@ BEGIN
             VALUE "CompanyName", "fontlaborg"
             VALUE "FileDescription", "Windows CLI tool for font installation"
             VALUE "FileVersion", VER_FILEVERSION_STR
-            VALUE "InternalName", "fontlift"
+            VALUE "InternalName", "fontlift-win"
             VALUE "LegalCopyright", "Copyright (c) 2025 fontlaborg"
-            VALUE "OriginalFilename", "fontlift.exe"
+            VALUE "OriginalFilename", "fontlift-win.exe"
             VALUE "ProductName", "fontlift-win-cli"
             VALUE "ProductVersion", VER_PRODUCTVERSION_STR
         END

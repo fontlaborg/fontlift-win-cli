@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
-$packageName = 'fontlift'
+$packageName = 'fontlift-win'
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$url64 = 'https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-v1.1.24.zip'
+$url64 = 'https://github.com/fontlaborg/fontlift-win-cli/releases/download/v1.1.24/fontlift-win-v1.1.24.zip'
 
 $packageArgs = @{
   packageName   = $packageName

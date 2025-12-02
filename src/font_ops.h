@@ -10,8 +10,8 @@ namespace FontOps {
     // List installed fonts
     // showPaths: display file paths
     // showNames: display font names
-    // sorted: sort output and remove duplicates
-    int ListFonts(bool showPaths, bool showNames, bool sorted);
+    // Output is always sorted; path-only mode removes duplicate paths
+    int ListFonts(bool showPaths, bool showNames);
 
     // Install font from file path
     // forceAdmin: if true, force system-level installation (requires admin)
@@ -19,19 +19,19 @@ namespace FontOps {
     int InstallFont(const char* fontPath, bool forceAdmin = false);
 
     // Uninstall font by path (keeps file)
-    // forceAdmin: if true, only uninstall from system registry
+    // forceAdmin: request system-scope removal; user fonts are still removed when found
     int UninstallFontByPath(const char* fontPath, bool forceAdmin = false);
 
     // Uninstall font by name (keeps file)
-    // forceAdmin: if true, only uninstall from system registry
+    // forceAdmin: request system-scope removal; user fonts are still removed when found
     int UninstallFontByName(const char* fontName, bool forceAdmin = false);
 
     // Remove font by path (deletes file)
-    // forceAdmin: if true, only remove from system registry
+    // forceAdmin: request system-scope removal; user fonts are still removed when found
     int RemoveFontByPath(const char* fontPath, bool forceAdmin = false);
 
     // Remove font by name (deletes file)
-    // forceAdmin: if true, only remove from system registry
+    // forceAdmin: request system-scope removal; user fonts are still removed when found
     int RemoveFontByName(const char* fontName, bool forceAdmin = false);
 
     // Cleanup font registry and caches. includeSystem toggles system-wide scope (requires admin when true)
