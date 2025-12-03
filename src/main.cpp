@@ -1,6 +1,8 @@
 // this_file: src/main.cpp
 // fontlift-win-cli - Windows font management CLI tool
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
+// UI terminology note: user-facing messages intentionally say "font" for clarity;
+// internal types use Fontlift* naming in core crates and bindings.
 
 #include "exit_codes.h"
 #include "font_ops.h"
