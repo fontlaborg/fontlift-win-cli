@@ -12,11 +12,6 @@ Project Structure:
 │   └── 📄 PULL_REQUEST_TEMPLATE.md
 ├── 📁 docs
 ├── 📁 issues
-│   ├── 📄 101.md
-│   ├── 📄 103.md
-│   ├── 📄 104.md
-│   ├── 📄 201.md
-│   └── 📄 999.md
 ├── 📁 scripts
 │   ├── 📄 generate-version-rc.cmd
 │   ├── 📄 generate-version-rc.ps1
@@ -51,10 +46,8 @@ Project Structure:
 └── 📄 TODO.md
 
 
-<documents>
-<document index="1">
-<source>.editorconfig</source>
-<document_content>
+## .editorconfig
+```
 # EditorConfig for fontlift-win-cli
 # https://editorconfig.org
 
@@ -99,12 +92,10 @@ indent_size = 2
 [.gitignore]
 indent_style = space
 indent_size = 2
-</document_content>
-</document>
+```
 
-<document index="2">
-<source>.github/ISSUE_TEMPLATE/bug_report.md</source>
-<document_content>
+## .github/ISSUE_TEMPLATE/bug_report.md
+````markdown
 ---
 name: Bug Report
 about: Report a problem with fontlift
@@ -159,12 +150,10 @@ Add any other context about the problem here. Screenshots, logs, or related issu
 - [ ] I have checked existing issues for duplicates
 - [ ] I have tested with the latest version
 - [ ] I have included all requested information above
-</document_content>
-</document>
+````
 
-<document index="3">
-<source>.github/ISSUE_TEMPLATE/config.yml</source>
-<document_content>
+## .github/ISSUE_TEMPLATE/config.yml
+```yaml
 blank_issues_enabled: true
 contact_links:
   - name: Documentation
@@ -173,12 +162,10 @@ contact_links:
   - name: Contributing Guidelines
     url: https://github.com/fontlaborg/fontlift-win-cli/blob/main/CONTRIBUTING.md
     about: Learn how to contribute to fontlift-win-cli
-</document_content>
-</document>
+```
 
-<document index="4">
-<source>.github/ISSUE_TEMPLATE/feature_request.md</source>
-<document_content>
+## .github/ISSUE_TEMPLATE/feature_request.md
+```markdown
 ---
 name: Feature Request
 about: Suggest an enhancement for fontlift
@@ -223,12 +210,10 @@ Add any other context, mockups, or examples about the feature request here.
 - [ ] I have considered if this fits the project scope
 - [ ] I have described specific use cases
 - [ ] I am willing to contribute if this is accepted
-</document_content>
-</document>
+```
 
-<document index="5">
-<source>.github/PULL_REQUEST_TEMPLATE.md</source>
-<document_content>
+## .github/PULL_REQUEST_TEMPLATE.md
+```markdown
 ---
 this_file: .github/PULL_REQUEST_TEMPLATE.md
 ---
@@ -261,12 +246,10 @@ this_file: .github/PULL_REQUEST_TEMPLATE.md
 ## Notes
 - Outstanding risks or follow-up items:
 - Screenshots / logs (optional):
-</document_content>
-</document>
+```
 
-<document index="6">
-<source>.github/workflows/README.md</source>
-<document_content>
+## .github/workflows/README.md
+````markdown
 # GitHub Actions Workflows
 <!-- this_file: .github/workflows/README.md -->
 
@@ -374,12 +357,10 @@ For release workflow testing:
 **Checksum generation fails:**
 - Zip file wasn't created
 - Check publish.cmd output for errors
-</document_content>
-</document>
+````
 
-<document index="7">
-<source>.github/workflows/build.yml</source>
-<document_content>
+## .github/workflows/build.yml
+```yaml
 # this_file: .github/workflows/build.yml
 # CI Build Workflow - builds and tests on every push and PR
 
@@ -467,12 +448,10 @@ jobs:
         name: fontlift-${{ env.VERSION_TAG }}
         path: build/fontlift.exe
         retention-days: 7
-</document_content>
-</document>
+```
 
-<document index="8">
-<source>.github/workflows/release.yml</source>
-<document_content>
+## .github/workflows/release.yml
+````yaml
 # this_file: .github/workflows/release.yml
 # Release Workflow - creates GitHub releases when tags are pushed
 
@@ -608,12 +587,10 @@ jobs:
           ```
 
           See [README.md](https://github.com/fontlaborg/fontlift-win-cli/blob/main/README.md) for full documentation.
-</document_content>
-</document>
+````
 
-<document index="9">
-<source>.gitignore</source>
-<document_content>
+## .gitignore
+```
 # Prerequisites
 *.d
 
@@ -685,12 +662,10 @@ Thumbs.db
 
 # Issue tracking logs
 issues/logs_*/
-</document_content>
-</document>
+```
 
-<document index="10">
-<source>CLAUDE.md</source>
-<document_content>
+## CLAUDE.md
+````markdown
 # Development Guidelines
 
 ## Quick-Start Checklist
@@ -1143,12 +1118,10 @@ When writing documentation or commentary:
 ## Gemini Added Memories
 - I must always ask for confirmation before running any command that deletes files. The user must explicitly approve the deletion. I should explain what the command does and which files will be deleted.
 All files, usage notes, GUIs, CLI helps, documentation etc. should carry a mention `made by FontLab https://www.fontlab.com/` where it makes sense.
-</document_content>
-</document>
+````
 
-<document index="11">
-<source>CONTRIBUTING.md</source>
-<document_content>
+## CONTRIBUTING.md
+````markdown
 # Contributing to fontlift-win-cli
 
 Thank you for your interest in contributing to fontlift-win-cli! This document provides guidelines for contributing to the project.
@@ -1386,12 +1359,10 @@ Open an issue with the `question` label or contact the maintainers.
 ---
 
 Thank you for contributing to fontlift-win-cli!
-</document_content>
-</document>
+````
 
-<document index="12">
-<source>DEPENDENCIES.md</source>
-<document_content>
+## DEPENDENCIES.md
+````markdown
 # DEPENDENCIES.md
 <!-- this_file: DEPENDENCIES.md -->
 
@@ -1513,12 +1484,10 @@ Should show only:
 - GDI32.dll
 
 All of these are guaranteed to be present on any Windows 7+ system.
-</document_content>
-</document>
+````
 
-<document index="13">
-<source>FINAL_STATUS.txt</source>
-<document_content>
+## FINAL_STATUS.txt
+```
 FONTLIFT-WIN-CLI - FINAL PROJECT STATUS
 ========================================
 Date: 2025-10-31
@@ -1606,12 +1575,10 @@ NEXT STEPS
 4. Continue through phases 3-7
 
 PROJECT HEALTH: EXCELLENT
-</document_content>
-</document>
+```
 
-<document index="14">
-<source>LICENSE</source>
-<document_content>
+## LICENSE
+```
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -1813,12 +1780,10 @@ PROJECT HEALTH: EXCELLENT
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-</document_content>
-</document>
+```
 
-<document index="15">
-<source>PLAN.md</source>
-<document_content>
+## PLAN.md
+```markdown
 # PLAN.md
 <!-- this_file: PLAN.md -->
 
@@ -1847,12 +1812,10 @@ PROJECT HEALTH: EXCELLENT
 - Requires administrator privileges and a disposable Windows environment for end-to-end validation.
 - No automated CI exists yet; manual verification remains mandatory until the test harness is delivered.
 - Registry modifications carry inherent risk—tests must never run against production machines.
-</document_content>
-</document>
+```
 
-<document index="16">
-<source>README.md</source>
-<document_content>
+## README.md
+````markdown
 # fontlift-win-cli
 
 Windows CLI tool for system font installation and management. Install fonts persistently, uninstall by path or name, list installed fonts.
@@ -1992,12 +1955,10 @@ Licensed under Apache License 2.0 - see [LICENSE](LICENSE)
 - Repository: https://github.com/fontlaborg/fontlift-win-cli
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 - Test Fonts: [docs/test-fonts.md](docs/test-fonts.md)
-</document_content>
-</document>
+````
 
-<document index="17">
-<source>TODO.md</source>
-<document_content>
+## TODO.md
+```markdown
 # TODO.md
 <!-- this_file: TODO.md -->
 
@@ -2010,12 +1971,10 @@ Licensed under Apache License 2.0 - see [LICENSE](LICENSE)
 - [x] Update the release checklist with cleanup and duplicate-family scenarios.
 - [x] Prepare release notes summarizing the new features.
 - [ ] Produce troubleshooting screenshots before/after running cleanup.
-</document_content>
-</document>
+```
 
-<document index="18">
-<source>build.cmd</source>
-<document_content>
+## build.cmd
+```
 @echo off
 setlocal enabledelayedexpansion
 REM this_file: build.cmd
@@ -2155,12 +2114,10 @@ if !ERRORLEVEL! EQU 0 (
 :cleanup
 popd >nul 2>&1
 exit /b !EXIT_CODE!
-</document_content>
-</document>
+```
 
-<document index="19">
-<source>fontlift-win.nuspec</source>
-<document_content>
+## fontlift-win.nuspec
+```
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
@@ -2186,702 +2143,10 @@ exit /b !EXIT_CODE!
     <file src="tools\chocolateyinstall.ps1" target="tools\chocolateyinstall.ps1" />
   </files>
 </package>
-</document_content>
-</document>
+```
 
-<document index="20">
-<source>issues/101.md</source>
-<document_content>
-Analyze the entire codebase. Then /plan the tasks: (1) implement semantic versioning of the code based on git tags (`vX.Y.Z`), (2) ensure that we have Github Actions which utilize appropriately adapted `./build.cmd` and `./publish.cmd`. Those build and publish scripts must work in both local environment and on Github Actions, and must support the semver (3) ensure that we have Github Actions which, upon giving a new semver tag (`vX.Y.Z`) produces proper binary distributables and cuts a Github Release with the appropriate artefacts. Once you have planned these tasks in detail and specificity into @PLAN.md , also adjust @TODO.md and then /work on implementing everything. /test regularly and iterate until the implementation is solid and perfect. Make sure to test the Github Actions deployments as well!
-</document_content>
-</document>
-
-<document index="21">
-<source>issues/103.md</source>
-<document_content>
-TASK: ACTUALLY IMPLEMENT ALL CORE "font management" FUNCTIONALITY (list, install, uninstall, remove), and verify it is correctly implemented and integrated. Be very careful and ultrathink and verify and test and iterate until the implementation is perfect. Gittag the next release, push to remote, verify how Github Actions worked, verify the published release, and iterate improvements.
-</document_content>
-</document>
-
-<document index="22">
-<source>issues/104.md</source>
-<document_content>
-test the build & publish GH actions via `gh run`, analyze the logs, fix, iterate, keep updating @WORK.md @TODO.md @PLAN.md @CHANGELOG.md
-</document_content>
-</document>
-
-<document index="23">
-<source>issues/201.md</source>
-<document_content>
-## Font Management Tool Enhancements Plan
-
-ContentsShare & Export
-
-Create
-
-# Implementation Plan: Enhanced `install` and `cleanup` Functionality
-
-## I. Executive Overview
-
-This document provides a comprehensive implementation plan for enhancing the
-`fontlift-win-cli` utility with two new, high-value features requested by the
-user. The objective is to integrate this functionality while strictly adhering
-to the project's established architectural principles, which emphasize minimal
-dependencies, robust error handling, and a clear separation of concerns.
-
-**Project Goals:**
-
-  1. **Modify`install` Command:** Implement logic to automatically uninstall any existing font that shares the same font family name as the font being installed.
-
-  2. **Implement`cleanup` Command:** Introduce a new top-level command (`cleanup`, alias `c`) to perform system-wide font hygiene, including the removal of broken registry entries and the purging of all known system font caches.
-
-**Implementation Strategy:** The plan is designed to be minimally invasive and
-leverage existing code structures. All modifications will be contained within
-the established architectural components:
-
-  * **`src/main.cpp`:** CLI parsing and command handling.
-
-  * **`src/font_ops.cpp`:** High-level font operations (install, list, etc.).
-
-  * **`src/sys_utils.cpp`:** Low-level Windows API wrappers (registry, file I/O, service control).
-
-  * **`src/font_parser.cpp`:** Font file-specific parsing logic.
-
-No new third-party libraries will be introduced. All new functionality will be
-implemented using the C++17 standard library and the existing Windows SDK
-dependencies (Advapi32, User32, Shlwapi, Gdi32). All operations will maintain
-the existing awareness of and support for both system-wide
-(`HKEY_LOCAL_MACHINE`) and per-user (`HKEY_CURRENT_USER`) font installations.
-
-## II. Feature 1: Automatic Uninstallation of Duplicate-Family Fonts
-
-This feature enhances the `install` command to automatically find and remove a
-previously installed font if it shares the same family name as the new font
-being installed.
-
-### A. Core Implementation Strategy
-
-A naive implementation would require iterating the entire Windows font
-registry, parsing every installed font file to extract its family name,
-comparing it to the new font's family name, and then performing an
-uninstallation. This approach is highly inefficient and duplicates existing
-functionality.
-
-A more elegant and efficient solution involves reusing the existing,
-intelligent logic within `FontOps::UninstallFontByName`. This function does
-not perform a simple string match; it intelligently calls
-`FontOps::FindFontInRegistry`, which already searches for name variants,
-including `Font Name (TrueType)`, `Font Name (OpenType)`, and the bare `Font
-Name`. This is precisely the logic required to find a font by its "family
-name."
-
-However, a critical issue prevents direct reuse:
-`FontOps::UninstallFontByName` is designed to return an `EXIT_ERROR` if the
-specified font is _not_ found. If called directly from the `install` workflow,
-this would incorrectly cause the installation to abort every time the user
-installs a font that does not have a pre-existing version.
-
-Therefore, the chosen strategy is to implement a new, non-aborting wrapper
-function, `FontOps::TryUninstallExistingFont`. This function will use the
-existing uninstallation logic but will gracefully handle the "font not found"
-case as a non-error, allowing the `InstallFont` operation to proceed.
-
-### B. New Function Implementation: `FontOps::TryUninstallExistingFont`
-
-This new `static` helper function will be added to `src/font_ops.cpp`.
-
-**File:** `src/font_ops.cpp` **Proposed Signature:**
-
-C++
-
-    
-    
-    static void TryUninstallExistingFont(const char* fontName, bool forceAdmin)
-    
-
-**Implementation Logic:** This function's logic will be a modified subset of
-`FontOps::UninstallFontByName`.
-
-  1. The function will _not_ perform an `IsEmptyOrWhitespace` check, as it will be called by `InstallFont` which has already validated the font name.
-
-  2. It will _not_ perform an upfront admin check, as `InstallFont` is responsible for this.
-
-  3. It will call `FindFontInRegistry(fontName, fontFile, matchedName, perUser, forceAdmin)`.
-
-  4. **If a font is found** (`FindFontInRegistry` returns `true`):
-
-     * It will check permissions for system fonts: `if (!perUser &&!SysUtils::IsAdmin())`. If privileges are insufficient, it will print a warning (`std::cerr << "Warning: Found older font '" << fontName << "' but cannot remove it without admin privileges.\n";`) and return.
-
-     * It will call `UnloadAndCleanupFont(fontFile, matchedName, fontName, false, perUser)`. The `deleteFile` parameter must be `false`.
-
-     * It will print a success notification: `std::cout << "Note: Automatically uninstalled older version of: " << fontName << "\n";`.
-
-  5. **If a font is _not_ found** (`FindFontInRegistry` returns `false`):
-
-     * The function will _not_ print an error.
-
-     * It will return silently. This is the key modification that prevents the `install` operation from aborting.
-
-### C. Modification of `FontOps::InstallFont`
-
-To integrate this feature, the `FontOps::InstallFont` function will be
-modified.
-
-**File:** `src/font_ops.cpp` **Logic Change:** The order of operations at the
-beginning of the function must be changed.
-
-  1. The call to `ExtractFontName(fontPath, fontName)` will be moved to _before_ the call to `ValidateInstallPrerequisites`. The font file must be parsed first to retrieve the family name.
-
-  2. If `ExtractFontName` fails (returns `EXIT_ERROR`), the `InstallFont` function will return immediately.
-
-  3. A new line will be inserted immediately after `ExtractFontName` succeeds:
-
-C++
-
-         
-         TryUninstallExistingFont(fontName.c_str(), forceAdmin);
-         
-
-  4. The function will then proceed as normal, calling `ValidateInstallPrerequisites`, `CopyToFontsFolder`, and `RegisterAndLoadFont`.
-
-This modification ensures that a best-effort attempt is made to remove any
-existing font with the same family name _before_ the new font is copied and
-registered. This attempt correctly respects all user/system permission
-contexts and does not interfere with the installation of the new font.
-
-### D. Header File Updates
-
-**File:** `src/font_ops.h` No changes are required. The new
-`TryUninstallExistingFont` function will be a `static` (private) helper within
-`font_ops.cpp`. The public-facing signature of `InstallFont` remains
-unchanged.
-
-## III. Feature 2: Implementation of `cleanup` Command
-
-This feature introduces a new top-level command, `cleanup` (alias `c`), to
-perform system-wide font hygiene. This operation is inherently privileged and
-will require administrator rights. The command will perform two distinct
-tasks: (1) scan the registry for and remove entries pointing to non-existent
-files, and (2) purge all system-level font caches.
-
-### A. CLI Integration (Command Parsing)
-
-Modifications are required in `src/main.cpp` to add the new command.
-
-**File:** `src/main.cpp`
-
-**1\. Modification to`ShowUsage`:** The `ShowUsage` function will be updated
-to include the new command:
-
-C++
-
-    
-    
-    //... after 'remove' command block...
-    std::cout << " cleanup, c         Perform system cleanup (requires admin)\n";
-    std::cout << "                    - Removes broken registry entries\n";
-    std::cout << "                    - Clears all system font caches\n\n";
-    
-
-**2\. Modification to`main` function:** The `main` function will be updated to
-handle the new command:
-
-C++
-
-    
-    
-    //... after 'remove' block...
-    if (strcmp(command, "cleanup") == 0 |
-    
-    | strcmp(command, "c") == 0) {
-        return HandleCleanupCommand();
-    }
-    //... before 'Unknown command' error...
-    
-
-**3\. New Function:`HandleCleanupCommand`:** A new `static` helper function
-will be added to `src/main.cpp` to orchestrate the cleanup.
-
-C++
-
-    
-    
-    static int HandleCleanupCommand() {
-        // Administrator privileges are mandatory for this operation.
-        if (!SysUtils::IsAdmin()) {
-            std::cerr << "Error: Administrator privileges are required for the cleanup command.\n";
-            std::cerr << "Solution: Right-click Command Prompt and select 'Run as administrator'.\n";
-            return EXIT_PERMISSION_DENIED;
-        }
-    
-        std::cout << "Starting system cleanup...\n";
-        int result = FontOps::CleanupSystem();
-        if (result == EXIT_SUCCESS_CODE) {
-            std::cout << "System cleanup completed successfully.\n";
-        }
-        return result;
-    }
-    
-
-This handler correctly performs the permission check as its first action,
-providing a clear error message if privileges are insufficient.
-
-### B. New Orchestration Function: `FontOps::CleanupSystem`
-
-This new high-level function will orchestrate the two cleanup tasks.
-
-**File:** `src/font_ops.h` A new public function signature will be added:
-
-C++
-
-    
-    
-    // Perform system cleanup (remove broken registry entries, clear caches)
-    // Must be run as administrator.
-    int CleanupSystem();
-    
-
-**File:** `src/font_ops.cpp` The new function implementation will be added:
-
-C++
-
-    
-    
-    namespace FontOps {
-        //... other static helpers...
-        static int CleanupRegistry(); // Forward declaration
-    
-        int FontOps::CleanupSystem() {
-            std::cout << "Scanning font registry for broken entries...\n";
-            int brokenEntries = CleanupRegistry();
-            
-            if (brokenEntries < 0) {
-                std::cerr << "Error: Failed to scan font registry.\n";
-                // Do not abort; cache cleanup can still proceed.
-            } else {
-                std::cout << "Found and removed " << brokenEntries << " broken font entries.\n";
-            }
-    
-            std::cout << "Clearing system font caches...\n";
-            if (!SysUtils::ClearFontCaches()) {
-                std::cerr << "Error: Failed to clear one or more font caches.\n";
-                return EXIT_ERROR; 
-            }
-    
-            std::cout << "Font caches cleared successfully.\n";
-            return EXIT_SUCCESS_CODE;
-        }
-        //...
-    }
-    
-
-### C. Task 1: Registry Hygiene (Implementation)
-
-This task implements the `CleanupRegistry` helper function.
-
-**File:** `src/font_ops.cpp`
-
-**1\. Required Modification to`SysUtils::RegEnumerateFonts`:** To determine if
-a broken registry entry is in the system or per-user hive, the enumeration
-callback must receive the `perUser` context. This requires a modification to
-`SysUtils::RegEnumerateFonts`.
-
-  * **Old Signature:** `void (*callback)(const char* name, const char* file)`
-
-  * **New Signature:** `void (*callback)(const char* name, const char* file, bool perUser)`
-
-  * **File:** `src/sys_utils.cpp`
-
-    * The call to the callback must be updated:
-
-C++
-
-          
-          // Old:
-          // callback(valueName, reinterpret_cast<const char*>(valueData));
-          // New:
-          callback(valueName, reinterpret_cast<const char*>(valueData), perUser);
-          
-
-**2\. Required Update to`FontOps::ListCallback`:** This modification is a
-breaking change for the existing `ListFonts` command. The `ListCallback`
-function must be updated to match the new signature, even if it does not use
-the new parameter.
-
-  * **File:** `src/font_ops.cpp`
-
-  * **Old Signature:** `static void ListCallback(const char* name, const char* file)`
-
-  * **New Signature:** `static void ListCallback(const char* name, const char* file, bool perUser)`
-
-**3\. New Registry Cleanup Implementation:** New static components will be
-added to `src/font_ops.cpp`.
-
-C++
-
-    
-    
-    // Context struct for the cleanup callback
-    static struct {
-        int removeCount;
-        bool changed;
-        std::string fontsDir;
-        std::string userFontsDir;
-    } g_cleanupContext;
-    
-    // Callback function to check file existence and remove broken entries
-    static void CleanupCallback(const char* name, const char* file, bool perUser) {
-        std::string fullPath;
-        
-        // Resolve the full path, handling absolute (per-user) and relative (system) paths
-        size_t fileLen = strlen(file);
-        bool isAbsolute = (fileLen > 0 && file == '\\') |
-    
-    | (fileLen > 1 && file == ':');
-    
-        if (isAbsolute) {
-            fullPath = file;
-        } else {
-            fullPath = perUser? g_cleanupContext.userFontsDir : g_cleanupContext.fontsDir;
-            fullPath += "\\";
-            fullPath += file;
-        }
-    
-        if (!SysUtils::FileExists(fullPath.c_str())) {
-            std::cout << "  - Removing broken entry: " << name << "\n";
-            std::cout << "    File not found: " << fullPath << "\n";
-            
-            if (SysUtils::RegDeleteFontEntry(name, perUser)) {
-                g_cleanupContext.removeCount++;
-                g_cleanupContext.changed = true;
-            } else {
-                std::cerr << "    Warning: Failed to remove registry entry.\n";
-            }
-        }
-    }
-    
-    // Orchestrator for registry cleanup
-    static int CleanupRegistry() {
-        g_cleanupContext.removeCount = 0;
-        g_cleanupContext.changed = false;
-        g_cleanupContext.fontsDir = SysUtils::GetFontsDirectory();
-        g_cleanupContext.userFontsDir = SysUtils::GetUserFontsDirectory();
-    
-        if (g_cleanupContext.fontsDir.empty() |
-    
-    | g_cleanupContext.userFontsDir.empty()) {
-            std::cerr << "Error: Could not determine font directories.\n";
-            return -1; // Indicates failure
-        }
-    
-        // Enumerate system fonts
-        if (!SysUtils::RegEnumerateFonts(CleanupCallback, false)) {
-            std::cerr << "Error: Failed to enumerate system fonts.\n";
-            return -1; // Indicates failure
-        }
-        
-        // Enumerate user fonts
-        SysUtils::RegEnumerateFonts(CleanupCallback, true);
-    
-        if (g_cleanupContext.changed) {
-            SysUtils::NotifyFontChange();
-        }
-        
-        return g_cleanupContext.removeCount;
-    }
-    
-
-### D. Task 2: Font Cache Purge (New Low-Level Implementation)
-
-This task requires new, privileged operations to be added to
-`src/sys_utils.cpp`.
-
-**File:** `src/sys_utils.h` A new public function signature will be added:
-
-C++
-
-    
-    
-    // Stops, deletes, and restarts the system font cache.
-    // Returns true on success. Must be run as administrator.
-    bool ClearFontCaches();
-    
-
-**File:** `src/sys_utils.cpp` The following new components will be added:
-
-  1. **Required Include:** A new standard library header will be required for recursive directory deletion. This aligns with the C++17 project standard and does not add a third-party dependency.
-
-C++
-
-         
-         #include <filesystem> // For std::filesystem::remove_all
-         
-
-  2. **New Helper:`ManageFontCacheService`** A new `static` helper function will be added to stop and start the Windows Font Cache Service.
-
-     * **Logic:** This function will use the Windows Service Control Manager API  to interact with the service named `FontCache` (identified in ).  
-
-     * It will use `OpenSCManager` to connect, `OpenServiceW` to get a handle to the `FontCache` service, and `ControlService` (with `SERVICE_CONTROL_STOP`) or `StartService` to manage its state.  
-
-     * **Robustness:** After sending a stop or start request, the function _must_ enter a wait loop (e.g., 30-second timeout). Inside the loop, it will poll `QueryServiceStatusEx` to wait until the service's `dwCurrentState` is confirmed to be `SERVICE_STOPPED` or `SERVICE_RUNNING`, respectively. This ensures the cache files are not in use when deletion is attempted.  
-
-  3. **New Helper:`DeleteCacheFiles`** A new `static` helper function will be added to delete the cache files from their protected locations.  
-
-     * **Target 1:** The primary cache file `C:\Windows\System32\FNTCACHE.DAT`. This will be deleted using `DeleteFileA`. "File not found" errors will be ignored (treated as success).
-
-     * **Target 2:** The service cache directory `C:\Windows\ServiceProfiles\LocalService\AppData\Local\FontCache`. This will be deleted recursively using `std::filesystem::remove_all`.
-
-     * **Deferred Targets:** Per-user caches (e.g., `%localappdata%\FontCache` ) are not targeted in this implementation. Cleaning these would require complex enumeration of all user profiles on the machine. The `cleanup` command, being an administrator-only function, will focus on the system-wide caches, which are the most common source of corruption.  
-
-  4. **New Public Function:`SysUtils::ClearFontCaches`** This function will orchestrate the cache-clearing process.
-
-C++
-
-         
-         bool SysUtils::ClearFontCaches() {
-             std::cout << "  - Stopping Windows Font Cache Service (FontCache)...\n";
-             if (!ManageFontCacheService(true)) { // true = stop
-                 std::cerr << "    Error: Failed to stop font cache service.\n";
-                 return false;
-             }
-         
-             std::cout << "  - Deleting cache files...\n";
-             if (!DeleteCacheFiles()) {
-                 std::cerr << "    Warning: Could not delete all cache files.\n";
-                 // Do not abort; always attempt to restart the service.
-             }
-         
-             std::cout << "  - Starting Windows Font Cache Service (FontCache)...\n";
-             if (!ManageFontCacheService(false)) { // false = start
-                 std::cerr << "    Error: Failed to restart font cache service.\n";
-                 return false;
-             }
-         
-             return true;
-         }
-         
-
-### E. Key Implementation Table: Font Cache Purge
-
-To ensure precise implementation of the cache purge, the following targets are
-specified. This operation must be executed in the order listed.
-
-Target Type| Target Identifier| Required Action| Data Source(s)  
----|---|---|---  
-**Service**| `FontCache`| **1\. Stop** (Wait for `SERVICE_STOPPED`)| [2, 4, 5]  
-**File**| `C:\Windows\System32\FNTCACHE.DAT`| **2\. Delete** (Ignore "Not
-Found" errors)| [9, 10, 11]  
-**Directory**|
-`C:\Windows\ServiceProfiles\LocalService\AppData\Local\FontCache`| **3\.
-Delete Recursively** (Delete folder and all contents)| [5, 8, 10]  
-**Service**| `FontCache`| **4\. Start** (Wait for `SERVICE_RUNNING`)| [2, 4,
-5]  
-  
-Export to Sheets
-
-## IV. Updates to Project Documentation
-
-Upon completion of the implementation, the following project documentation
-must be updated to reflect the new functionality.
-
-### A. `README.md`
-
-The main `README.md` will be updated:
-
-  1. **Usage Section:** A new example for the `cleanup` command will be added.
-
-DOS
-
-         
-         ### System Cleanup (Requires Admin)
-         fontlift-win cleanup
-         fontlift-win c
-         
-
-  2. **Commands Table:** A new row will be added.
-
-| `cleanup` | `c` | Removes broken registry entries and clears system font caches (requires admin) | 3\. **Troubleshooting Section:** A note will be added suggesting `fontlift-win cleanup` as a potential fix for font rendering issues.
-
-### B. `CHANGELOG.md`
-
-A new `[Unreleased]` section will be added to `CHANGELOG.md` with the
-following entries:
-
-## [Unreleased]
-
-### Added
-
-  * New `cleanup` (alias `c`) command to perform system-wide font hygiene. This command requires administrator privileges.
-
-    * Scans the Windows font registry and removes any entries that point to non-existent font files (both system and per-user).
-
-    * Purges system-level font caches by stopping the `FontCache` service, deleting cache files (including `FNTCACHE.DAT`), and restarting the service.
-
-  * The `install` command now automatically attempts to uninstall any existing font with the same font family name before proceeding with the new installation. This helps prevent duplicate-family fonts.
-
-### C. `PLAN.md` and `TODO.md`
-
-Internal planning documents will be updated to mark the tasks associated with
-this implementation plan as complete.
-
-Sources used in the report
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comProgrammatically
-restart a Windows Service - c++ - Stack Overflow Opens in a new window
-](https://stackoverflow.com/questions/6126443/programmatically-restart-a-
-windows-
-service)[![](https://t3.gstatic.com/faviconV2?url=https://www.codeproject.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)codeproject.comInteract
-with Windows Services in C++ - CodeProject Opens in a new window
-](https://www.codeproject.com/articles/Interact-with-Windows-Services-in-
-Cplusplus)[![](https://t3.gstatic.com/faviconV2?url=https://batcmd.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)batcmd.comWindows
-Font Cache Service - batcmd.com Opens in a new window
-](https://batcmd.com/windows/10/services/fontcache/)[![](https://t0.gstatic.com/faviconV2?url=https://gist.github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gist.github.comRebuild
-font cache in Windows and reboot your computer in order to solve some font
-rendering issues - GitHub Gist Opens in a new window
-](https://gist.github.com/brainplot/19816ff07a0c31efee005d34271650e3)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comStopping
-a Service - Win32 apps - Microsoft Learn Opens in a new window
-](https://learn.microsoft.com/en-us/windows/win32/services/stopping-a-
-service)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comStarting
-a Service - Win32 apps - Microsoft Learn Opens in a new window
-](https://learn.microsoft.com/en-us/windows/win32/services/starting-a-
-service)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow
-to clear the Windows font cache? - Microsoft Learn Opens in a new window
-](https://learn.microsoft.com/en-us/answers/questions/3860093/how-to-clear-
-the-windows-font-cache)[![](https://t3.gstatic.com/faviconV2?url=https://luzi-
-type.ch/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)luzi-
-type.chSometimes Desktop Fonts do not appear in program menus. In almost all
-such cases, the problem can be resolved by clearing the Font Cache. - Notes –
-Luzi Type Foundry Opens in a new window ](https://luzi-type.ch/notes-font-
-cache)[![](https://t0.gstatic.com/faviconV2?url=https://www.wisecleaner.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)wisecleaner.comHow
-to Clear Font Cache in Windows 11 - WiseCleaner Opens in a new window
-](https://www.wisecleaner.com/how-to/326-how-to-clear-font-cache-in-
-windows-11.html)[![](https://t1.gstatic.com/faviconV2?url=https://www.isunshare.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)isunshare.comHow
-to Delete Font Cache in Windows 10 - iSunshare Opens in a new window
-](https://www.isunshare.com/windows-10/how-to-delete-font-cache-in-
-windows-10.html)[![](https://t0.gstatic.com/faviconV2?url=https://winsides.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)winsides.com5+
-Easy Methods to Delete Font Cache in Windows 11! - Winsides.com Opens in a new
-window ](https://winsides.com/5-easy-methods-to-delete-font-cache-in-
-windows-11/)
-
-Sources read but not used in the report
-
-[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to programmatically clear the filesystem memory cache in C++ on a Linux system? Opens in a new window ](https://stackoverflow.com/questions/6818606/how-to-programmatically-clear-the-filesystem-memory-cache-in-c-on-a-linux-syst)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow to clear memory cached files programmatically with C++? Specifically Notepad cache? Opens in a new window ](https://learn.microsoft.com/en-us/answers/questions/1866351/how-to-clear-memory-cached-files-programmatically)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comc++ - Flushing the cache to prevent benchmarking fluctiations - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/34460744/flushing-the-cache-to-prevent-benchmarking-fluctiations)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comWindows with C++ - Exploring Fonts with DirectWrite and Modern C++ - Microsoft Learn Opens in a new window ](https://learn.microsoft.com/en-us/archive/msdn-magazine/2013/november/windows-with-c-exploring-fonts-with-directwrite-and-modern-c)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comGet a font filepath from name and style in C++/Windows - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/11387564/get-a-font-filepath-from-name-and-style-in-c-windows)[![](https://t2.gstatic.com/faviconV2?url=https://www.exploit-db.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)exploit-db.comMicrosoft Windows Font Cache Service - Insecure Sections Privilege Escalation - Exploit-DB Opens in a new window ](https://www.exploit-db.com/exploits/47029)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow do you delete system-protected fonts? - Microsoft Q&A Opens in a new window ](https://learn.microsoft.com/en-us/answers/questions/3721095/how-do-you-delete-system-protected-fonts)[![](https://t0.gstatic.com/faviconV2?url=https://superuser.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)superuser.comwindows 7 - What is the purpose of the Fonts key in the Registry? - Super User Opens in a new window ](https://superuser.com/questions/813039/what-is-the-purpose-of-the-fonts-key-in-the-registry)[![](https://t1.gstatic.com/faviconV2?url=https://helpcenter.trendmicro.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)helpcenter.trendmicro.comSafely Clean Your Windows Registry: Step-By-Step Guide | Trend Micro Help Center Opens in a new window ](https://helpcenter.trendmicro.com/en-us/article/tmka-20814)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comWindows registry information for advanced users - Microsoft Learn Opens in a new window ](https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comFonts are shown in the Windows 10 registry but can't find them in C:\Windows\Fonts Opens in a new window ](https://learn.microsoft.com/en-us/answers/questions/936980/fonts-are-shown-in-the-windows-10-registry-but-can)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comDeleting Fonts from Windows 10 that don't appear in regedit - Microsoft Learn Opens in a new window ](https://learn.microsoft.com/en-us/answers/questions/3185680/deleting-fonts-from-windows-10-that-dont-appear-in)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comCan't query, run or stop a Windows Service - c++ - Stack Overflow Opens in a new window ](https://stackoverflow.com/questions/39326284/cant-query-run-or-stop-a-windows-service)
-
-Thoughts
-
-Deconstructing the Request
-
-I am starting by breaking down your request into two main features. The first
-is to automatically uninstall an old font when a new one with the same family
-name is installed. The second is to create a new 'cleanup' command to remove
-fonts whose files are missing and to clear all system font caches.
-
-Analyzing the Codebase
-
-My primary focus is on modifying the existing code. I'll be examining the
-`font_ops.cpp` file to understand the current installation logic,
-`font_parser.cpp` to see how font names are extracted, and `main.cpp` to
-determine how to add the new 'cleanup' command.
-
-Investigating System-Level Changes
-
-The font cache cleaning portion of the 'cleanup' command requires new
-information. I'll need to investigate how to programmatically interact with
-the Windows Font Cache Service, find the cache file locations (like
-`FNTCACHE.DAT`), and identify any relevant registry keys.
-
-Formulating the Plan
-
-After analyzing the code and researching the cache-clearing process, I will
-synthesize all this information. The final goal is to produce an extensive
-`PLAN.md` document detailing the exact implementation steps for both new
-features, as well as updating the `TODO.md` and `CHANGELOG.md` files to match.
-
-Researching uploaded files
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-![](https://www.gstatic.com/lamda/images/immersives/google_logo_icon_2380fba942c84387f09cf.svg)
-
-Researching websites
-
-[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comHow to programmatically clear the filesystem memory cache in C++ on a Linux system?](https://stackoverflow.com/questions/6818606/how-to-programmatically-clear-the-filesystem-memory-cache-in-c-on-a-linux-syst)[![](https://t3.gstatic.com/faviconV2?url=https://luzi-type.ch/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)luzi-type.chSometimes Desktop Fonts do not appear in program menus. In almost all such cases, the problem can be resolved by clearing the Font Cache. - Notes – Luzi Type Foundry](https://luzi-type.ch/notes-font-cache)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow to clear memory cached files programmatically with C++? Specifically Notepad cache?](https://learn.microsoft.com/en-us/answers/questions/1866351/how-to-clear-memory-cached-files-programmatically)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comc++ - Flushing the cache to prevent benchmarking fluctiations - Stack Overflow](https://stackoverflow.com/questions/34460744/flushing-the-cache-to-prevent-benchmarking-fluctiations)[![](https://t3.gstatic.com/faviconV2?url=https://batcmd.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)batcmd.comWindows Font Cache Service - batcmd.com](https://batcmd.com/windows/10/services/fontcache/)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comWindows with C++ - Exploring Fonts with DirectWrite and Modern C++ - Microsoft Learn](https://learn.microsoft.com/en-us/archive/msdn-magazine/2013/november/windows-with-c-exploring-fonts-with-directwrite-and-modern-c)[![](https://t0.gstatic.com/faviconV2?url=https://gist.github.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)gist.github.comRebuild font cache in Windows and reboot your computer in order to solve some font rendering issues - GitHub Gist](https://gist.github.com/brainplot/19816ff07a0c31efee005d34271650e3)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comGet a font filepath from name and style in C++/Windows - Stack Overflow](https://stackoverflow.com/questions/11387564/get-a-font-filepath-from-name-and-style-in-c-windows)[![](https://t2.gstatic.com/faviconV2?url=https://www.exploit-db.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)exploit-db.comMicrosoft Windows Font Cache Service - Insecure Sections Privilege Escalation - Exploit-DB](https://www.exploit-db.com/exploits/47029)[![](https://t0.gstatic.com/faviconV2?url=https://www.wisecleaner.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)wisecleaner.comHow to Clear Font Cache in Windows 11 - WiseCleaner](https://www.wisecleaner.com/how-to/326-how-to-clear-font-cache-in-windows-11.html)[![](https://t0.gstatic.com/faviconV2?url=https://winsides.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)winsides.com5+ Easy Methods to Delete Font Cache in Windows 11! - Winsides.com](https://winsides.com/5-easy-methods-to-delete-font-cache-in-windows-11/)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow to clear the Windows font cache? - Microsoft Learn](https://learn.microsoft.com/en-us/answers/questions/3860093/how-to-clear-the-windows-font-cache)[![](https://t1.gstatic.com/faviconV2?url=https://www.isunshare.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)isunshare.comHow to Delete Font Cache in Windows 10 - iSunshare](https://www.isunshare.com/windows-10/how-to-delete-font-cache-in-windows-10.html)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comHow do you delete system-protected fonts? - Microsoft Q&A](https://learn.microsoft.com/en-us/answers/questions/3721095/how-do-you-delete-system-protected-fonts)[![](https://t0.gstatic.com/faviconV2?url=https://superuser.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)superuser.comwindows 7 - What is the purpose of the Fonts key in the Registry? - Super User](https://superuser.com/questions/813039/what-is-the-purpose-of-the-fonts-key-in-the-registry)[![](https://t1.gstatic.com/faviconV2?url=https://helpcenter.trendmicro.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)helpcenter.trendmicro.comSafely Clean Your Windows Registry: Step-By-Step Guide | Trend Micro Help Center](https://helpcenter.trendmicro.com/en-us/article/tmka-20814)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comWindows registry information for advanced users - Microsoft Learn](https://learn.microsoft.com/en-us/troubleshoot/windows-server/performance/windows-registry-advanced-users)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comFonts are shown in the Windows 10 registry but can't find them in C:\Windows\Fonts](https://learn.microsoft.com/en-us/answers/questions/936980/fonts-are-shown-in-the-windows-10-registry-but-can)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comDeleting Fonts from Windows 10 that don't appear in regedit - Microsoft Learn](https://learn.microsoft.com/en-us/answers/questions/3185680/deleting-fonts-from-windows-10-that-dont-appear-in)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comProgrammatically restart a Windows Service - c++ - Stack Overflow](https://stackoverflow.com/questions/6126443/programmatically-restart-a-windows-service)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comStopping a Service - Win32 apps - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/services/stopping-a-service)[![](https://t3.gstatic.com/faviconV2?url=https://learn.microsoft.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)learn.microsoft.comStarting a Service - Win32 apps - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/services/starting-a-service)[![](https://t3.gstatic.com/faviconV2?url=https://www.codeproject.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)codeproject.comInteract with Windows Services in C++ - CodeProject](https://www.codeproject.com/articles/Interact-with-Windows-Services-in-Cplusplus)[![](https://t0.gstatic.com/faviconV2?url=https://stackoverflow.com/&client=BARD&type=FAVICON&size=256&fallback_opts=TYPE,SIZE,URL)stackoverflow.comCan't query, run or stop a Windows Service - c++ - Stack Overflow](https://stackoverflow.com/questions/39326284/cant-query-run-or-stop-a-windows-service)
-
-Researching uploaded files
-
-![](https://drive-thirdparty.googleusercontent.com/32/type/text/plain)
-
-llms.txt
-
-Pivoting the Plan
-
-My initial analysis of the provided project files reveals they are high-level
-documentation, not the full source code. This is a key insight. It means I
-cannot modify existing code directly. Instead, I will architect the
-implementation plan *as if* I were writing the functions from scratch,
-ensuring my plan fits perfectly into the documented file structure and
-respects the intended purpose of each file.
-
-Successful Cache Investigation
-
-My research into the 'cleanup' command's cache-clearing feature was highly
-effective. I've confirmed the programmatic method for implementation: I must
-first stop the 'FontCache' service, then delete specific files from
-`C:\Windows\System32` and
-`C:\Windows\ServiceProfiles\LocalService\AppData\Local`, and finally restart
-the service. This avoids risky registry edits and provides a clear path
-forward.
-
-Mapping the 'Install' Feature
-
-For the automatic uninstall feature, I've mapped out the logic. The
-`InstallFont` function will first use the `font_parser` logic to get the new
-font's family name. It will then check the registry for a font with the same
-name. If a conflict is found, it will call the existing `UninstallFontByName`
-function on the *old* font before proceeding to install the new one.
-
-Designing the 'Cleanup' Command
-
-I'm designing the 'cleanup' command in two parts. First, it will iterate
-through the Windows font registry and check if the associated font file still
-exists, removing any orphaned entries. Second, it will perform the
-programmatic cache-clearing steps I've already researched. This entire process
-will be encapsulated in a new `CleanupFonts` function, called from `main.cpp`
-after an administrator-rights check.
-
-Crafting the Documentation
-
-I was unable to view the *content* of your existing documentation files, but
-the project rules clearly state their *purpose*. Therefore, I will create the
-`PLAN.md`, `TODO.md`, and `CHANGELOG.md` entries from scratch, adhering to the
-formats you've defined: a detailed plan, a simplified checklist, and a new
-version entry.
-
-Finalizing the Implementation Plan
-
-I now have all the necessary components: the architectural plan for the
-codebase, the specific system-level commands for cache cleaning, and the
-documentation strategy. I do not need any further research and will now move
-to synthesize these findings into the final, comprehensive `PLAN.md` document.
-</document_content>
-</document>
-
-<document index="24">
-<source>issues/999.md</source>
-<document_content>
-Now /report then /cleanup then /work on next tasks from @TODO.md and from @PLAN.md
-</document_content>
-</document>
-
-<document index="25">
-<source>publish.cmd</source>
-<document_content>
+## publish.cmd
+```
 @echo off
 setlocal enabledelayedexpansion
 REM this_file: publish.cmd
@@ -3006,12 +2271,10 @@ dir dist
 :cleanup
 popd >nul 2>&1
 exit /b !EXIT_CODE!
-</document_content>
-</document>
+```
 
-<document index="26">
-<source>scripts/generate-version-rc.cmd</source>
-<document_content>
+## scripts/generate-version-rc.cmd
+```
 @echo off
 REM this_file: scripts/generate-version-rc.cmd
 REM Thin wrapper around PowerShell generator to keep compatibility with batch callers.
@@ -3025,12 +2288,10 @@ if "%VERSION_INPUT%"=="" (
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0generate-version-rc.ps1" -TargetVersion "%VERSION_INPUT%"
 exit /b %ERRORLEVEL%
-</document_content>
-</document>
+```
 
-<document index="27">
-<source>scripts/generate-version-rc.ps1</source>
-<document_content>
+## scripts/generate-version-rc.ps1
+```
 # this_file: scripts/generate-version-rc.ps1
 
 param(
@@ -3074,12 +2335,10 @@ $content = $content -replace '@VERSION_STRING@', $displayVersion
 
 Set-Content -Path $outputPath -Value $content -Encoding Ascii
 Write-Host ("Generated {0} using version {1}" -f $outputPath, $displayVersion)
-</document_content>
-</document>
+```
 
-<document index="28">
-<source>scripts/get-version.cmd</source>
-<document_content>
+## scripts/get-version.cmd
+```
 @echo off
 REM this_file: scripts/get-version.cmd
 REM Resolve semantic version information from git tags or provided input.
@@ -3109,12 +2368,10 @@ if /I "%~1"=="BASE" set "VERSION_BASE=%~2"
 if /I "%~1"=="SEMVER" set "VERSION_SEMVER=%~2"
 if /I "%~1"=="TAG" set "VERSION_TAG=%~2"
 goto :eof
-</document_content>
-</document>
+```
 
-<document index="29">
-<source>scripts/get-version.ps1</source>
-<document_content>
+## scripts/get-version.ps1
+```
 # this_file: scripts/get-version.ps1
 
 param(
@@ -3265,12 +2522,10 @@ $result =
     }
 
 Convert-ToResultObject -Base $result.Base -SemVer $result.SemVer -Tag $result.Tag
-</document_content>
-</document>
+```
 
-<document index="30">
-<source>src/exit_codes.h</source>
-<document_content>
+## src/exit_codes.h
+```
 // this_file: src/exit_codes.h
 // Exit code constants for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -3285,12 +2540,10 @@ constexpr int EXIT_ERROR = 1;                // General error (file not found, o
 constexpr int EXIT_PERMISSION_DENIED = 2;    // Administrator privileges required
 
 #endif // EXIT_CODES_H
-</document_content>
-</document>
+```
 
-<document index="31">
-<source>src/font_ops.cpp</source>
-<document_content>
+## src/font_ops.cpp
+```cpp
 // this_file: src/font_ops.cpp
 // Font operations implementation
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -3840,12 +3093,10 @@ int Cleanup(bool includeSystem) {
 }
 
 } // namespace FontOps
-</document_content>
-</document>
+```
 
-<document index="32">
-<source>src/font_ops.h</source>
-<document_content>
+## src/font_ops.h
+```
 // this_file: src/font_ops.h
 // Font operations for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -3887,12 +3138,10 @@ namespace FontOps {
 }
 
 #endif // FONT_OPS_H
-</document_content>
-</document>
+```
 
-<document index="33">
-<source>src/font_parser.cpp</source>
-<document_content>
+## src/font_parser.cpp
+```cpp
 // this_file: src/font_parser.cpp
 // Font file parser implementation
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -4179,12 +3428,10 @@ std::vector<std::string> GetFontsInCollection(const char* fontPath) {
 }
 
 } // namespace FontParser
-</document_content>
-</document>
+```
 
-<document index="34">
-<source>src/font_parser.h</source>
-<document_content>
+## src/font_parser.h
+```
 // this_file: src/font_parser.h
 // Font file parser for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -4210,10 +3457,9 @@ namespace FontParser {
 }
 
 #endif // FONT_PARSER_H
-</document_content>
-</document>
+```
 
-# File: /Users/adam/Developer/vcs/github.fontlaborg/fontlift-win-cli/src/main.cpp
+# File: /Users/adam/Developer/vcs3/github.fontlaborg/fontlift-win-cli/src/main.cpp
 # Language: cpp
 
 #include #include "exit_codes.h"
@@ -4225,9 +3471,8 @@ namespace FontParser {
 #include #include <vector>
 
 
-<document index="35">
-<source>src/sys_utils.cpp</source>
-<document_content>
+## src/sys_utils.cpp
+```cpp
 // this_file: src/sys_utils.cpp
 // System utilities implementation
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -4746,12 +3991,10 @@ bool ClearSystemFontCaches() {
 }
 
 } // namespace SysUtils
-</document_content>
-</document>
+```
 
-<document index="36">
-<source>src/sys_utils.h</source>
-<document_content>
+## src/sys_utils.h
+```
 // this_file: src/sys_utils.h
 // System utilities for fontlift-win-cli
 // Copyright 2025 by Fontlab Ltd. Licensed under Apache 2.0
@@ -4807,12 +4050,10 @@ namespace SysUtils {
 }
 
 #endif // SYS_UTILS_H
-</document_content>
-</document>
+```
 
-<document index="37">
-<source>tools/chocolateyinstall.ps1</source>
-<document_content>
+## tools/chocolateyinstall.ps1
+```
 $ErrorActionPreference = 'Stop'
 
 $packageName = 'fontlift-win'
@@ -4828,12 +4069,10 @@ $packageArgs = @{
 }
 
 Install-ChocolateyZipPackage @packageArgs
-</document_content>
-</document>
+```
 
-<document index="38">
-<source>tools/cleanup-harness.ps1</source>
-<document_content>
+## tools/cleanup-harness.ps1
+```
 # this_file: tools/cleanup-harness.ps1
 # Throwaway harness to seed broken font registry entries and drive cleanup
 # made by FontLab https://www.fontlab.com/
@@ -4953,12 +4192,10 @@ if ($RunCleanup) {
 }
 
 Write-Host "Harness complete. Reminder: Only run on disposable test VMs." -ForegroundColor Yellow
-</document_content>
-</document>
+```
 
-<document index="39">
-<source>tools/collect-fontlift-transcripts.ps1</source>
-<document_content>
+## tools/collect-fontlift-transcripts.ps1
+```
 # this_file: tools/collect-fontlift-transcripts.ps1
 # Wrapper to record real fontlift console transcripts for docs/support
 # made by FontLab https://www.fontlab.com/
@@ -5039,12 +4276,10 @@ switch ($Scenario) {
 
 Stop-Transcript | Out-Null
 Write-Host "Transcript saved to $transcriptPath" -ForegroundColor Green
-</document_content>
-</document>
+```
 
-<document index="40">
-<source>tools/test-binary-name.sh</source>
-<document_content>
+## tools/test-binary-name.sh
+```bash
 #!/usr/bin/env bash
 # this_file: tools/test-binary-name.sh
 # Verifies the project is configured to build and package fontlift-win.exe
@@ -5072,7 +4307,4 @@ assert_contains "$root_dir/src/main.cpp" "fontlift-win - Windows Font Management
 assert_contains "$root_dir/README.md" "fontlift-win list"
 
 echo "Binary name checks passed."
-</document_content>
-</document>
-
-</documents>
+```
